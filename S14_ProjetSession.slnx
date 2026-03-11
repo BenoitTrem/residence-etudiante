@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="S14_ProjetSession/S14_ProjetSession.csproj" />
+  <Project Path="S14_ProjetSessionTests/S14_ProjetSessionTests.csproj" />
+</Solution>
