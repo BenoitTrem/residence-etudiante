@@ -39,5 +39,16 @@ namespace S14_ProjetSession.Data
             _context.Etudiants.Remove(etudiant);
             _context.SaveChanges();
         }
+
+        List<Etudiant> IEtudiantRepository.GetEtudiants(int etudiantId)
+        {
+            return Etudiants.ToList<Etudiant>();
+
+        }
+
+        void IEtudiantRepository.SupprimerParEtudiant(int etudiantId)
+        {
+            _context.Etudiants.Remove(e => e.Id == etudiantId);
+        }
     }
 }
