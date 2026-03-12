@@ -1,4 +1,5 @@
-﻿using static System.Net.Mime.MediaTypeNames;
+﻿using System.ComponentModel.DataAnnotations;
+using static System.Net.Mime.MediaTypeNames;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace S14_ProjetSession.Models
@@ -33,8 +34,16 @@ namespace S14_ProjetSession.Models
 
         public string Telephone { get; set; }
 
+
+        [Required(ErrorMessage = "adresse email est un champ obligatoire")]
+        [EmailAddress(ErrorMessage = "adresse email invalide.")]
+        [Display(Name = "adresse email")]
         public string CourrielInstitutionnel { get; set; }
 
+
+        [Required(ErrorMessage = "adresse email est un champ obligatoire")]
+        [EmailAddress(ErrorMessage = "adresse email invalide.")]
+        [Display(Name = "adresse email")]
         public string CourrielPersonnel { get; set; }
 
 

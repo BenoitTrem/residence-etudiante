@@ -8,8 +8,7 @@ namespace S14_ProjetSession.Models
 
 
         public int session {  get; set; }
-        // devrait etre Genre
-        []
+  
         public String preferencesGenre  { get; set; }
         public bool JumelageVolontaire { get; set; }
 
