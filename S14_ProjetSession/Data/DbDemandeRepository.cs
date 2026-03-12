@@ -13,6 +13,7 @@ namespace S14_ProjetSession.Data
         public void Creer(Demande demande)
         {
             _context.Demandes.Add(demande);
+            _context.SaveChanges();
         }
 
         public Demande? GetDemande(int id)
@@ -23,6 +24,13 @@ namespace S14_ProjetSession.Data
         public void Supprimer(Demande demande)
         {
             _context.Demandes.Remove(demande);
+            _context.SaveChanges();
+        }
+
+        public void Modifier(Demande demande)
+        {
+            _context.Demandes.Update(demande);
+            _context.SaveChanges();
         }
     }
 }

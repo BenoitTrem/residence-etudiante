@@ -11,6 +11,8 @@ namespace S14_ProjetSession.Data
         
         public void Creer(Demande demande);
 
+        public void Modifier(Demande demande);
+
         public void Supprimer(Demande demande);
     }
 }
