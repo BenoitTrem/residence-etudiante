@@ -18,9 +18,9 @@ namespace S14_ProjetSession.Models
         // faire verif de email avec regex
 
 
-        [Required(ErrorMessage = "Email address is required")]
-        [EmailAddress(ErrorMessage = "Invalid email format.")]
-        [Display(Name = "Email Address")]
+        [Required(ErrorMessage = "adresse email est un champ obligatoire")]
+        [EmailAddress(ErrorMessage = "adresse email invalide.")]
+        [Display(Name = "adresse email")]
         public String courrielJumelage { get; set; }
 
         public int prefDureeBail { get; set; }
