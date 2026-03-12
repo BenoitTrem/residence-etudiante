@@ -9,14 +9,12 @@ namespace S14_ProjetSession.Models
 
         public int session {  get; set; }
         // devrait etre Genre
-        []
+        
         public String preferencesGenre  { get; set; }
+        
         public bool JumelageVolontaire { get; set; }
-
+        
         public String nomJumelage {  get; set; }
-
-        // faire verif de email avec regex
-
 
         [Required(ErrorMessage = "adresse email est un champ obligatoire")]
         [EmailAddress(ErrorMessage = "adresse email invalide.")]
