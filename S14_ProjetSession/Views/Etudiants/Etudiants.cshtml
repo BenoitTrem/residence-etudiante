@@ -1,0 +1,37 @@
+﻿@model List<Etudiant>
+
+
+
+<body class="container">
+    <section class="mb-4">
+        <h2 class="mb-3">Les étudiants</h2>
+
+        @foreach(Etudiant etudiant in Model)
+        {
+            <section class="card">
+
+
+
+             <section class="card-body">
+                    <ul>
+                        <li>@etudiant.Nom </li>
+                        <li>@etudiant.Prenom </li>
+                        <li>@etudiant.Programme.Nom</li>
+                    </ul>
+             </section>
+                <section class="card-footer">
+                    <a asp-controller="Etudiant" asp-action="modifier">Modifier</a>
+                    <a asp-controller="Etudiant" asp-action="supprimer" asp-value>Modifier</a>
+                </section>
+           
+
+            </section>
+            
+        }
+
+        
+    </section>
+
+
+
+</body>
