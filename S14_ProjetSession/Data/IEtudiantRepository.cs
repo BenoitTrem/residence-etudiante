@@ -1,4 +1,5 @@
-﻿using S14_ProjetSession.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using S14_ProjetSession.Models;
 
 namespace S14_ProjetSession.Data
 {
@@ -14,9 +15,13 @@ namespace S14_ProjetSession.Data
         public List<Etudiant> GetEtudiants(int etudiantId);
 
 
-        public void SupprimerParEtudiant(int etudiantId);
 
-      
+
+        public void SupprimerParID(int etudiantID);
+   
+
+
+
         public void Creer(Etudiant etudiant);
 
        
