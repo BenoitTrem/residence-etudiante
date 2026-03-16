@@ -9,7 +9,7 @@ namespace S14_ProjetSession.Data
 
         
 
-        public List<Semestre> Semestre => _context.Semestre.ToList();
+        public List<Semestre> Semestres => _context.Semestre.ToList();
 
         public DbSemestreRepository(ResidencesDbContext context)
         {
@@ -26,7 +26,7 @@ namespace S14_ProjetSession.Data
 
         public Semestre? GetSemestreParId(int semestreId)
         {
-            return Semestre.FirstOrDefault(s => s.Id == semestreId);
+            return Semestres.FirstOrDefault(s => s.Id == semestreId);
         }
 
         public void Modifier(Semestre semestre)
@@ -45,5 +45,7 @@ namespace S14_ProjetSession.Data
         {
            
         }
+
+        
     }
 }

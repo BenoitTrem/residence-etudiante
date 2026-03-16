@@ -6,10 +6,10 @@ namespace S14_ProjetSession.Data
     public interface ISemestreRepository
     {
 
-        public List<Semestre> Semestre { get; }
+        public List<Semestre> Semestres { get; }
 
 
-        public List<Etudiant> GetSemestreParId(int semestreId);
+        public Semestre GetSemestreParId(int semestreId);
 
 
 
