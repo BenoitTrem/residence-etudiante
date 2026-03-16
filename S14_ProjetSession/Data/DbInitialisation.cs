@@ -108,6 +108,8 @@ namespace S14_ProjetSession.Data
                     CourrielPersonnel = "sophie.bouchard@gmail.com"
                 }
             };
+            // Felix
+            
 
             context.Etudiants.AddRange(etudiants);
             context.SaveChanges();

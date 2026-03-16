@@ -7,8 +7,12 @@ namespace S14_ProjetSession.Models
         public int Id { get; set; }
 
 
-        public int Session {  get; set; }
-        // devrait etre Genre
+        public int SemestreId { get; set; }
+        public Semestre  Semestre { get; set; }
+       
+        public int EtudiantId { get; set; }
+        public Etudiant Etudiant { get; set; }
+        
         
         public String PreferencesGenre  { get; set; }
         
