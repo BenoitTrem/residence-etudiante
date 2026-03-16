@@ -7,27 +7,27 @@ namespace S14_ProjetSession.Models
         public int Id { get; set; }
 
 
-        public int session {  get; set; }
+        public int Session {  get; set; }
         // devrait etre Genre
         
-        public String preferencesGenre  { get; set; }
+        public String PreferencesGenre  { get; set; }
         
         public bool JumelageVolontaire { get; set; }
         
-        public String nomJumelage {  get; set; }
+        public String NomJumelage {  get; set; }
 
         [Required(ErrorMessage = "adresse email est un champ obligatoire")]
         [EmailAddress(ErrorMessage = "adresse email invalide.")]
         [Display(Name = "adresse email")]
-        public String courrielJumelage { get; set; }
+        public String CourrielJumelage { get; set; }
 
-        public int prefDureeBail { get; set; }
+        public int PrefDureeBail { get; set; }
 
-        public bool accepteReglements { get; set; }
+        public bool AccepteReglements { get; set; }
 
-        public bool accepteTraitementDonnees { get; set; }
+        public bool AccepteTraitementDonnees { get; set; }
 
-        public bool confirmeSoumission {  get; set; }
+        public bool ConfirmeSoumission {  get; set; }
 
         public DateTime DateDemande { get; set; }
     }

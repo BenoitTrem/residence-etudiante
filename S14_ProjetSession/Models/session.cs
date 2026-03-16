@@ -4,6 +4,6 @@
     {
         public int Id { get; set; }
         // nom de la sessions exemple hivers-2025
-        public String nom {  get; set; }
+        public String Nom {  get; set; }
     }
 }
