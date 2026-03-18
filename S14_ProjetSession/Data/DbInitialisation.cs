@@ -1,6 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using Microsoft.EntityFrameworkCore;
 using S14_ProjetSession.Models;
+using System;
+using System.Linq;
 
 namespace S14_ProjetSession.Data
 {
@@ -10,8 +11,13 @@ namespace S14_ProjetSession.Data
          * Utilisation de Chatgpt pour generer des données
          */
 
+    
+
         public static void Initialiser(ResidencesDbContext context)
         {
+            context.Database.Migrate();
+
+
             if (context.Etudiants.Any())
             {
                 return;
@@ -41,6 +47,9 @@ namespace S14_ProjetSession.Data
             context.Programmes.AddRange(programmes);
             context.SaveChanges();
 
+            var genreDb = context.Genres.ToList();
+            var programmeDb = context.Programmes.ToList();
+
             // Étudiants
             var etudiants = new Etudiant[]
             {
@@ -49,8 +58,8 @@ namespace S14_ProjetSession.Data
                     Nom = "Tremblay",
                     Prenom = "Alex",
                     DateNaissance = new DateTime(2003, 5, 14),
-                    Genreid = genres[0].Id,
-                    ProgrammeId = programmes[0].Id,
+                    Genreid = genreDb[0].Id,
+                    ProgrammeId = programmeDb[0].Id,
                     noEtudiant = "20230001",
                     noAdmission = "ADM001",
                     MobiliteReduite = false,

@@ -13,7 +13,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ResidencesDbContext>(options =>
 {
     options.UseSqlServer(
-        builder.Configuration["ConnectionStrings:ConnectionBD"]);
+        builder.Configuration["ConnectionBD"]);
 });
 builder.Services.AddScoped<IEtudiantRepository, DbEtudiantRepository>();
 builder.Services.AddScoped<IDemandeRepository, DbDemandeRepository>();
@@ -36,7 +36,6 @@ else
         // Obtenir DbContext
         IServiceProvider services = scope.ServiceProvider;
         ResidencesDbContext context = services.GetRequiredService<ResidencesDbContext>();
-
         // Initialiser les données
         DbInitialisation.Initialiser(context);
     }

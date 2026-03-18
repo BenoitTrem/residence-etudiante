@@ -12,8 +12,16 @@ namespace S14_ProjetSession.Data;
         public DbSet<Etudiant> Etudiants { get; set; }
 
         public DbSet<Genre> Genres { get; set; }
-        public DbSet<PrefDureeBails> PrefDurees { get; set; }
+       
         public DbSet<Programme> Programmes { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+       //IMPLEMENTER TOUTES RELATIONS ET COMPORTEMENTS
+    }
+
+
+
 
     }
 

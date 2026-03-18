@@ -10,11 +10,17 @@ namespace S14_ProjetSession.Controllers
 
         private readonly IEtudiantRepository _etudiantRepository;
 
+        private readonly IGenresRepository _genresRepository;
+
+        private readonly IProgrammesRepository _programmesRepository;
+
 
       
-        public EtudiantController(IEtudiantRepository etudiantRepository)
+        public EtudiantController(IEtudiantRepository etudiantRepository , IGenresRepository genresRepository , IProgrammesRepository programmesRepository)
         {
             _etudiantRepository = etudiantRepository;
+            _genresRepository = genresRepository;
+            _programmesRepository = programmesRepository;
        
         }
 
@@ -47,14 +53,23 @@ namespace S14_ProjetSession.Controllers
         }
 
 
+        
         public ActionResult Modifier(int id)
         {
             Etudiant? etudiant = _etudiantRepository.GetEtudiant(id);
-            return etudiant is null ? NotFound() : View(etudiant);
+
+            if (etudiant == null)
+                return NotFound();
+
+            ViewBag.Genres = _genresRepository.Genres;
+            ViewBag.Programmes = _programmesRepository.Programmes;
+
+           return View(etudiant);
         }
 
-    
-     
+
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Modifier(Etudiant etudiant)
@@ -64,10 +79,11 @@ namespace S14_ProjetSession.Controllers
                 _etudiantRepository.Modifier(etudiant);
                 return RedirectToAction("Index");
             }
-            else
-            {
-                return View(etudiant);
-            }
+
+            ViewBag.Genres = _genresRepository.Genres;
+            ViewBag.Programmes = _programmesRepository.Programmes;
+
+            return View(etudiant);
         }
 
 

@@ -1,0 +1,36 @@
+﻿@model IEnumerable<Etudiant>
+
+
+
+<body class="container">
+    <section class="mb-4">
+        <h2 class="mb-3">Les étudiants</h2>
+
+        @foreach(Etudiant etudiant in Model)
+        {
+            <section class="card">
+
+             <section class="card-body">             
+                        <strong>@etudiant.Prenom </strong>
+                        <strong>@etudiant.Nom </strong>                   
+                        <strong>@etudiant.Programme.Nom</strong>                 
+             </section>
+                <section class="card-footer">
+                    <a asp-controller="Etudiant" asp-action="Modifier" asp-route-id="@etudiant.Id">Modifier</a>
+                    <form asp-controller="Etudiant" asp-action="Supprimer" method="post" class="d-inline">
+                        <input type="hidden" name="etudiantId" value="@etudiant.Id" />
+                        <button type="submit">Supprimer</button>
+                    </form>
+                </section>
+           
+
+            </section>
+            
+        }
+
+        
+    </section>
+
+
+
+</body>

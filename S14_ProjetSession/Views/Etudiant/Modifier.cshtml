@@ -1,0 +1,90 @@
+﻿@model S14_ProjetSession.Models.Etudiant
+
+<h2>Modifier un étudiant</h2>
+
+<form asp-action="Modifier" method="post">
+
+    ```
+    <input type="hidden" asp-for="Id" />
+
+    <div>
+        <label asp-for="Nom"></label>
+        <input asp-for="Nom" class="form-control" />
+        <span asp-validation-for="Nom"></span>
+    </div>
+
+    <div>
+        <label asp-for="Prenom"></label>
+        <input asp-for="Prenom" class="form-control" />
+        <span asp-validation-for="Prenom"></span>
+    </div>
+
+    <div>
+        <label asp-for="DateNaissance"></label>
+        <input asp-for="DateNaissance" type="date" class="form-control" />
+        <span asp-validation-for="DateNaissance"></span>
+    </div>
+
+    <div>
+        <label>Genre</label>
+        <select asp-for="Genreid" class="form-control"
+                asp-items="@(new SelectList(ViewBag.Genres, "Id", "Nom"))">
+        </select>
+    </div>
+
+    <div>
+        <label>Programme</label>
+        <select asp-for="ProgrammeId" class="form-control"
+                asp-items="@(new SelectList(ViewBag.Programmes, "Id", "Nom"))">
+        </select>
+    </div>
+
+    <div>
+        <label asp-for="noEtudiant"></label>
+        <input asp-for="noEtudiant" class="form-control" />
+    </div>
+
+    <div>
+        <label asp-for="noAdmission"></label>
+        <input asp-for="noAdmission" class="form-control" />
+    </div>
+
+    <div>
+        <label asp-for="AdressePermanente"></label>
+        <input asp-for="AdressePermanente" class="form-control" />
+    </div>
+
+    <div>
+        <label asp-for="Telephone"></label>
+        <input asp-for="Telephone" class="form-control" />
+    </div>
+
+    <div>
+        <label asp-for="CourrielInstitutionnel"></label>
+        <input asp-for="CourrielInstitutionnel" class="form-control" />
+        <span asp-validation-for="CourrielInstitutionnel"></span>
+    </div>
+
+    <div>
+        <label asp-for="CourrielPersonnel"></label>
+        <input asp-for="CourrielPersonnel" class="form-control" />
+        <span asp-validation-for="CourrielPersonnel"></span>
+    </div>
+
+    <div>
+        <label>
+            <input asp-for="MobiliteReduite" />
+            Mobilité réduite
+        </label>
+    </div>
+
+    <button type="submit">Enregistrer</button>
+    <a asp-action="Index">Annuler</a>
+    ```
+
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
