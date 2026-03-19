@@ -66,10 +66,10 @@ namespace S14_ProjetSession.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nom = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Prenom = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Nom = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Prenom = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     DateNaissance = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Genreid = table.Column<int>(type: "int", nullable: false),
+                    GenreId = table.Column<int>(type: "int", nullable: false),
                     ProgrammeId = table.Column<int>(type: "int", nullable: false),
                     noEtudiant = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     noAdmission = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -83,8 +83,8 @@ namespace S14_ProjetSession.Migrations
                 {
                     table.PrimaryKey("PK_Etudiants", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Etudiants_Genres_Genreid",
-                        column: x => x.Genreid,
+                        name: "FK_Etudiants_Genres_GenreId",
+                        column: x => x.GenreId,
                         principalTable: "Genres",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -97,9 +97,9 @@ namespace S14_ProjetSession.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Etudiants_Genreid",
+                name: "IX_Etudiants_GenreId",
                 table: "Etudiants",
-                column: "Genreid");
+                column: "GenreId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Etudiants_ProgrammeId",

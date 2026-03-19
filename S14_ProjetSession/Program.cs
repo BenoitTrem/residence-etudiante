@@ -17,6 +17,8 @@ builder.Services.AddDbContext<ResidencesDbContext>(options =>
 });
 builder.Services.AddScoped<IEtudiantRepository, DbEtudiantRepository>();
 builder.Services.AddScoped<IDemandeRepository, DbDemandeRepository>();
+builder.Services.AddScoped<IGenresRepository, DbGenresRepository>();
+builder.Services.AddScoped<IProgrammesRepository, DbProgrammesRepository>();
 
 
 WebApplication app = builder.Build();

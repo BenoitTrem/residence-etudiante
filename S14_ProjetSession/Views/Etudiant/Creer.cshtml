@@ -1,12 +1,10 @@
 ﻿@model S14_ProjetSession.Models.Etudiant
 
-<h1>Modifier un étudiant</h1>
+<h1>Ajouter un étudiant</h1>
 
-<form asp-controller="Etudiant" asp-action="Modifier" method="post">
+<form asp-controller="Etudiant" asp-action="Creer" method="post">
 
     @Html.AntiForgeryToken()
-
-    <input type="hidden" asp-for="Id" />
 
     <div asp-validation-summary="All" class="text-danger"></div>
 
@@ -87,7 +85,7 @@
         </label>
     </div>
 
-    <button type="submit">Enregistrer</button>
+    <button type="submit">Créer</button>
     <a asp-action="Index">Annuler</a>
 
 </form>

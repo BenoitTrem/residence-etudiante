@@ -12,7 +12,7 @@ using S14_ProjetSession.Data;
 namespace S14_ProjetSession.Migrations
 {
     [DbContext(typeof(ResidencesDbContext))]
-    [Migration("20260317224541_InitialCreate")]
+    [Migration("20260318233707_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -94,7 +94,7 @@ namespace S14_ProjetSession.Migrations
                     b.Property<DateTime>("DateNaissance")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Genreid")
+                    b.Property<int>("GenreId")
                         .HasColumnType("int");
 
                     b.Property<bool>("MobiliteReduite")
@@ -102,11 +102,13 @@ namespace S14_ProjetSession.Migrations
 
                     b.Property<string>("Nom")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Prenom")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("ProgrammeId")
                         .HasColumnType("int");
@@ -125,7 +127,7 @@ namespace S14_ProjetSession.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Genreid");
+                    b.HasIndex("GenreId");
 
                     b.HasIndex("ProgrammeId");
 
@@ -174,7 +176,7 @@ namespace S14_ProjetSession.Migrations
                 {
                     b.HasOne("S14_ProjetSession.Models.Genre", "Genre")
                         .WithMany()
-                        .HasForeignKey("Genreid")
+                        .HasForeignKey("GenreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
