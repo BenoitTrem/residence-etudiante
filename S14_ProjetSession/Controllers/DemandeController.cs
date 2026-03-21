@@ -22,7 +22,7 @@ namespace S14_ProjetSession.Controllers
             return View();
         }
 
-        public ViewResult Nouveau() 
+        public ViewResult EtapeDemande() 
         {
             ViewBag.Genres = _genreRepository.Genres;
             ViewBag.Semestre = _semestreRepository.Semestres;
@@ -31,7 +31,35 @@ namespace S14_ProjetSession.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Nouveau(Demande demande)
+        public IActionResult EtapeDemande(Demande demande, string[] nom, string[] email)
+        {
+            ModelState.Remove("PreferencesGenre");
+            ModelState.Remove("Etudiant");
+            ModelState.Remove("Semestre");
+
+
+            if (ModelState.IsValid)
+            {
+                return View();
+            }
+            else
+            {
+                ViewBag.Genres = _genreRepository.Genres;
+                ViewBag.Semestre = _semestreRepository.Semestres;
+                return View(demande);
+            }
+        }
+
+        public ViewResult EtapeInformation()
+        {
+            ViewBag.Genres = _genreRepository.Genres;
+            ViewBag.Semestre = _semestreRepository.Semestres;
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult EtapeInformation(Demande demande)
         {
             if (ModelState.IsValid)
             {
@@ -42,6 +70,27 @@ namespace S14_ProjetSession.Controllers
                 return View(demande);
             }
         }
+        public ViewResult EtapeConfirmation()
+        {
+            ViewBag.Genres = _genreRepository.Genres;
+            ViewBag.Semestre = _semestreRepository.Semestres;
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult EtapeConfirmation(Demande demande)
+        {
+            if (ModelState.IsValid)
+            {
+                return View();
+            }
+            else
+            {
+                return View(demande);
+            }
+        }
+
 
     }
 }

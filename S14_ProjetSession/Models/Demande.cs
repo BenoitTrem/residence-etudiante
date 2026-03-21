@@ -18,13 +18,6 @@ namespace S14_ProjetSession.Models
         
         public bool JumelageVolontaire { get; set; }
         
-        public String NomJumelage {  get; set; }
-
-        [Required(ErrorMessage = "adresse email est un champ obligatoire")]
-        [EmailAddress(ErrorMessage = "adresse email invalide.")]
-        [Display(Name = "adresse email")]
-        public String CourrielJumelage { get; set; }
-
         // simplement le nombre de jours pour le moment
         public int PrefDureeBail { get; set; }
 
