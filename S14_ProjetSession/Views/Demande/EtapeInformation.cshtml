@@ -1,4 +1,6 @@
-﻿<div class="container py-5">
+﻿
+@model Demande
+<div class="container py-5">
     <div class="card shadow-sm">
         <div class="card-body">
 
@@ -11,12 +13,12 @@
             <p class="text-muted small">
                 Veuillez fournir les informations de votre garant (parent/tuteur ou autre) pour le cautionnement.
             </p>
-            <form>
+            <form asp-action="etapeinformation" method="POST">
             <div class="row g-3 mb-4">
                 
                 <div class="col-md-6">
                     <label class="form-label">Nom du garant *</label>
-                    <input type="text" class="form-control" name="NomGarant">
+                    <input type="text" value="@Model.NomGarant" class="form-control" name="NomGarant">
                 </div>
 
                 <div class="col-md-6">
