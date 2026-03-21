@@ -59,6 +59,8 @@ namespace S14_ProjetSession.Controllers
             }
         }
 
+
+
         public ViewResult EtapeInformation()
         {
             ViewBag.Genres = _genreRepository.Genres;
@@ -79,6 +81,10 @@ namespace S14_ProjetSession.Controllers
                 return View(demande);
             }
         }
+
+
+
+
         public ViewResult EtapeConfirmation()
         {
             ViewBag.Genres = _genreRepository.Genres;

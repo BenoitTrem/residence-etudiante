@@ -41,5 +41,30 @@ namespace S14_ProjetSession.Models
         // y'a c'est information
         public List<Jumelage> Jumelages { get; set; }
 
+        // =====================
+        // GARANT
+        // =====================
+        public string NomGarant { get; set; }
+        public string PrenomGarant { get; set; }
+        public DateTime? DateNaissanceGarant { get; set; }
+        public string CourrielGarant { get; set; }
+        public string TelephoneGarant { get; set; }
+
+        // =====================
+        // PARENT / TUTEUR (optionnel)
+        // =====================
+        public string? NomParent { get; set; }
+        public string? CourrielParent { get; set; }
+
+        // =====================
+        // CONTACT D'URGENCE
+        // =====================
+        public string NomUrgence { get; set; }
+        public string LienParenteUrgence { get; set; }
+        public string TelephoneUrgence { get; set; }
+
+
+
+
     }
 }
