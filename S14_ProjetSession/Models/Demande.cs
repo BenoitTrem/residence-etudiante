@@ -25,6 +25,7 @@ namespace S14_ProjetSession.Models
         [Display(Name = "adresse email")]
         public String CourrielJumelage { get; set; }
 
+        // simplement le nombre de jours pour le moment
         public int PrefDureeBail { get; set; }
 
         public bool AccepteReglements { get; set; }
@@ -34,5 +35,10 @@ namespace S14_ProjetSession.Models
         public bool ConfirmeSoumission {  get; set; }
 
         public DateTime DateDemande { get; set; }
+
+        // jumelage n'est pas forcément relié A un étudiant mais
+        // y'a c'est information
+        public List<Jumelage> Jumelages { get; set; }
+
     }
 }
