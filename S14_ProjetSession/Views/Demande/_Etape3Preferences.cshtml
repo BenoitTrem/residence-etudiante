@@ -1,0 +1,107 @@
+﻿
+<div class="container py-5">
+    <div class="card">
+        <div class="card-body">
+
+            <h4 class="text-center mb-5 fw-bold">Étape 3 : Créer une Demande</h4>
+
+  
+
+                <!-- Session -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Session *</label>
+                        <select class="form-select">
+                            <option selected disabled>Sélectionner une session</option>
+                            @foreach(Semestre semestre in ViewBag.Semestre)
+                                    {
+                                        <option value="@semestre.Id">@semestre.NomSemestre</option>
+                                    }
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Genre -->
+                <div class="mb-4">
+                    <label class="form-label fw-semibold d-block">Préférences de genre *</label>
+
+                   @foreach (Genre genre in ViewBag.Genres){
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" 
+                        name="genre"
+                        value="@genre.Id" 
+                        type="radio" 
+                        id="@genre.Nom">
+                        <label class="form-check-label" for="@genre.Nom">@genre.Nom</label>
+                    </div>
+                   }
+                </div>
+
+                <!-- Bouton -->
+<div class="mb-4">
+    <button type="button" id="addJumelageBtn" class="btn btn-primary">
+        + Ajouter un jumelage
+    </button>
+</div>
+
+<!-- Container -->
+<div id="jumelageContainer">
+
+    <!-- Jumelage initial -->
+    <div class="row mb-4 jumelage-item">
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">Nom du jumelage</label>
+            <input type="text" name="Jumelages[0].Nom" class="form-control">
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">Courriel du jumelage</label>
+            <input type="email" name="Jumelages[0].Email" class="form-control">
+        </div>
+    </div>
+
+</div>
+
+
+                <!-- Préférences -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Préférence durée du bail *</label>
+                        <select class="form-select">
+                            <option selected disabled>Sélectionner la durée</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Préférence de résidence *</label>
+                        <select class="form-select">
+                            <option selected disabled>Sélectionner une résidence</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mb-5">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Préférence de type d'unité *</label>
+                        <select class="form-select">
+                            <option selected disabled>Sélectionner un type d'unité</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="d-flex justify-content-between">
+                    <button type="button" class="btn btn-primary">
+                        Précédent
+                    </button>
+
+                    <button type="submit" class="btn btn-primary">
+                        Suivant
+                    </button>
+                </div>
+
+ 
+
+        </div>
+    </div>
+</div>

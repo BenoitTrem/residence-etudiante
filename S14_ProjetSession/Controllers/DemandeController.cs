@@ -37,7 +37,10 @@ namespace S14_ProjetSession.Controllers
             {
                 return View();
             }
-            return View();
+            else
+            {
+                return View(demande);
+            }
         }
 
     }
