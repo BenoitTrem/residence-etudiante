@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using S14_ProjetSession.Data;
 using S14_ProjetSession.Models;
+using System.Linq;
 
 namespace S14_ProjetSession.Controllers
 {
@@ -16,6 +17,14 @@ namespace S14_ProjetSession.Controllers
             _semestreRepository = semestreRepository;
             _genreRepository = genreRepository;
         }
+
+
+
+        public void AjoutGenreChoisis(Demande demande)
+        {
+            Genre genre = _genreRepository.GetGenreParId(1);
+        }
+
 
         public IActionResult Index()
         {

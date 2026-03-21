@@ -9,15 +9,9 @@
 @{
 }
 
-<script>
-    
-    let EtapeActuelleIndex = 0
-    let ListeEtape = ["Demande","Caution","Confirmation"]
+@model Demande
 
-    
-    
-    
-</script>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -41,11 +35,11 @@
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Session *</label>
-                        <select class="form-select">
-                            <option selected disabled>Sélectionner une session</option>
+                        <select class="form-select" asp-for="@Model.SemestreId">
+                            <option selected disabled >Sélectionner une session</option>
                             @foreach(Semestre semestre in ViewBag.Semestre)
                                     {
-                                        <option value="@semestre.Id">@semestre.NomSemestre</option>
+                                        <option value="@semestre.Id" >@semestre.NomSemestre</option>
                                     }
                         </select>
                     </div>
@@ -58,7 +52,7 @@
                    @foreach (Genre genre in ViewBag.Genres){
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" 
-                        name="genre"
+                        asp-for="@Model.PreferencesGenreId"
                         value="@genre.Id" 
                         type="radio" 
                         id="@genre.Nom">

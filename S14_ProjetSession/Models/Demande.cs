@@ -14,20 +14,28 @@ namespace S14_ProjetSession.Models
         public Etudiant Etudiant { get; set; }
         
         
-        public String PreferencesGenre  { get; set; }
-        
+        public Genre? PreferencesGenre  { get; set; }
+
+        public int? PreferencesGenreId { get; set; }
+
+
         public bool JumelageVolontaire { get; set; }
         
         // simplement le nombre de jours pour le moment
         public int PrefDureeBail { get; set; }
 
+        
         public bool AccepteReglements { get; set; }
+
 
         public bool AccepteTraitementDonnees { get; set; }
 
+
         public bool ConfirmeSoumission {  get; set; }
 
+
         public DateTime DateDemande { get; set; }
+
 
         // jumelage n'est pas forcément relié A un étudiant mais
         // y'a c'est information
