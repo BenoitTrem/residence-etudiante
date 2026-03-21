@@ -52,7 +52,11 @@
 
                    @foreach (Genre genre in ViewBag.Genres){
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" name="genre" value="@genre.Id" type="checkbox" id="@genre.Nom">
+                        <input class="form-check-input" 
+                        name="genre"
+                        value="@genre.Id" 
+                        type="radio" 
+                        id="@genre.Nom">
                         <label class="form-check-label" for="@genre.Nom">@genre.Nom</label>
                     </div>
                    }

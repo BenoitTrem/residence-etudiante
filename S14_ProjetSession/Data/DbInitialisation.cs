@@ -9,6 +9,7 @@ namespace S14_ProjetSession.Data
         /**
          * Utilisation de Chatgpt pour generer des données
          */
+        private static List<Semestre> semestres = new List<Semestre>();
 
         public static void Initialiser(ResidencesDbContext context)
         {
@@ -111,6 +112,23 @@ namespace S14_ProjetSession.Data
             // Felix
             
 
+
+
+            List<string> saisons = new List<string>
+                {
+                    "printemps",
+                    "été",
+                    "automne",
+                    "hiver"
+                };
+            for (int i = 2025; i < 2035; i++)
+            {
+                foreach (string saison in saisons)
+                {
+                    semestres.Add(new Semestre() { NomSemestre = $"{saison}-{i}" });
+                }
+            }
+            context.Semestre.AddRange(semestres);
             context.Etudiants.AddRange(etudiants);
             context.SaveChanges();
         }

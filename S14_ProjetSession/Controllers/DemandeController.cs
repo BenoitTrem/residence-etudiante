@@ -11,9 +11,10 @@ namespace S14_ProjetSession.Controllers
 
 
 
-        public DemandeController(ISemestreRepository semestreRepository)
+        public DemandeController(ISemestreRepository semestreRepository, IGenreRepository genreRepository)
         {
             _semestreRepository = semestreRepository;
+            _genreRepository = genreRepository;
         }
 
         public IActionResult Index()
