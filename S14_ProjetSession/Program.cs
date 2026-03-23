@@ -13,7 +13,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ResidencesDbContext>(options =>
 {
     options.UseSqlServer(
-        builder.Configuration["ConnectionStrings:ConnectionBD"]);
+        builder.Configuration.GetConnectionString("ApplicationConnectionBD"));
 });
 builder.Services.AddScoped<IEtudiantRepository, DbEtudiantRepository>();
 builder.Services.AddScoped<IDemandeRepository, DbDemandeRepository>();
