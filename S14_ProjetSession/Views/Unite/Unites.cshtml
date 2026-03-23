@@ -1,0 +1,33 @@
+﻿@model List<S14_ProjetSession.Models.Unite>
+
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mt-5">
+        <h1>@ViewBag.Nom</h1>
+        <a class="btn btn-outline-secondary" asp-controller="Residence" asp-action="Index">Retour</a>
+    </div>
+    <p>@ViewBag.Adresse</p>
+    <p >Nombre d'unités : @ViewBag.NombreUnites</p>
+
+    <div class="list-group mt-5">
+
+        @foreach (Unite unite in Model)
+        {
+            <div class="list-group-item unite-row d-flex justify-content-between align-items-center">
+
+                <div>
+                    <h5 class="mb-1">Unité #@unite.Numero</h5>
+                    <small class="text-muted">Capacité : @unite.Capacite</small>
+                </div>
+
+                <div>
+                    <a class="btn btn-outline-primary">
+                        Faire une demande
+                    </a>
+                </div>
+
+            </div>
+        }
+
+    </div>
+</div>

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using S14_ProjetSession.Data;
 
@@ -11,9 +12,11 @@ using S14_ProjetSession.Data;
 namespace S14_ProjetSession.Migrations
 {
     [DbContext(typeof(ResidencesDbContext))]
-    partial class ResidencesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260323191154_AjoutSystemeResidence")]
+    partial class AjoutSystemeResidence
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -211,7 +214,7 @@ namespace S14_ProjetSession.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Residences");
+                    b.ToTable("Residence");
                 });
 
             modelBuilder.Entity("S14_ProjetSession.Models.Unite", b =>
@@ -235,7 +238,7 @@ namespace S14_ProjetSession.Migrations
 
                     b.HasIndex("ResidenceId");
 
-                    b.ToTable("Unites");
+                    b.ToTable("Unite");
                 });
 
             modelBuilder.Entity("S14_ProjetSession.Models.Demande", b =>

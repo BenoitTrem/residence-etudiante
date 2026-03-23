@@ -15,6 +15,8 @@ builder.Services.AddDbContext<ResidencesDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("ApplicationConnectionBD"));
 });
+builder.Services.AddScoped<IResidenceRepository, DbResidenceRepository>();
+builder.Services.AddScoped<IUniteRepository, DbUniteRepository>();
 builder.Services.AddScoped<IEtudiantRepository, DbEtudiantRepository>();
 builder.Services.AddScoped<IDemandeRepository, DbDemandeRepository>();
 

@@ -1,5 +1,14 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+    font-family:  'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: white;
+    color: black;
 }
 
 @media (min-width: 768px) {
@@ -12,14 +21,6 @@ html {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
-}
-
-body {
-  margin-bottom: 60px;
-}
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
   color: var(--bs-secondary-color);
@@ -28,4 +29,60 @@ body {
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
+}
+
+.carte {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+    .carte:hover {
+        background-color: rgba(37, 99, 235, 0.08);
+        transform: translateY(-3px) scale(1.03);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+    }
+
+
+.navbar-brand {
+    font-size: 1.8rem;
+    letter-spacing: 0.5px;
+}
+
+.nav-link {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333 !important;
+    transition: all 0.2s ease;
+}
+
+    .nav-link:hover {
+        color: #2563eb !important;
+    }
+
+    .nav-link.active {
+        color: #2563eb !important;
+        border-bottom: 2px solid #2563eb;
+    }
+
+.unite-row {
+    border-radius: 10px;
+    padding:2rem;
+    margin-bottom: 15px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+    .unite-row:hover {
+        background-color: rgba(37, 99, 235, 0.08); 
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+    }
+    .unite-row .btn {
+        font-size: 1.1rem;
+        padding: 0.5rem 1.4rem;
+        border-radius: 8px;
+    }
+
+.btn {
+    font-weight: 500;
+    border: 2px solid;
 }

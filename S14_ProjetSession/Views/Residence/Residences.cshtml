@@ -1,0 +1,27 @@
+﻿@model List<S14_ProjetSession.Models.Residence>
+
+<div class="container">
+    <h1 class="mb-5 mt-5"">Résidences</h1>
+    <div class="row">
+        @foreach (Residence residence in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="carte card">
+                    <div class="card-body">
+                        <h5 class="card-title">@residence.Nom</h5>
+                        <p class="card-text">@residence.Adresse</p>
+
+                        <p>
+                            <strong>Nombre d'unités :</strong>
+                            @(residence.Unites != null ? residence.Unites.Count : 0)
+                        </p>
+
+                        <a class="btn btn-outline-primary w-100 mt-2" asp-controller="Unite" asp-action="Unites" asp-route-id="@residence.Id">
+                            Voir les unités
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
