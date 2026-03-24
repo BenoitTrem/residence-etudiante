@@ -12,7 +12,7 @@ namespace S14_ProjetSession.Data
 
         public void Modifier(Residence residence);
 
-        public void Supprimer(int id);
+        public void Supprimer(Residence residence);
 
      
     }

@@ -38,9 +38,8 @@ namespace S14_ProjetSession.Data
             _context.SaveChanges();
         }
 
-        public void Supprimer(int id)
+        public void Supprimer(Residence residence)
         {
-            Residence residence = GetById(id);
             if (residence != null)
             {
                 _context.Residences.Remove(residence);

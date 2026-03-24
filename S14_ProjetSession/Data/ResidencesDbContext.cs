@@ -18,7 +18,13 @@ namespace S14_ProjetSession.Data;
         public DbSet<PrefDureeBails> PrefDurees { get; set; }
         public DbSet<Programme> Programmes { get; set; }
 
-
-
-    }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Residence>()
+                .HasMany(r => r.Unites)
+                .WithOne(u => u.Residence)
+                .HasForeignKey(u => u.ResidenceId)
+                .OnDelete(DeleteBehavior.Cascade); 
+        }
+}
 

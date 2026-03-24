@@ -1,10 +1,27 @@
 ﻿@model List<S14_ProjetSession.Models.Residence>
 
 <div class="container">
-    <h1 class="mb-5 mt-5"">Résidences</h1>
+    <h1 class="mb-5 mt-5">Résidences</h1>
+
+    @if (TempData["Erreur"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Erreur"]
+        </div>
+    }
+
+    @if (TempData["Succes"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Succes"]
+        </div>
+    }
+    <a class="btn btn-primary mb-5 w-100 p-2" asp-controller="Residence" asp-action="AjouterResidence">Ajouter une résidence</a>
+
     <div class="row">
         @foreach (Residence residence in Model)
         {
+            var SupprimerModalId = $"modalSupprimer_{residence.Id}";
             <div class="col-md-4 mb-4">
                 <div class="carte card">
                     <div class="card-body">
@@ -19,6 +36,31 @@
                         <a class="btn btn-outline-primary w-100 mt-2" asp-controller="Unite" asp-action="Unites" asp-route-id="@residence.Id">
                             Voir les unités
                         </a>
+                        <div class="d-flex gap-2 mt-2">
+                            <a class="btn btn-outline-success flex-fill" asp-action="Modifier" asp-route-id="@residence.Id">
+                                Modifier
+                            </a>
+                            <button class="btn btn-outline-danger flex-fill" type="button" data-dialog-open="@SupprimerModalId">
+                                Supprimer
+                            </button>
+                        </div>
+
+                        <dialog id="@SupprimerModalId" class="danger">
+                            <h3>Supprimer une résidence</h3>
+
+                            <p class="mt-3">
+                                Êtes-vous sûr de vouloir supprimer la résidence <strong>@residence.Nom</strong> ?
+                            </p>
+
+                            <form asp-action="Supprimer" asp-controller="Residence" method="post">
+                                <input type="hidden" name="id" value="@residence.Id" />
+
+                                <div class="d-flex justify-content-between">
+                                    <button type="submit" class="btn btn-outline-danger">Supprimer</button>
+                                    <button type="button" class="btn btn-outline-dark" data-dialog-close>Annuler</button>
+                                </div>
+                            </form>
+                        </dialog>
                     </div>
                 </div>
             </div>
