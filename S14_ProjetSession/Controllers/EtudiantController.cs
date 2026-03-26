@@ -28,7 +28,13 @@ namespace S14_ProjetSession.Controllers
         public ViewResult Index()
         {
             ViewData["Title"] = "Etudiant";
-            return View("Etudiants", _etudiantRepository.Etudiants);
+
+            var etudiants = _etudiantRepository.Etudiants
+                                                    .OrderBy(e => e.Nom)
+                                                    .ThenBy(e => e.Prenom)
+                                                    .ToList();
+
+            return View("Etudiants", etudiants);
         }
 
 
@@ -70,7 +76,12 @@ namespace S14_ProjetSession.Controllers
             Etudiant? etudiant = _etudiantRepository.GetEtudiant(id);
 
             if (etudiant == null)
-                return NotFound();
+            {
+                TempData.Add("Erreur", "L'étudiant " + id + " n'existe pas");
+                return RedirectToAction("Index");
+
+            }
+               
 
             ViewBag.Genres = _genresRepository.Genres;
             ViewBag.Programmes = _programmesRepository.Programmes;
@@ -111,12 +122,13 @@ namespace S14_ProjetSession.Controllers
             Etudiant etudiant = _etudiantRepository.GetEtudiant(etudiantId);
             if (etudiant is null)
             {
-                return NotFound();
+                TempData.Add("Erreur", "L'étudiant " + etudiantId + " n'existe pas");
+                return RedirectToAction("Index");
             }
             else
             {
                 _etudiantRepository.Supprimer(etudiant);
-                TempData.Add("Succes", "L'étudiant " + etudiant.Nom + "a été supprimé");
+                TempData.Add("Succes", "L'étudiant " + etudiant.Nom + " a été supprimé");
                 return RedirectToAction("Index");
             }
         }

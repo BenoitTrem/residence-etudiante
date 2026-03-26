@@ -1,4 +1,6 @@
-﻿namespace S14_ProjetSession.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace S14_ProjetSession.Models
 {
     public class Programme
     {
@@ -7,5 +9,15 @@
         public string Nom { get; set; }
 
         public string Code { get; set; }
+
+
+        [Required(ErrorMessage = "Le Campus est obligatoire")]
+        [Display(Name = "Campus")]
+        public int CampusId { get; set; }
+
+        public Campus? Campus { get; set; }
+
+
+        public List<Etudiant> Etudiants { get; set; } = new List<Etudiant>();
     }
 }

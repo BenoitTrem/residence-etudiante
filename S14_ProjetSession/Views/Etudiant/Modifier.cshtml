@@ -1,96 +1,123 @@
 ﻿@model S14_ProjetSession.Models.Etudiant
 
-<h1>Modifier un étudiant</h1>
+<div class="container mt-4">
 
-<form asp-controller="Etudiant" asp-action="Modifier" method="post">
+    <h1 class="mb-4">Modifier un étudiant</h1>
 
-    @Html.AntiForgeryToken()
+    <form asp-controller="Etudiant" asp-action="Modifier" method="post">
 
-    <input type="hidden" asp-for="Id" />
+        @Html.AntiForgeryToken()
 
-    <div asp-validation-summary="All" class="text-danger"></div>
+        <input type="hidden" asp-for="Id" />
 
-    <div>
-        <label asp-for="Nom"></label>
-        <input asp-for="Nom" class="form-control" />
-        <span asp-validation-for="Nom" class="text-danger"></span>
-    </div>
+        <div asp-validation-summary="All" class="text-danger"></div>
 
-    <div>
-        <label asp-for="Prenom"></label>
-        <input asp-for="Prenom" class="form-control" />
-        <span asp-validation-for="Prenom" class="text-danger"></span>
-    </div>
+        <div class="row">
 
-    <div>
-        <label asp-for="DateNaissance"></label>
-        <input asp-for="DateNaissance" type="date" class="form-control" />
-        <span asp-validation-for="DateNaissance" class="text-danger"></span>
-    </div>
+            
+            <div class="col-md-6">
+                <label asp-for="Nom"></label>
+                <input asp-for="Nom" class="form-control" />
+                <span asp-validation-for="Nom" class="text-danger"></span>
+            </div>
 
-    <div>
-        <label>Genre</label>
-        <select asp-for="GenreId" class="form-control"
-                asp-items="@(new SelectList(ViewBag.Genres, "Id", "Nom"))">
-        </select>
-        <span asp-validation-for="GenreId" class="text-danger"></span>
-    </div>
+            <div class="col-md-6">
+                <label asp-for="Prenom"></label>
+                <input asp-for="Prenom" class="form-control" />
+                <span asp-validation-for="Prenom" class="text-danger"></span>
+            </div>
 
-    <div>
-        <label>Programme</label>
-        <select asp-for="ProgrammeId" class="form-control"
-                asp-items="@(new SelectList(ViewBag.Programmes, "Id", "Nom"))">
-        </select>
-        <span asp-validation-for="ProgrammeId" class="text-danger"></span>
-    </div>
+            <div class="col-md-6 mt-3">
+                <label asp-for="DateNaissance"></label>
+                <input asp-for="DateNaissance" type="date" class="form-control" />
+                <span asp-validation-for="DateNaissance" class="text-danger"></span>
+            </div>
 
-    <div>
-        <label asp-for="noEtudiant"></label>
-        <input asp-for="noEtudiant" class="form-control" />
-        <span asp-validation-for="noEtudiant" class="text-danger"></span>
-    </div>
+            <div class="col-md-6 mt-3">
+                <label>Genre</label>
+                <select asp-for="GenreId"
+                        class="form-control"
+                        asp-items="@(new SelectList(ViewBag.Genres, "Id", "Nom"))">
+                </select>
+                <span asp-validation-for="GenreId" class="text-danger"></span>
+            </div>
 
-    <div>
-        <label asp-for="noAdmission"></label>
-        <input asp-for="noAdmission" class="form-control" />
-        <span asp-validation-for="noAdmission" class="text-danger"></span>
-    </div>
+            <div class="col-md-6 mt-3">
+                <label>Programme</label>
+                <select asp-for="ProgrammeId"
+                        class="form-control"
+                        asp-items="@(new SelectList(ViewBag.Programmes, "Id", "Nom"))">
+                </select>
+                <span asp-validation-for="ProgrammeId" class="text-danger"></span>
+            </div>
 
-    <div>
-        <label asp-for="AdressePermanente"></label>
-        <input asp-for="AdressePermanente" class="form-control" />
-        <span asp-validation-for="AdressePermanente" class="text-danger"></span>
-    </div>
+            <div class="col-md-6 mt-3">
+                <label asp-for="noEtudiant"></label>
+                <input asp-for="noEtudiant" class="form-control" />
+                <span asp-validation-for="noEtudiant" class="text-danger"></span>
+            </div>
 
-    <div>
-        <label asp-for="Telephone"></label>
-        <input asp-for="Telephone" class="form-control" />
-        <span asp-validation-for="Telephone" class="text-danger"></span>
-    </div>
+          
+            <div class="col-md-6 mt-3">
+                <label asp-for="noAdmission"></label>
+                <input asp-for="noAdmission" class="form-control" />
+                <span asp-validation-for="noAdmission" class="text-danger"></span>
+            </div>
 
-    <div>
-        <label asp-for="CourrielInstitutionnel"></label>
-        <input asp-for="CourrielInstitutionnel" class="form-control" />
-        <span asp-validation-for="CourrielInstitutionnel" class="text-danger"></span>
-    </div>
+            <div class="col-md-6 mt-3">
+                <label asp-for="Telephone"></label>
+                <input asp-for="Telephone" class="form-control" />
+                <span asp-validation-for="Telephone" class="text-danger"></span>
+            </div>
 
-    <div>
-        <label asp-for="CourrielPersonnel"></label>
-        <input asp-for="CourrielPersonnel" class="form-control" />
-        <span asp-validation-for="CourrielPersonnel" class="text-danger"></span>
-    </div>
+           
+            <div class="col-12 mt-3">
+                <label asp-for="AdressePermanente"></label>
+                <input asp-for="AdressePermanente" class="form-control" />
+                <span asp-validation-for="AdressePermanente" class="text-danger"></span>
+            </div>
 
-    <div>
-        <label>
-            <input asp-for="MobiliteReduite" />
-            Mobilité réduite
-        </label>
-    </div>
+          
+            <div class="col-md-6 mt-3">
+                <label asp-for="CourrielInstitutionnel"></label>
+                <input asp-for="CourrielInstitutionnel" class="form-control" />
+            </div>
 
-    <button type="submit">Enregistrer</button>
-    <a asp-action="Index">Annuler</a>
+            <div class="col-md-6 mt-3">
+                <label asp-for="CourrielPersonnel"></label>
+                <input asp-for="CourrielPersonnel" class="form-control" />
+            </div>
 
-</form>
+            
+            <div class="col-12 mt-3">
+                <div class="form-check">
+                    <input asp-for="MobiliteReduite"
+                           class="form-check-input" />
+                    <label class="form-check-label">
+                        Mobilité réduite
+                    </label>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mt-4">
+
+            <button type="submit"
+                    class="btn btn-primary">
+                Enregistrer
+            </button>
+
+            <a asp-action="Index"
+               class="btn btn-secondary">
+                Annuler
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

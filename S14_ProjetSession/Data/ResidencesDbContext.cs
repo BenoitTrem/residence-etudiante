@@ -15,6 +15,10 @@ namespace S14_ProjetSession.Data;
        
         public DbSet<Programme> Programmes { get; set; }
 
+       public DbSet<Campus> Campus { get; set; }
+
+
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
        //IMPLEMENTER TOUTES RELATIONS ET COMPORTEMENTS
