@@ -20,8 +20,12 @@ namespace S14_ProjetSession.Data
             _context.SaveChanges();
         }
 
-        public Genre GetGenreParId(int GenreId)
+        public Genre? GetGenreParId(int? GenreId)
         {
+            if (GenreId == null)
+            {
+                return null;
+            }
             Genre genre = _context.Genres.FirstOrDefault(G => G.Id == GenreId);
             return genre;
         }

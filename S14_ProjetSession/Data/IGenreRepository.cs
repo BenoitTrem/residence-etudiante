@@ -7,7 +7,7 @@ namespace S14_ProjetSession.Data
         public List<Genre> Genres { get; }
 
 
-        public Genre GetGenreParId(int GenreId);
+        public Genre? GetGenreParId(int? GenreId);
 
 
 
