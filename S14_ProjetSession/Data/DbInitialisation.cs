@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.AspNetCore.Identity;
+using S14_ProjetSession.Areas.Identity.Data;
 using S14_ProjetSession.Models;
 
 namespace S14_ProjetSession.Data
@@ -10,8 +12,11 @@ namespace S14_ProjetSession.Data
          * Utilisation de Chatgpt pour generer des données
          */
 
-        public static void Initialiser(ResidencesDbContext context)
+        public static async Task Initialiser(ResidencesDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
+            await InitialiserRole(roleManager);
+            await InitialiserUsers(userManager);
+
             if (context.Etudiants.Any())
             {
                 return;
@@ -131,6 +136,23 @@ namespace S14_ProjetSession.Data
 
             context.Etudiants.AddRange(etudiants);
             context.SaveChanges();
+        }
+
+        private static async Task InitialiserRole(RoleManager<IdentityRole> roleManager)
+        {
+            string[] roles = ["Admin", "Utilisateur", "Gestionnaire"];
+            foreach (string role in roles) 
+            {
+                if (!await roleManager.RoleExistsAsync(role))
+                    {
+                    await roleManager.CreateAsync(new IdentityRole(role));
+                    };
+            }
+        }
+
+        private static async Task InitialiserUsers(UserManager<ApplicationUser> userManager)
+        {
+            
         }
     }
 }

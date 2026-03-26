@@ -44,9 +44,17 @@ else
         // Obtenir DbContext
         IServiceProvider services = scope.ServiceProvider;
         ResidencesDbContext context = services.GetRequiredService<ResidencesDbContext>();
-
         // Initialiser les donn�es
-        DbInitialisation.Initialiser(context);
+
+        // Obtenir UserMangaer
+        UserManager<ApplicationUser> userManager =
+    services.GetRequiredService<UserManager<ApplicationUser>>();
+
+        RoleManager<IdentityRole> roleManager =
+            services.GetRequiredService<RoleManager<IdentityRole>>();
+
+
+        await DbInitialisation.Initialiser(context, userManager, roleManager);
     }
 }
 
