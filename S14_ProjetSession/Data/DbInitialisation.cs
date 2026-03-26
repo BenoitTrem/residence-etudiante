@@ -1,4 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Linq;
+using Microsoft.AspNetCore.Identity;
+using S14_ProjetSession.Areas.Identity.Data;
+using Microsoft.EntityFrameworkCore;
 using S14_ProjetSession.Models;
 
 namespace S14_ProjetSession.Data
@@ -8,17 +12,42 @@ namespace S14_ProjetSession.Data
         /**
          * Utilisation de Chatgpt pour generer des données
          */
+        private static List<Semestre> semestres = new List<Semestre>();
 
+        public static async Task Initialiser(ResidencesDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
 
 
         public static void Initialiser(ResidencesDbContext context)
         {
+            await InitialiserRole(roleManager);
+            await InitialiserUsers(userManager);
+
             context.Database.Migrate();
 
             if (context.Etudiants.Any())
             {
                 return;
             }
+
+            var residences = new Residence[]
+            {
+                new Residence { Nom = "Résidence Maple", Adresse = "100 Rue Maple" },
+                new Residence { Nom = "Résidence Oak", Adresse = "200 Rue Oak" }
+            };
+
+            context.Residences.AddRange(residences);
+            context.SaveChanges();
+
+            var unites = new Unite[]
+            {
+                new Unite { Numero = 101, Capacite = 2, ResidenceId = residences[0].Id },
+                new Unite { Numero = 102, Capacite = 1, ResidenceId = residences[0].Id },
+                new Unite { Numero = 201, Capacite = 2, ResidenceId = residences[1].Id },
+                new Unite { Numero = 202, Capacite = 3, ResidenceId = residences[1].Id }
+            };
+
+            context.Unites.AddRange(unites);
+            context.SaveChanges();
 
             // Genres
             var genres = new Genre[]
@@ -124,9 +153,45 @@ namespace S14_ProjetSession.Data
             CourrielPersonnel = "sophie.bouchard@gmail.com"
         }
             };
+            // Felix
+            
 
+
+
+            List<string> saisons = new List<string>
+                {
+                    "printemps",
+                    "été",
+                    "automne",
+                    "hiver"
+                };
+            for (int i = 2025; i < 2035; i++)
+            {
+                foreach (string saison in saisons)
+                {
+                    semestres.Add(new Semestre() { NomSemestre = $"{saison}-{i}" });
+                }
+            }
+            context.Semestre.AddRange(semestres);
             context.Etudiants.AddRange(etudiants);
             context.SaveChanges();
+        }
+
+        private static async Task InitialiserRole(RoleManager<IdentityRole> roleManager)
+        {
+            string[] roles = ["Admin", "Utilisateur", "Gestionnaire"];
+            foreach (string role in roles) 
+            {
+                if (!await roleManager.RoleExistsAsync(role))
+                    {
+                    await roleManager.CreateAsync(new IdentityRole(role));
+                    };
+            }
+        }
+
+        private static async Task InitialiserUsers(UserManager<ApplicationUser> userManager)
+        {
+            
         }
     }
 }

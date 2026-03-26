@@ -1,25 +1,29 @@
-
-
-
 using Microsoft.EntityFrameworkCore;
+using S14_ProjetSession.Areas.Identity.Data;
 using S14_ProjetSession.Data;
 using System;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 
 builder.Services.AddDbContext<ResidencesDbContext>(options =>
 {
     options.UseSqlServer(
-        builder.Configuration["ConnectionBD"]);
+        builder.Configuration.GetConnectionString("ApplicationConnectionBD"));
 });
+builder.Services.AddDefaultIdentity<ApplicationUser>()
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<ResidencesDbContext>();
+builder.Services.AddScoped<IResidenceRepository, DbResidenceRepository>();
+builder.Services.AddScoped<IUniteRepository, DbUniteRepository>();
 builder.Services.AddScoped<IEtudiantRepository, DbEtudiantRepository>();
 builder.Services.AddScoped<IDemandeRepository, DbDemandeRepository>();
-builder.Services.AddScoped<IGenresRepository, DbGenresRepository>();
-builder.Services.AddScoped<IProgrammesRepository, DbProgrammesRepository>();
-
+builder.Services.AddScoped<ISemestreRepository, DbSemestreRepository>();
+builder.Services.AddScoped<IGenreRepository, DbGenreRepository>();
 
 WebApplication app = builder.Build();
 
@@ -38,17 +42,29 @@ else
         // Obtenir DbContext
         IServiceProvider services = scope.ServiceProvider;
         ResidencesDbContext context = services.GetRequiredService<ResidencesDbContext>();
-        // Initialiser les données
-        DbInitialisation.Initialiser(context);
+        // Initialiser les donnï¿½es
+
+        // Obtenir UserMangaer
+        UserManager<ApplicationUser> userManager =
+    services.GetRequiredService<UserManager<ApplicationUser>>();
+
+        RoleManager<IdentityRole> roleManager =
+            services.GetRequiredService<RoleManager<IdentityRole>>();
+
+
+        await DbInitialisation.Initialiser(context, userManager, roleManager);
     }
 }
 
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
+app.MapRazorPages();
+
 
 app.MapControllerRoute(
     name: "default",

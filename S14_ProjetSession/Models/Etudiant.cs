@@ -61,5 +61,10 @@ namespace S14_ProjetSession.Models
         [EmailAddress(ErrorMessage = "Adresse email invalide")]
         [Display(Name = "Courriel personnel")]
         public string CourrielPersonnel { get; set; }
+
+        public int? UniteId { get; set; }
+        public Unite Unite { get; set; }
+
+        public List<Demande> Demandes { get; set; } = new();
     }
 }
