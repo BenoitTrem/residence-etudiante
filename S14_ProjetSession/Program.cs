@@ -19,6 +19,7 @@ builder.Services.AddDbContext<ResidencesDbContext>(options =>
         builder.Configuration.GetConnectionString("ApplicationConnectionBD"));
 });
 builder.Services.AddDefaultIdentity<ApplicationUser>()
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ResidencesDbContext>();
 builder.Services.AddScoped<IResidenceRepository, DbResidenceRepository>();
 builder.Services.AddScoped<IUniteRepository, DbUniteRepository>();

@@ -7,7 +7,6 @@ namespace S14_ProjetSession.Areas.Identity.Data
         [PersonalData]
         public DateOnly? DateNaissance {  get; set; }
 
-
         public string? Autre {  get; set; }
     }
 }
