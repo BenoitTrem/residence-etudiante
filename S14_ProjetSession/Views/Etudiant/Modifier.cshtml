@@ -1,0 +1,124 @@
+﻿@model S14_ProjetSession.Models.Etudiant
+
+<div class="container mt-4">
+
+    <h1 class="mb-4">Modifier un étudiant</h1>
+
+    <form asp-controller="Etudiant" asp-action="Modifier" method="post">
+
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="Id" />
+
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <div class="row">
+
+            
+            <div class="col-md-6">
+                <label asp-for="Nom"></label>
+                <input asp-for="Nom" class="form-control" />
+                <span asp-validation-for="Nom" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Prenom"></label>
+                <input asp-for="Prenom" class="form-control" />
+                <span asp-validation-for="Prenom" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <label asp-for="DateNaissance"></label>
+                <input asp-for="DateNaissance" type="date" class="form-control" />
+                <span asp-validation-for="DateNaissance" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <label>Genre</label>
+                <select asp-for="GenreId"
+                        class="form-control"
+                        asp-items="@(new SelectList(ViewBag.Genres, "Id", "Nom"))">
+                </select>
+                <span asp-validation-for="GenreId" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <label>Programme</label>
+                <select asp-for="ProgrammeId"
+                        class="form-control"
+                        asp-items="@(new SelectList(ViewBag.Programmes, "Id", "Nom"))">
+                </select>
+                <span asp-validation-for="ProgrammeId" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <label asp-for="noEtudiant"></label>
+                <input asp-for="noEtudiant" class="form-control" />
+                <span asp-validation-for="noEtudiant" class="text-danger"></span>
+            </div>
+
+          
+            <div class="col-md-6 mt-3">
+                <label asp-for="noAdmission"></label>
+                <input asp-for="noAdmission" class="form-control" />
+                <span asp-validation-for="noAdmission" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <label asp-for="Telephone"></label>
+                <input asp-for="Telephone" class="form-control" />
+                <span asp-validation-for="Telephone" class="text-danger"></span>
+            </div>
+
+           
+            <div class="col-12 mt-3">
+                <label asp-for="AdressePermanente"></label>
+                <input asp-for="AdressePermanente" class="form-control" />
+                <span asp-validation-for="AdressePermanente" class="text-danger"></span>
+            </div>
+
+          
+            <div class="col-md-6 mt-3">
+                <label asp-for="CourrielInstitutionnel"></label>
+                <input asp-for="CourrielInstitutionnel" class="form-control" />
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <label asp-for="CourrielPersonnel"></label>
+                <input asp-for="CourrielPersonnel" class="form-control" />
+            </div>
+
+            
+            <div class="col-12 mt-3">
+                <div class="form-check">
+                    <input asp-for="MobiliteReduite"
+                           class="form-check-input" />
+                    <label class="form-check-label">
+                        Mobilité réduite
+                    </label>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mt-4">
+
+            <button type="submit"
+                    class="btn btn-primary">
+                Enregistrer
+            </button>
+
+            <a asp-action="Index"
+               class="btn btn-secondary">
+                Annuler
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

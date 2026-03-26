@@ -8,9 +8,12 @@ namespace S14_ProjetSession.Data
     {
         private ResidencesDbContext _context;
 
-        public List<Etudiant> Etudiants => _context.Etudiants.Include(E => E.Programme).ToList();
 
 
+
+        public IEnumerable<Etudiant> Etudiants => _context.Etudiants
+            .Include(e => e.Programme)
+            .Include(e => e.Genre);
 
         public DbEtudiantRepository(ResidencesDbContext contexte)
         {
@@ -41,11 +44,7 @@ namespace S14_ProjetSession.Data
             _context.SaveChanges();
         }
 
-        List<Etudiant> IEtudiantRepository.GetEtudiants(int etudiantId)
-        {
-            return Etudiants.ToList<Etudiant>();
-
-        }
+     
 
         public void SupprimerParID(int etudiantID)
         {

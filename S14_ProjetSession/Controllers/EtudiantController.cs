@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using S14_ProjetSession.Models;
 using S14_ProjetSession.Data;
+using S14_ProjetSession.Models;
 
 
 namespace S14_ProjetSession.Controllers
@@ -10,24 +10,38 @@ namespace S14_ProjetSession.Controllers
 
         private readonly IEtudiantRepository _etudiantRepository;
 
+        private readonly IGenresRepository _genresRepository;
 
-      
-        public EtudiantController(IEtudiantRepository etudiantRepository)
+        private readonly IProgrammesRepository _programmesRepository;
+
+
+
+        public EtudiantController(IEtudiantRepository etudiantRepository, IGenresRepository genresRepository, IProgrammesRepository programmesRepository)
         {
             _etudiantRepository = etudiantRepository;
-       
+            _genresRepository = genresRepository;
+            _programmesRepository = programmesRepository;
+
         }
 
-  
+
         public ViewResult Index()
         {
             ViewData["Title"] = "Etudiant";
-            return View("Etudiants", _etudiantRepository.Etudiants);
+
+            var etudiants = _etudiantRepository.Etudiants
+                                                    .OrderBy(e => e.Nom)
+                                                    .ThenBy(e => e.Prenom)
+                                                    .ToList();
+
+            return View("Etudiants", etudiants);
         }
 
-       
+
         public ViewResult Creer()
         {
+            ViewBag.Genres = _genresRepository.Genres;
+            ViewBag.Programmes = _programmesRepository.Programmes;
             return View();
         }
 
@@ -38,36 +52,66 @@ namespace S14_ProjetSession.Controllers
             if (ModelState.IsValid)
             {
                 _etudiantRepository.Creer(etudiant);
+                Genre genre = _genresRepository.GetGenre(etudiant.GenreId);
+                etudiant.Genre = genre;
+
+                Programme programme = _programmesRepository.GetProgramme(etudiant.ProgrammeId);
+                etudiant.Programme = programme;
+                TempData.Add("Succes", "L'étudiant " + etudiant.Nom + "a été créer");
                 return RedirectToAction("Index");
             }
             else
             {
+                ViewBag.Genres = _genresRepository.Genres;
+                ViewBag.Programmes = _programmesRepository.Programmes;
                 return View(etudiant);
             }
+
         }
+
 
 
         public ActionResult Modifier(int id)
         {
             Etudiant? etudiant = _etudiantRepository.GetEtudiant(id);
-            return etudiant is null ? NotFound() : View(etudiant);
+
+            if (etudiant == null)
+            {
+                TempData.Add("Erreur", "L'étudiant " + id + " n'existe pas");
+                return RedirectToAction("Index");
+
+            }
+               
+
+            ViewBag.Genres = _genresRepository.Genres;
+            ViewBag.Programmes = _programmesRepository.Programmes;
+
+            return View(etudiant);
         }
 
-    
-     
+
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Modifier(Etudiant etudiant)
         {
             if (ModelState.IsValid)
             {
+                Genre genre = _genresRepository.GetGenre(etudiant.GenreId);
+                etudiant.Genre = genre;
+
+                Programme programme = _programmesRepository.GetProgramme(etudiant.ProgrammeId);
+                etudiant.Programme = programme;
+
                 _etudiantRepository.Modifier(etudiant);
+                TempData.Add("Succes", "L'étudiant " + etudiant.Nom + "a été modifié");
                 return RedirectToAction("Index");
             }
-            else
-            {
-                return View(etudiant);
-            }
+
+            ViewBag.Genres = _genresRepository.Genres;
+            ViewBag.Programmes = _programmesRepository.Programmes;
+            return View(etudiant);
         }
 
 
@@ -78,11 +122,13 @@ namespace S14_ProjetSession.Controllers
             Etudiant etudiant = _etudiantRepository.GetEtudiant(etudiantId);
             if (etudiant is null)
             {
-                return NotFound();
+                TempData.Add("Erreur", "L'étudiant " + etudiantId + " n'existe pas");
+                return RedirectToAction("Index");
             }
             else
             {
                 _etudiantRepository.Supprimer(etudiant);
+                TempData.Add("Succes", "L'étudiant " + etudiant.Nom + " a été supprimé");
                 return RedirectToAction("Index");
             }
         }

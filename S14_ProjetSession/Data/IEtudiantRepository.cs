@@ -7,12 +7,12 @@ namespace S14_ProjetSession.Data
     {
 
   
-        public List<Etudiant> Etudiants { get; }
+        public IEnumerable<Etudiant> Etudiants { get; }
 
         public Etudiant? GetEtudiant(int id);
 
     
-        public List<Etudiant> GetEtudiants(int etudiantId);
+        
 
 
 

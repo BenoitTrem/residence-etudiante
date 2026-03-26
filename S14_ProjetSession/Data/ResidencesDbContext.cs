@@ -20,6 +20,8 @@ namespace S14_ProjetSession.Data;
         public DbSet<Semestre> Semestre { get; set; }
         public DbSet<Programme> Programmes { get; set; }
 
+        public DbSet<Campus> Campus { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
