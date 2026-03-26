@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using S14_ProjetSession.Areas.Identity.Data;
+using System.ComponentModel.DataAnnotations;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -45,6 +46,9 @@ namespace S14_ProjetSession.Models
         [EmailAddress(ErrorMessage = "adresse email invalide.")]
         [Display(Name = "adresse email")]
         public string CourrielPersonnel { get; set; }
+
+        public string? ApplicationUserId { get; set; }
+        public ApplicationUser? User { get; set; }
 
         public int? UniteId { get; set; }
         public Unite Unite { get; set; }
