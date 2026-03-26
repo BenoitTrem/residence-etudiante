@@ -13,7 +13,7 @@ namespace S14_ProjetSession.Controllers
         private readonly IGenreRepository _genreRepository;
         private readonly IEtudiantRepository _etudiantRepository;
         private readonly IDemandeRepository _demandeRepository;
-
+        public int GenreParDefaut = 1;
 
         public DemandeController(ISemestreRepository semestreRepository, IGenreRepository genreRepository, IEtudiantRepository etudiantRepository, IDemandeRepository demandeRepository)
         {
@@ -42,7 +42,7 @@ namespace S14_ProjetSession.Controllers
         
         public ViewResult Creer()
         {
-            ViewBag.Etudiant = 1;
+            ViewBag.Etudiant = GenreParDefaut;
             ViewBag.Genres = _genreRepository.Genres;
             ViewBag.Semestres = _semestreRepository.Semestres;
             return View();
@@ -69,6 +69,45 @@ namespace S14_ProjetSession.Controllers
             // ajouter tempData
             ViewBag.Demandes = _demandeRepository.Demandes;
             return View("demandes");
+        }
+        public ViewResult Modifier(int Id) 
+        {
+            Demande demande = _demandeRepository.GetDemande(Id);
+            
+            if (demande != null) 
+            {
+                ViewBag.Etudiant = GenreParDefaut;
+                ViewBag.Genres = _genreRepository.Genres;
+                ViewBag.Semestres = _semestreRepository.Semestres;
+                return View(demande);
+            }
+            ViewBag.Demandes = _demandeRepository.Demandes;
+            return View("demandes");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Modifier(Demande demande) 
+        {
+            // faire verification
+            Demande demandeDb = _demandeRepository.GetDemande(demande.Id);
+            if (demandeDb == null) 
+            {
+                return NotFound();
+            }
+            demandeDb.SemestreId = demande.SemestreId;
+            demandeDb.PreferencesGenreId = demande.PreferencesGenreId;
+            demandeDb.PrefDureeBail = demande.PrefDureeBail;
+            demandeDb.AccepteReglements = demande.AccepteReglements;
+            demandeDb.AccepteTraitementDonnees = demande.AccepteTraitementDonnees;
+            demandeDb.ConfirmeSoumission = demande.ConfirmeSoumission;
+            demandeDb.DateDemande = demande.DateDemande;
+
+            _demandeRepository.Modifier(demande);
+
+
+            TempData["Succes"] = "La demande a bien été modifiée";
+            return RedirectToAction("Demandes");
         }
 
 
