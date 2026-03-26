@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using S14_ProjetSession.Areas.Identity.Data;
 using S14_ProjetSession.Models;
 
 namespace S14_ProjetSession.Data;
-    public class ResidencesDbContext : DbContext
+    public class ResidencesDbContext : IdentityDbContext<ApplicationUser>
     {
         public ResidencesDbContext(DbContextOptions<ResidencesDbContext> options) : base(options)
         {
@@ -20,6 +22,8 @@ namespace S14_ProjetSession.Data;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Residence>()
                 .HasMany(r => r.Unites)
                 .WithOne(u => u.Residence)

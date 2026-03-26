@@ -2,19 +2,24 @@
 
 
 using Microsoft.EntityFrameworkCore;
+using S14_ProjetSession.Areas.Identity.Data;
 using S14_ProjetSession.Data;
 using System;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 
 builder.Services.AddDbContext<ResidencesDbContext>(options =>
 {
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("ApplicationConnectionBD"));
 });
+builder.Services.AddDefaultIdentity<ApplicationUser>()
+    .AddEntityFrameworkStores<ResidencesDbContext>();
 builder.Services.AddScoped<IResidenceRepository, DbResidenceRepository>();
 builder.Services.AddScoped<IUniteRepository, DbUniteRepository>();
 builder.Services.AddScoped<IEtudiantRepository, DbEtudiantRepository>();
@@ -39,7 +44,7 @@ else
         IServiceProvider services = scope.ServiceProvider;
         ResidencesDbContext context = services.GetRequiredService<ResidencesDbContext>();
 
-        // Initialiser les données
+        // Initialiser les donnï¿½es
         DbInitialisation.Initialiser(context);
     }
 }
@@ -47,9 +52,12 @@ else
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
+app.MapRazorPages();
+
 
 app.MapControllerRoute(
     name: "default",
