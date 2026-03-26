@@ -15,9 +15,6 @@ namespace S14_ProjetSession.Data
         private static List<Semestre> semestres = new List<Semestre>();
 
         public static async Task Initialiser(ResidencesDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
-
-
-        public static void Initialiser(ResidencesDbContext context)
         {
             await InitialiserRole(roleManager);
             await InitialiserUsers(userManager);

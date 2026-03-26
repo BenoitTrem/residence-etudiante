@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace S14_ProjetSession.Migrations
 {
     /// <inheritdoc />
-    public partial class adkgsg : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -53,6 +53,20 @@ namespace S14_ProjetSession.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Campus",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nom = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Abreviation = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Campus", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Genres",
                 columns: table => new
                 {
@@ -63,20 +77,6 @@ namespace S14_ProjetSession.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Genres", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Programmes",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nom = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Programmes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -213,6 +213,27 @@ namespace S14_ProjetSession.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Programmes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nom = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CampusId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Programmes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Programmes_Campus_CampusId",
+                        column: x => x.CampusId,
+                        principalTable: "Campus",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Unites",
                 columns: table => new
                 {
@@ -240,10 +261,10 @@ namespace S14_ProjetSession.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nom = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Prenom = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Nom = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Prenom = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     DateNaissance = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Genreid = table.Column<int>(type: "int", nullable: false),
+                    GenreId = table.Column<int>(type: "int", nullable: false),
                     ProgrammeId = table.Column<int>(type: "int", nullable: false),
                     noEtudiant = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     noAdmission = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -258,8 +279,8 @@ namespace S14_ProjetSession.Migrations
                 {
                     table.PrimaryKey("PK_Etudiants", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Etudiants_Genres_Genreid",
-                        column: x => x.Genreid,
+                        name: "FK_Etudiants_Genres_GenreId",
+                        column: x => x.GenreId,
                         principalTable: "Genres",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -398,9 +419,9 @@ namespace S14_ProjetSession.Migrations
                 column: "SemestreId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Etudiants_Genreid",
+                name: "IX_Etudiants_GenreId",
                 table: "Etudiants",
-                column: "Genreid");
+                column: "GenreId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Etudiants_ProgrammeId",
@@ -416,6 +437,11 @@ namespace S14_ProjetSession.Migrations
                 name: "IX_Jumelage_DemandeId",
                 table: "Jumelage",
                 column: "DemandeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Programmes_CampusId",
+                table: "Programmes",
+                column: "CampusId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Residences_Nom",
@@ -479,6 +505,9 @@ namespace S14_ProjetSession.Migrations
 
             migrationBuilder.DropTable(
                 name: "Unites");
+
+            migrationBuilder.DropTable(
+                name: "Campus");
 
             migrationBuilder.DropTable(
                 name: "Residences");
