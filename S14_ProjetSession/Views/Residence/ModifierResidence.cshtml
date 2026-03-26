@@ -1,0 +1,47 @@
+﻿@model S14_ProjetSession.Models.Residence
+
+<div class="container mt-5">
+    <h1 class="mb-4">@ViewData["Title"]</h1>
+
+    @if (TempData["Erreur"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Erreur"]
+        </div>
+    }
+
+    <form asp-controller="Residence" asp-action="Modifier" method="post">
+        <div class="form-container">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="mb-4">
+                <label asp-for="Nom" class="form-label"></label>
+                <input asp-for="Nom" class="form-control" placeholder="Entrez un nom..." />
+                <span asp-validation-for="Nom" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Adresse" class="form-label">Adresse
+                    <span class="info-bulle">
+                        ?
+                        <span class="info-texte">
+                            <strong>Format attendu :</strong>
+                            Numéro civique, rue
+                            Ville, province
+                            Code postal<br /><br />
+                            <strong>Exemple :</strong><br />
+                            123 rue Sainte-Catherine, Gatineau, QC H2X 1Z6
+                        </span>
+                    </span>
+                </label>
+                <input asp-for="Adresse" class="form-control" placeholder="Entrez une adresse..." />
+                <span asp-validation-for="Adresse" class="text-danger"></span>
+            </div>
+            <div class="text-center mt-5">
+                <button type="submit" class="btn btn-outline-primary w-25">Enregistrer</button>
+                <a asp-controller="Residence" asp-action="Index" class="btn btn-outline-dark ms-2 w-25">Annuler</a>
+            </div>
+        </div>
+    </form>
+</div>
+
