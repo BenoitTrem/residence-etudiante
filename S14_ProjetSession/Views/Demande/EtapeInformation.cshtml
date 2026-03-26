@@ -1,0 +1,101 @@
+﻿
+@model Demande
+<div class="container py-5">
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <h4 class="text-center mb-4">Étape 4 : Informations complémentaires</h4>
+
+            <!-- ===================== -->
+            <!-- CAUTIONNEMENT -->
+            <!-- ===================== -->
+            <h6 class="fw-bold mb-3">Cautionnement</h6>
+            <p class="text-muted small">
+                Veuillez fournir les informations de votre garant (parent/tuteur ou autre) pour le cautionnement.
+            </p>
+            <form asp-action="etapeinformation" method="POST">
+            <div class="row g-3 mb-4">
+                
+                <div class="col-md-6">
+                    <label class="form-label">Nom du garant *</label>
+                    <input type="text" value="@Model.NomGarant" class="form-control" name="NomGarant">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Prénom du garant *</label>
+                    <input type="text" class="form-control" name="PrenomGarant">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Date de naissance du garant *</label>
+                    <input type="date" class="form-control" name="DateNaissanceGarant">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Courriel du garant *</label>
+                    <input type="email" class="form-control" name="EmailGarant">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Téléphone du garant *</label>
+                    <input type="text" class="form-control" name="TelephoneGarant">
+                </div>
+
+            </div>
+
+            <!-- ===================== -->
+            <!-- PARENT / TUTEUR -->
+            <!-- ===================== -->
+            <h6 class="fw-bold mb-3">Parent / Tuteur</h6>
+
+            <div class="row g-3 mb-4">
+
+                <div class="col-md-6">
+                    <label class="form-label">Nom du parent/tuteur</label>
+                    <input type="text" class="form-control" name="NomParent">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Courriel du parent/tuteur</label>
+                    <input type="email" class="form-control" name="EmailParent">
+                </div>
+
+            </div>
+
+            <!-- ===================== -->
+            <!-- CONTACT D'URGENCE -->
+            <!-- ===================== -->
+            <h6 class="fw-bold mb-3">Contact d'urgence</h6>
+
+            <div class="row g-3 mb-4">
+
+                <div class="col-md-6">
+                    <label class="form-label">Nom *</label>
+                    <input type="text" class="form-control" name="NomUrgence">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Lien de parenté *</label>
+                    <input type="text" class="form-control" name="LienParente">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Téléphone *</label>
+                    <input type="text" class="form-control" name="TelephoneUrgence">
+                </div>
+
+            </div>
+
+            <!-- ===================== -->
+            <!-- BOUTON -->
+            <!-- ===================== -->
+            <div class="text-end">
+                <button type="submit" class="btn btn-primary px-4">
+                    Soumettre la Demande
+                </button>
+            </div>
+
+            </form>
+        </div>
+    </div>
+</div>
