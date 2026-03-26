@@ -23,7 +23,8 @@ builder.Services.AddScoped<IUniteRepository, DbUniteRepository>();
 builder.Services.AddScoped<IEtudiantRepository, DbEtudiantRepository>();
 builder.Services.AddScoped<IDemandeRepository, DbDemandeRepository>();
 builder.Services.AddScoped<ISemestreRepository, DbSemestreRepository>();
-builder.Services.AddScoped<IGenreRepository, DbGenreRepository>();
+builder.Services.AddScoped<IProgrammesRepository, DbProgrammesRepository>();
+builder.Services.AddScoped<IGenresRepository, DbGenresRepository>();
 
 WebApplication app = builder.Build();
 

@@ -10,12 +10,12 @@ namespace S14_ProjetSession.Controllers
     public class DemandeController : Controller
     {
         private readonly ISemestreRepository _semestreRepository;
-        private readonly IGenreRepository _genreRepository;
+        private readonly IGenresRepository _genreRepository;
         private readonly IEtudiantRepository _etudiantRepository;
         private readonly IDemandeRepository _demandeRepository;
         public int GenreParDefaut = 1;
 
-        public DemandeController(ISemestreRepository semestreRepository, IGenreRepository genreRepository, IEtudiantRepository etudiantRepository, IDemandeRepository demandeRepository)
+        public DemandeController(ISemestreRepository semestreRepository, IGenresRepository genreRepository, IEtudiantRepository etudiantRepository, IDemandeRepository demandeRepository)
         {
             
             _semestreRepository = semestreRepository;
@@ -28,7 +28,7 @@ namespace S14_ProjetSession.Controllers
 
         public void AjoutGenreChoisis(Demande demande)
         {
-            Genre genre = _genreRepository.GetGenreParId(1);
+            Genre genre = _genreRepository.GetGenre(1);
         }
 
 
@@ -133,7 +133,7 @@ namespace S14_ProjetSession.Controllers
 
                 Etudiant? etudiant = _etudiantRepository.GetEtudiant(1);
                 
-                Genre? genre = _genreRepository.GetGenreParId(demande.PreferencesGenreId);
+                Genre? genre = _genreRepository.GetGenre(demande.PreferencesGenreId.Value);
                 if (semestre != null && etudiant != null && genre != null)
                 {
                     demande.Semestre = semestre;
