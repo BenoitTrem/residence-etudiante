@@ -46,14 +46,9 @@ namespace S14_ProjetSession.Models
         [Display(Name = "adresse email")]
         public string CourrielPersonnel { get; set; }
 
+        public int? UniteId { get; set; }
+        public Unite Unite { get; set; }
 
-
-
-
-
-
-
-
-
+        public List<Demande> Demandes { get; set; } = new();
     }
 }

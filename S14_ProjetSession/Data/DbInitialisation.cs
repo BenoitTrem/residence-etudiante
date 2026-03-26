@@ -17,6 +17,26 @@ namespace S14_ProjetSession.Data
                 return;
             }
 
+            var residences = new Residence[]
+            {
+                new Residence { Nom = "Résidence Maple", Adresse = "100 Rue Maple" },
+                new Residence { Nom = "Résidence Oak", Adresse = "200 Rue Oak" }
+            };
+
+            context.Residences.AddRange(residences);
+            context.SaveChanges();
+
+            var unites = new Unite[]
+            {
+                new Unite { Numero = 101, Capacite = 2, ResidenceId = residences[0].Id },
+                new Unite { Numero = 102, Capacite = 1, ResidenceId = residences[0].Id },
+                new Unite { Numero = 201, Capacite = 2, ResidenceId = residences[1].Id },
+                new Unite { Numero = 202, Capacite = 3, ResidenceId = residences[1].Id }
+            };
+
+            context.Unites.AddRange(unites);
+            context.SaveChanges();
+
             // Genres
             var genres = new Genre[]
             {

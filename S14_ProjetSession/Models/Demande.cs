@@ -30,5 +30,8 @@ namespace S14_ProjetSession.Models
         public bool ConfirmeSoumission {  get; set; }
 
         public DateTime DateDemande { get; set; }
+        public int EtudiantId { get; set; }
+        public Etudiant Etudiant { get; set; }
+
     }
 }
