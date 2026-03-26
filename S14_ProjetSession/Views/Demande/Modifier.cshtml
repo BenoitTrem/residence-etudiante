@@ -1,0 +1,110 @@
+﻿@model Demande
+@using S14_ProjetSession.Models
+
+<form asp-action="Modifier" method="post">
+
+    <div class="mb-3">
+        <label for="SemestreId" class="form-label">Semestre *</label>
+        <select id="SemestreId" name="SemestreId" class="form-control" required>
+            <option selected value="@Model.Semestre.Id" >@Model.Semestre.NomSemestre</option>
+
+            @foreach (Semestre semestre in ViewBag.Semestres)
+            {
+                if (semestre.Id != @Model.Semestre.Id){
+                <option value="@semestre.Id">@semestre.NomSemestre</option>
+            }
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="PreferencesGenreId" class="form-label">Préférence de genre</label>
+        <select id="PreferencesGenreId" name="PreferencesGenreId" class="form-control">
+            <option value="@Model.PreferencesGenre.Id"> @Model.PreferencesGenre.Nom </option>
+            @foreach (Genre genre in ViewBag.Genres)
+            {
+                if (@genre.Id != @Model.PreferencesGenre.Id){
+                <option value="@genre.Id">@genre.Nom</option>
+                }
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="PrefDureeBail" class="form-label">Durée du bail *</label>
+        <input asp-for="PrefDureeBail" id="PrefDureeBail" type="number" class="form-control" min="1" required />
+    </div>
+
+    <div class="form-check mb-2">
+        <input asp-for="AccepteReglements" class="form-check-input" required />
+        <label asp-for="AccepteReglements" class="form-check-label">AccepteReglements *</label>
+    </div>
+
+    <div class="form-check mb-2">
+        <input asp-for="AccepteTraitementDonnees" class="form-check-input" required />
+        <label asp-for="AccepteTraitementDonnees" class="form-check-label">AccepteTraitementDonnees *</label>
+    </div>
+
+    <div class="form-check mb-3">
+        <input asp-for="ConfirmeSoumission" class="form-check-input" required />
+        <label asp-for="ConfirmeSoumission" class="form-check-label">ConfirmeSoumission *</label>
+    </div>
+
+    <h5>Garant</h5>
+
+    <div class="mb-3">
+        <label asp-for="NomGarant" class="form-label">NomGarant *</label>
+        <input asp-for="NomGarant" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="PrenomGarant" class="form-label">PrenomGarant *</label>
+        <input asp-for="PrenomGarant" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DateNaissanceGarant" class="form-label">DateNaissanceGarant *</label>
+        <input asp-for="DateNaissanceGarant" type="date" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CourrielGarant" class="form-label">CourrielGarant *</label>
+        <input asp-for="CourrielGarant" type="email" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="TelephoneGarant" class="form-label">TelephoneGarant *</label>
+        <input asp-for="TelephoneGarant" type="tel" class="form-control" required />
+    </div>
+
+    <h5>Parent (optionnel)</h5>
+
+    <div class="mb-3">
+        <label asp-for="NomParent" class="form-label"></label>
+        <input asp-for="NomParent" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CourrielParent" class="form-label"></label>
+        <input asp-for="CourrielParent" type="email" class="form-control" />
+    </div>
+
+    <h5>Contact d'urgence</h5>
+
+    <div class="mb-3">
+        <label asp-for="NomUrgence" class="form-label">NomUrgence *</label>
+        <input asp-for="NomUrgence" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="LienParenteUrgence" class="form-label">LienParenteUrgence *</label>
+        <input asp-for="LienParenteUrgence" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="TelephoneUrgence" class="form-label">TelephoneUrgence *</label>
+        <input asp-for="TelephoneUrgence" type="tel" class="form-control" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

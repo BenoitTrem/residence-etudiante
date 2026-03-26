@@ -1,14 +1,18 @@
-﻿using S14_ProjetSession.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using S14_ProjetSession.Models;
 
 namespace S14_ProjetSession.Data
 {
     public class DbDemandeRepository : IDemandeRepository
     {
         private ResidencesDbContext _context;
-        public List<Demande> Demandes => _context.Demandes.ToList();
+        public List<Demande> Demandes => _context.Demandes.Include(E => E.Etudiant)
+            .Include(S => S.Semestre)
+            .ToList();
 
         public DbDemandeRepository(ResidencesDbContext context) 
         {
+            _context = context;
         }
         public void Creer(Demande demande)
         {

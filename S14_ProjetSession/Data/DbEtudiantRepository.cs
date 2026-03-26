@@ -1,4 +1,5 @@
-﻿using S14_ProjetSession.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using S14_ProjetSession.Models;
 using System;
 
 namespace S14_ProjetSession.Data
@@ -7,7 +8,7 @@ namespace S14_ProjetSession.Data
     {
         private ResidencesDbContext _context;
 
-        public List<Etudiant> Etudiants => _context.Etudiants.ToList();
+        public List<Etudiant> Etudiants => _context.Etudiants.Include(E => E.Programme).ToList();
 
 
 
