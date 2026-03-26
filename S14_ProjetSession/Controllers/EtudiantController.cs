@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using S14_ProjetSession.Data;
 using S14_ProjetSession.Models;
 
 
 namespace S14_ProjetSession.Controllers
 {
+
+    [Authorize]
     public class EtudiantController : Controller
     {
 
@@ -25,6 +28,8 @@ namespace S14_ProjetSession.Controllers
         }
 
 
+
+        [AllowAnonymous]
         public ViewResult Index()
         {
             ViewData["Title"] = "Etudiant";
@@ -40,10 +45,12 @@ namespace S14_ProjetSession.Controllers
 
         public ViewResult Creer()
         {
+         
             ViewBag.Genres = _genresRepository.Genres;
             ViewBag.Programmes = _programmesRepository.Programmes;
             return View();
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -57,7 +64,7 @@ namespace S14_ProjetSession.Controllers
 
                 Programme programme = _programmesRepository.GetProgramme(etudiant.ProgrammeId);
                 etudiant.Programme = programme;
-                TempData.Add("Succes", "L'étudiant " + etudiant.Nom + "a été créer");
+                TempData.Add("Succes", "L'étudiant " + etudiant.Nom + " a été créer");
                 return RedirectToAction("Index");
             }
             else
@@ -105,7 +112,7 @@ namespace S14_ProjetSession.Controllers
                 etudiant.Programme = programme;
 
                 _etudiantRepository.Modifier(etudiant);
-                TempData.Add("Succes", "L'étudiant " + etudiant.Nom + "a été modifié");
+                TempData.Add("Succes", "L'étudiant " + etudiant.Nom + " a été modifié");
                 return RedirectToAction("Index");
             }
 
@@ -117,18 +124,18 @@ namespace S14_ProjetSession.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Supprimer(int etudiantId)
+        public ActionResult Supprimer(int Id)
         {
-            Etudiant etudiant = _etudiantRepository.GetEtudiant(etudiantId);
+            Etudiant etudiant = _etudiantRepository.GetEtudiant(Id);
             if (etudiant is null)
             {
-                TempData.Add("Erreur", "L'étudiant " + etudiantId + " n'existe pas");
+                TempData.Add("Erreur", "L'étudiant " + Id + " n'existe pas");
                 return RedirectToAction("Index");
             }
             else
             {
                 _etudiantRepository.Supprimer(etudiant);
-                TempData.Add("Succes", "L'étudiant " + etudiant.Nom + " a été supprimé");
+                TempData.Add("Succes", "L'étudiant " + etudiant.Prenom + " "+ etudiant.Nom + " a été supprimé");
                 return RedirectToAction("Index");
             }
         }

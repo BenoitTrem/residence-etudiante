@@ -67,7 +67,7 @@ namespace S14_ProjetSession.Models
         public ApplicationUser? User { get; set; }
 
         public int? UniteId { get; set; }
-        public Unite Unite { get; set; }
+        public Unite? Unite { get; set; }
 
         public List<Demande> Demandes { get; set; } = new();
     }
