@@ -122,7 +122,7 @@ namespace S14_ProjetSession.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     // cree un utilisateur
-                    _userManager.AddToRoleAsync(user, "Utilisateur");
+                    await _userManager.AddToRoleAsync(user, "Utilisateur");
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);

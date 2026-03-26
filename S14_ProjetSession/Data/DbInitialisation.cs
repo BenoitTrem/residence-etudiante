@@ -172,6 +172,33 @@ namespace S14_ProjetSession.Data
             context.Semestre.AddRange(semestres);
             context.Etudiants.AddRange(etudiants);
             context.SaveChanges();
+
+            foreach (Etudiant etudiant in etudiants)
+            {
+                string email = etudiant.CourrielInstitutionnel;
+
+                ApplicationUser? existingUser = await userManager.FindByEmailAsync(email);
+
+                if (existingUser == null)
+                {
+                    ApplicationUser user = new ApplicationUser
+                    {
+                        UserName = email,
+                        Email = email,
+                        EmailConfirmed = true
+                    };
+
+                    IdentityResult result = await userManager.CreateAsync(user, "User123!");
+
+                    if (result.Succeeded)
+                    {
+                        await userManager.AddToRoleAsync(user, "Utilisateur");
+
+                        etudiant.ApplicationUserId = user.Id;
+                    }
+                }
+            }
+            context.SaveChanges();
         }
 
         private static async Task InitialiserRole(RoleManager<IdentityRole> roleManager)
@@ -188,7 +215,26 @@ namespace S14_ProjetSession.Data
 
         private static async Task InitialiserUsers(UserManager<ApplicationUser> userManager)
         {
-            
+            string adminEmail = "admin@college.ca";
+
+            ApplicationUser? admin = await userManager.FindByEmailAsync(adminEmail);
+
+            if (admin == null)
+            {
+                admin = new ApplicationUser
+                {
+                    UserName = adminEmail,
+                    Email = adminEmail,
+                    EmailConfirmed = true
+                };
+
+                IdentityResult result = await userManager.CreateAsync(admin, "Admin123!");
+
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(admin, "Admin");
+                }
+            }
         }
     }
 }
