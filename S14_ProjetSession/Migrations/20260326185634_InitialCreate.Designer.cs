@@ -12,7 +12,7 @@ using S14_ProjetSession.Data;
 namespace S14_ProjetSession.Migrations
 {
     [DbContext(typeof(ResidencesDbContext))]
-    [Migration("20260326180159_InitialCreate")]
+    [Migration("20260326185634_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
