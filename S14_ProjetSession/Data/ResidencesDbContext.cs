@@ -24,7 +24,15 @@ namespace S14_ProjetSession.Data;
                 .HasMany(r => r.Unites)
                 .WithOne(u => u.Residence)
                 .HasForeignKey(u => u.ResidenceId)
-                .OnDelete(DeleteBehavior.Cascade); 
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Residence>()
+                .HasIndex(r => r.Nom)
+                .IsUnique();
+
+            modelBuilder.Entity<Unite>()
+                .HasIndex(u => new { u.Numero, u.ResidenceId })
+                .IsUnique();
         }
-}
+    }
 

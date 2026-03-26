@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using S14_ProjetSession.Data;
 using S14_ProjetSession.Models;
 
@@ -23,7 +22,7 @@ namespace S14_ProjetSession.Controllers
 
         public IActionResult AjouterResidence()
         {
-            ViewData["Title"] = "Ajouter une résidence";
+            ViewData["Title"] = "Ajout d'une résidence";
             return View(new Residence());
         }
 
@@ -31,14 +30,21 @@ namespace S14_ProjetSession.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Creer([Bind("Nom, Adresse")] Residence residence)
         {
-            if (!ModelState.IsValid)
+            if (_residenceRepository.NomExiste(residence.Nom, residence.Id))
             {
-                TempData["Erreur"] = "Une erreur s'est produite.";
-                ViewData["Title"] = "Ajouter une résidence";
+                TempData["Erreur"] = "Ce nom de résidence existe déjà.";
+                ViewData["Title"] = "Ajout d'une résidence";
 
                 return View("AjouterResidence", residence);
             }
 
+            if (!ModelState.IsValid)
+            {
+                TempData["Erreur"] = "Une erreur s'est produite.";
+                ViewData["Title"] = "Ajout d'une résidence";
+
+                return View("AjouterResidence", residence);
+            }
             _residenceRepository.Creer(residence);
             TempData["Succes"] = $"La résidence {residence.Nom ?? ""} a été créé avec succès.";
             return RedirectToAction("Index");
@@ -53,8 +59,7 @@ namespace S14_ProjetSession.Controllers
                 return NotFound();
             }
 
-            ViewData["Title"] = "Modifier une résidence";
-            ViewBag.Titre = "Modifier la résidence "+ residence.Nom ;
+            ViewData["Title"] = "Modification de la résidence " + residence.Nom;
             return View("ModifierResidence", residence);
         }
 
@@ -62,10 +67,18 @@ namespace S14_ProjetSession.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Modifier([Bind("Id, Nom, Adresse")] Residence residence)
         {
+            if (_residenceRepository.NomExiste(residence.Nom, residence.Id))
+            {
+                TempData["Erreur"] = "Ce nom de résidence existe déjà.";
+                ViewData["Title"] = "Modification de la résidence " + residence.Nom;
+
+                return View("ModifierResidence", residence);
+            }
+
             if (!ModelState.IsValid)
             {
                 TempData["Erreur"] = "Une erreur s'est produite.";
-                ViewData["Title"] = "Modifier un étudiant";
+                ViewData["Title"] = "Modification de la résidence " + residence.Nom;
 
                 return View("ModifierResidence", residence);
             }

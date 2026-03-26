@@ -46,6 +46,16 @@ namespace S14_ProjetSession.Data
                 _context.SaveChanges();
             }
         }
+
+        public bool NomExiste(string nom)
+        {
+            return _context.Residences.Any(r => r.Nom == nom);
+        }
+        public bool NomExiste(string nom, int id)
+        {
+            return _context.Residences
+                .Any(r => r.Nom == nom && r.Id != id);
+        }
     }
 }
 

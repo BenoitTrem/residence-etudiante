@@ -14,7 +14,10 @@ namespace S14_ProjetSession.Data
 
         public void Modifier(Unite unite);
 
-        public void Supprimer(int id);
-        
+        public void Supprimer(Unite unite);
+
+        bool UniteExiste(int numero, int residenceId);
+        bool UniteExiste(int numero, int residenceId, int id);
+
     }
 }

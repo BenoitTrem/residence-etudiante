@@ -7,6 +7,7 @@
         const dialog = document.getElementById(idDialog);
 
         dialog?.showModal();
+        dialog.focus();
     });
     document.addEventListener("click", (evenement) => {
         const boutonFermer = evenement.target.closest("[data-dialog-close]");

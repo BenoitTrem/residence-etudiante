@@ -1,7 +1,7 @@
 ﻿@model List<S14_ProjetSession.Models.Residence>
 
 <div class="container">
-    <h1 class="mb-5 mt-5">Résidences</h1>
+    <h1 class="mb-5 mt-5">@ViewData["Title"]</h1>
 
     @if (TempData["Erreur"] != null)
     {
@@ -28,16 +28,42 @@
                         <h5 class="card-title">@residence.Nom</h5>
                         <p class="card-text">@residence.Adresse</p>
 
-                        <p>
-                            <strong>Nombre d'unités :</strong>
+                        <p class="mb-1">
+                            <strong>Unités totales :</strong>
                             @(residence.Unites != null ? residence.Unites.Count : 0)
                         </p>
 
-                        <a class="btn btn-outline-primary w-100 mt-2" asp-controller="Unite" asp-action="Unites" asp-route-id="@residence.Id">
+                        <p>
+                            <strong>
+                                @(residence.Unites != null && residence.Unites.Count(u => u.PlacesDisponibles > 0) > 1
+                                                            ? "Unités disponibles :"
+                                                            : "Unité disponible :")
+                            </strong>
+
+                            @if (residence.Unites != null)
+                            {
+                                int disponibles = residence.Unites.Count(u => u.PlacesDisponibles > 0);
+
+                                if (disponibles == 0)
+                                {
+                                    <span class="text-danger">Aucune</span>
+                                }
+                                else
+                                {
+                                    @disponibles
+                                }
+                            }
+                            else
+                            {
+                                <span class="text-danger">0</span>
+                            }
+                        </p>
+
+                        <a class="btn btn-outline-primary w-100 mt-2" asp-controller="Unite" asp-action="Index" asp-route-id="@residence.Id">
                             Voir les unités
                         </a>
                         <div class="d-flex gap-2 mt-2">
-                            <a class="btn btn-outline-success flex-fill" asp-action="Modifier" asp-route-id="@residence.Id">
+                            <a class="btn btn-outline-success flex-fill" asp-controller="Residence" asp-action="Modifier" asp-route-id="@residence.Id">
                                 Modifier
                             </a>
                             <button class="btn btn-outline-danger flex-fill" type="button" data-dialog-open="@SupprimerModalId">

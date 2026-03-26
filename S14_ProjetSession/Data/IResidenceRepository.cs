@@ -14,6 +14,7 @@ namespace S14_ProjetSession.Data
 
         public void Supprimer(Residence residence);
 
-     
+        public bool NomExiste(string nom);
+        public bool NomExiste(string nom, int id);
     }
 }
