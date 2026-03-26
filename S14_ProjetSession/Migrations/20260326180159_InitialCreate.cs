@@ -273,11 +273,17 @@ namespace S14_ProjetSession.Migrations
                     Telephone = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CourrielInstitutionnel = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CourrielPersonnel = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     UniteId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Etudiants", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Etudiants_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Etudiants_Genres_GenreId",
                         column: x => x.GenreId,
@@ -419,6 +425,11 @@ namespace S14_ProjetSession.Migrations
                 column: "SemestreId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Etudiants_ApplicationUserId",
+                table: "Etudiants",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Etudiants_GenreId",
                 table: "Etudiants",
                 column: "GenreId");
@@ -486,9 +497,6 @@ namespace S14_ProjetSession.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
                 name: "Demandes");
 
             migrationBuilder.DropTable(
@@ -496,6 +504,9 @@ namespace S14_ProjetSession.Migrations
 
             migrationBuilder.DropTable(
                 name: "Semestre");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Genres");

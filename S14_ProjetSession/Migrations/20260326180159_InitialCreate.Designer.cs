@@ -12,7 +12,7 @@ using S14_ProjetSession.Data;
 namespace S14_ProjetSession.Migrations
 {
     [DbContext(typeof(ResidencesDbContext))]
-    [Migration("20260326174842_InitialCreate")]
+    [Migration("20260326180159_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -346,6 +346,9 @@ namespace S14_ProjetSession.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("CourrielInstitutionnel")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -392,6 +395,8 @@ namespace S14_ProjetSession.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("GenreId");
 
@@ -622,6 +627,10 @@ namespace S14_ProjetSession.Migrations
 
             modelBuilder.Entity("S14_ProjetSession.Models.Etudiant", b =>
                 {
+                    b.HasOne("S14_ProjetSession.Areas.Identity.Data.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId");
+
                     b.HasOne("S14_ProjetSession.Models.Genre", "Genre")
                         .WithMany("etudiants")
                         .HasForeignKey("GenreId")
@@ -643,6 +652,8 @@ namespace S14_ProjetSession.Migrations
                     b.Navigation("Programme");
 
                     b.Navigation("Unite");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("S14_ProjetSession.Models.Jumelage", b =>

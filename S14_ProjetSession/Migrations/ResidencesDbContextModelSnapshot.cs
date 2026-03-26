@@ -395,7 +395,7 @@ namespace S14_ProjetSession.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.HasIndex("Genreid");
+                    b.HasIndex("GenreId");
 
                     b.HasIndex("ProgrammeId");
 
