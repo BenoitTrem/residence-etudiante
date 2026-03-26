@@ -12,8 +12,8 @@ using S14_ProjetSession.Data;
 namespace S14_ProjetSession.Migrations
 {
     [DbContext(typeof(ResidencesDbContext))]
-    [Migration("20260326165501_AjouterSemestre")]
-    partial class AjouterSemestre
+    [Migration("20260326173112_adkgsg")]
+    partial class adkgsg
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
