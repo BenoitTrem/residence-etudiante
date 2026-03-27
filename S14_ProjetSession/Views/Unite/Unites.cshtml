@@ -22,20 +22,6 @@
         }
     </p>
 
-    @if (TempData["Erreur"] != null)
-    {
-        <div class="alert alert-danger">
-            @TempData["Erreur"]
-        </div>
-    }
-
-    @if (TempData["Succes"] != null)
-    {
-        <div class="alert alert-success">
-            @TempData["Succes"]
-        </div>
-    }
-
     <a class="btn btn-primary mb-5 w-100 p-2 mt-2" asp-controller="Unite" asp-action="AjouterUnite" asp-route-residenceId="@ViewBag.ResidenceId">
         Ajouter une unité
     </a>

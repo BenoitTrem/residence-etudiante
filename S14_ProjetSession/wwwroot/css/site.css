@@ -155,7 +155,7 @@ dialog {
     border: 1px solid #d1d5db;
     border-radius: 8px;
     padding: 0.6rem 0.9rem;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 }
 
     .form-control::placeholder {
@@ -189,7 +189,11 @@ dialog {
     background: #ffffff;
     padding: 2rem;
     border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+    transition: all 0.2s ease;
+}
+.form-container:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
 }
 .form-control:hover,
 .form-select:hover {
@@ -241,3 +245,33 @@ dialog {
     background-color: rgba(37, 99, 235, 1);
 }
 
+.utilisateur-container {
+    transition: all 0.2s ease;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+}
+
+
+.utilisateur-container:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+}
+
+.nav-pills .nav-link.active {
+    color: #ffffff !important;
+    background-color: rgba(0, 123, 255, 0.8) !important; 
+    border-radius: 10px;
+    border-bottom: none !important;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+    .nav-pills .nav-link.active:hover {
+        background-color: rgba(0, 123, 255, 1) !important; 
+        color: #ffffff !important;
+        border-bottom: rgba(0, 123, 255, 1) !important; 
+    }
+
+.nav-pills .nav-link:not(.active):hover {
+    color: black !important; 
+    background-color: rgba(0, 123, 255, 0.15) !important; 
+    border-radius: 10px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
