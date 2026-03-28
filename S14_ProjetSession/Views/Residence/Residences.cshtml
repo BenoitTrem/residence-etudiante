@@ -13,8 +13,8 @@
                 <div class="carte card">
                     <div class="card-body">
                         <h5 class="card-title">@residence.Nom</h5>
-                        <p class="card-text">@residence.Adresse</p>
-
+                        <p class="card-text mb-1">@residence.AdresseString</p>
+                        <p class="card-text">@residence.Campus.Nom</p>
                         <p class="mb-1">
                             <strong>Unités totales :</strong>
                             @(residence.Unites != null ? residence.Unites.Count : 0)

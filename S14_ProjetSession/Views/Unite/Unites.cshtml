@@ -6,7 +6,8 @@
         <h1>@ViewData["Title"]</h1>
         <a class="btn btn-outline-dark"" asp-controller="Residence" asp-action="Index">Retour</a>
     </div>
-    <p>Adresse : @ViewBag.Adresse</p>
+    <p class="mb-2 mt-2">Adresse : @ViewBag.Adresse</p>
+    <p>Campus : @ViewBag.Campus</p>
     <p>
         @if (ViewBag.NombreUnites == 0)
         {

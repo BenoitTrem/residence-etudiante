@@ -26,7 +26,8 @@ namespace S14_ProjetSession.Controllers
             if (residence != null)
             {
                 ViewBag.ResidenceId = residence.Id;
-                ViewBag.Adresse = residence.Adresse;
+                ViewBag.Adresse = residence.AdresseString;
+                ViewBag.Campus = residence.Campus?.Nom ?? "N/A";
                 ViewBag.NombreUnites = unitesDisponibles.Count;
                 ViewData["Title"] = "Unités de la résidence " + residence.Nom;
             }

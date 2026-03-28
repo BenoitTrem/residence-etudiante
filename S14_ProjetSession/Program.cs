@@ -25,6 +25,7 @@ builder.Services.AddScoped<IDemandeRepository, DbDemandeRepository>();
 builder.Services.AddScoped<ISemestreRepository, DbSemestreRepository>();
 builder.Services.AddScoped<IProgrammesRepository, DbProgrammesRepository>();
 builder.Services.AddScoped<IGenresRepository, DbGenresRepository>();
+builder.Services.AddScoped<ICampusRepository, DbCampusRepository>();
 
 WebApplication app = builder.Build();
 
