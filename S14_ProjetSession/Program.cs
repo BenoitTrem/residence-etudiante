@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
@@ -26,6 +25,21 @@ builder.Services.AddScoped<ISemestreRepository, DbSemestreRepository>();
 builder.Services.AddScoped<IProgrammesRepository, DbProgrammesRepository>();
 builder.Services.AddScoped<IGenresRepository, DbGenresRepository>();
 builder.Services.AddScoped<ICampusRepository, DbCampusRepository>();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminUniquement", policy =>
+        policy.RequireRole("Admin"));
+
+    options.AddPolicy("AdminOuGestionnaire", policy =>
+        policy.RequireRole("Admin", "Gestionnaire"));
+
+    options.AddPolicy("GestionnaireUniquement", policy =>
+       policy.RequireRole("Gestionnaire"));
+
+    options.AddPolicy("UtilisateurSeulement", policy =>
+        policy.RequireRole("Utilisateur"));
+});
 
 WebApplication app = builder.Build();
 

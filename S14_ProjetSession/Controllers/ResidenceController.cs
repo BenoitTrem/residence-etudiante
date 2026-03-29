@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using S14_ProjetSession.Data;
@@ -24,6 +25,7 @@ namespace S14_ProjetSession.Controllers
             return View("Residences", _residenceRepository.GetAll());
         }
 
+        [Authorize(Policy = "AdminOuGestionnaire")]
         public IActionResult AjouterResidence()
         {
             ViewData["Title"] = "Ajout d'une résidence";
@@ -35,6 +37,7 @@ namespace S14_ProjetSession.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "AdminOuGestionnaire")]
         public IActionResult Creer(Residence residence)
         {
             if (_residenceRepository.NomExiste(residence.Nom, residence.Id))
@@ -76,6 +79,7 @@ namespace S14_ProjetSession.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Policy = "AdminOuGestionnaire")]
         public IActionResult Modifier(int id)
         {
             Residence residence = _residenceRepository.GetById(id);
@@ -99,6 +103,7 @@ namespace S14_ProjetSession.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "AdminOuGestionnaire")]
         public IActionResult Modifier(Residence residence)
         {
             if (_residenceRepository.NomExiste(residence.Nom, residence.Id))
@@ -139,6 +144,7 @@ namespace S14_ProjetSession.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "AdminUniquement")]
         public IActionResult Supprimer(int id)
         {
             Residence? residence = _residenceRepository.GetById(id);    

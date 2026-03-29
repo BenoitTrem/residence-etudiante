@@ -1,14 +1,17 @@
 ﻿@model List<S14_ProjetSession.Models.Residence>
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
 
 <div class="container">
     <h1 class="mb-5 mt-5">@ViewData["Title"]</h1>
 
-    <a class="btn btn-primary mb-5 w-100 p-2" asp-controller="Residence" asp-action="AjouterResidence">Ajouter une résidence</a>
-
+     @if ((await AuthorizationService.AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded)
+        {
+            <a class="btn btn-primary mb-5 w-100 p-2" asp-controller="Residence" asp-action="AjouterResidence">Ajouter une résidence</a>
+        }
     <div class="row">
         @foreach (Residence residence in Model)
         {
-            var SupprimerModalId = $"modalSupprimer_{residence.Id}";
             <div class="col-md-4 mb-4">
                 <div class="carte card">
                     <div class="card-body">
@@ -49,16 +52,33 @@
                         <a class="btn btn-outline-primary w-100 mt-2" asp-controller="Unite" asp-action="Index" asp-route-id="@residence.Id">
                             Voir les unités
                         </a>
-                        <div class="d-flex gap-2 mt-2">
-                            <a class="btn btn-outline-success flex-fill" asp-controller="Residence" asp-action="Modifier" asp-route-id="@residence.Id">
-                                Modifier
-                            </a>
-                            <button class="btn btn-outline-danger flex-fill" type="button" data-dialog-open="@SupprimerModalId">
-                                Supprimer
-                            </button>
-                        </div>
 
-                        <dialog id="@SupprimerModalId" class="danger">
+                        @if ((await AuthorizationService.AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded)
+                        {
+                            <div class="d-flex gap-2 mt-2">
+                                <a class="btn btn-outline-success flex-fill" asp-controller="Residence" asp-action="Modifier" asp-route-id="@residence.Id">
+                                    Modifier
+                                </a>
+                          
+                                 @if ((await AuthorizationService.AuthorizeAsync(User, "AdminUniquement")).Succeeded)
+                                {
+                                    <button class="btn btn-outline-danger flex-fill" type="button" data-dialog-open="@($"modalSupprimer_{residence.Id}")">
+                                        Supprimer
+                                    </button>
+                                }
+                                 @if ((await AuthorizationService.AuthorizeAsync(User, "GestionnaireUniquement")).Succeeded)
+                                {
+                                    <button class="btn btn-outline-danger flex-fill btn-tooltip" type="button" data-dialog-open="modalNonAdmin">
+                                        Supprimer
+                                        <span class="tooltip-text">
+                                            Vous devez être Admin pour effectuer cette action
+                                        </span>
+                                    </button>
+                                }
+                                </div>
+                         }
+
+                        <dialog id="@($"modalSupprimer_{residence.Id}")" class="danger">
                             <h3>Supprimer une résidence</h3>
 
                             <p class="mt-3">
@@ -73,6 +93,14 @@
                                     <button type="button" class="btn btn-outline-dark" data-dialog-close>Annuler</button>
                                 </div>
                             </form>
+                        </dialog>
+
+                        <dialog id="modalNonAdmin" class="info-modal">
+                            <h3>Accès refusé</h3>
+                            <p>Vous devez être Admin pour effectuer cette action.</p>
+                            <div class="d-flex justify-content-end mt-3">
+                                <button class="btn btn-outline-dark" type="button" data-dialog-close>Fermer</button>
+                            </div>
                         </dialog>
                     </div>
                 </div>

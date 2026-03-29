@@ -226,13 +226,27 @@ namespace S14_ProjetSession.Data
 
         private static async Task InitialiserRole(RoleManager<IdentityRole> roleManager)
         {
-            string[] roles = ["Admin", "Utilisateur", "Gestionnaire"];
-            foreach (string role in roles) 
+            string[] roles = { "Admin", "Utilisateur", "Gestionnaire" };
+
+            foreach (string role in roles)
             {
                 if (!await roleManager.RoleExistsAsync(role))
+                {
+                    string roleId = role switch
                     {
-                    await roleManager.CreateAsync(new IdentityRole(role));
+                        "Admin" => "ADMIN",
+                        "Gestionnaire" => "GESTIONNAIRE",
+                        "Utilisateur" => "USER",
+                        _ => role.ToUpper()
                     };
+
+                    await roleManager.CreateAsync(new IdentityRole
+                    {
+                        Id = roleId,
+                        Name = role,
+                        NormalizedName = role.ToUpper()
+                    });
+                }
             }
         }
 
