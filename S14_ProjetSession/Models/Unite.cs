@@ -20,6 +20,10 @@ namespace S14_ProjetSession.Models
 
         public int PlacesDisponibles => Capacite - PlacesOccupees;
 
+        [Required(ErrorMessage = "Veuillez indiquer si l'unité est adaptée.")]
+        [Display(Name = "Adaptée pour mobilité réduite")]
+        public bool? AdapteePourMobiliteReduite { get; set; }
+
         public int ResidenceId { get; set; }
         public Residence? Residence { get; set; }
 

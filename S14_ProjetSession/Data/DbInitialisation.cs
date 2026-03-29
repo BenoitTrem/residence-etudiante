@@ -74,10 +74,10 @@ namespace S14_ProjetSession.Data
 
             var unites = new Unite[]
             {
-                new Unite { Numero = 101, Capacite = 2, ResidenceId = residences[0].Id },
-                new Unite { Numero = 102, Capacite = 1, ResidenceId = residences[0].Id },
-                new Unite { Numero = 201, Capacite = 2, ResidenceId = residences[1].Id },
-                new Unite { Numero = 202, Capacite = 3, ResidenceId = residences[1].Id }
+                new Unite { Numero = 101, Capacite = 2, ResidenceId = residences[0].Id, AdapteePourMobiliteReduite = true },
+                new Unite { Numero = 102, Capacite = 1, ResidenceId = residences[0].Id, AdapteePourMobiliteReduite = false },
+                new Unite { Numero = 201, Capacite = 2, ResidenceId = residences[1].Id, AdapteePourMobiliteReduite = true },
+                new Unite { Numero = 202, Capacite = 3, ResidenceId = residences[1].Id, AdapteePourMobiliteReduite = true }
             };
 
             context.Unites.AddRange(unites);

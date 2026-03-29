@@ -38,7 +38,7 @@ namespace S14_ProjetSession.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = "AdminOuGestionnaire")]
-        public IActionResult Creer(Residence residence)
+        public IActionResult Creer([Bind("Nom,CampusId,Adresse")] Residence residence)
         {
             if (_residenceRepository.NomExiste(residence.Nom, residence.Id))
             {
@@ -79,6 +79,7 @@ namespace S14_ProjetSession.Controllers
             return RedirectToAction("Index");
         }
 
+
         [Authorize(Policy = "AdminOuGestionnaire")]
         public IActionResult Modifier(int id)
         {
@@ -104,7 +105,7 @@ namespace S14_ProjetSession.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = "AdminOuGestionnaire")]
-        public IActionResult Modifier(Residence residence)
+        public IActionResult Modifier([Bind("Id,Nom,CampusId,Adresse")] Residence residence)
         {
             if (_residenceRepository.NomExiste(residence.Nom, residence.Id))
             {

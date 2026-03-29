@@ -6,6 +6,8 @@ namespace S14_ProjetSession.Data
     {
         List<Unite> GetByResidenceId(int residenceId);
 
+        int GetTotalByResidenceId(int residenceId);
+
         public List<Unite> GetAll();
 
         public Unite GetById(int id);

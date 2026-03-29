@@ -21,6 +21,11 @@ namespace S14_ProjetSession.Data
                 .ToList();
         }
 
+        public int GetTotalByResidenceId(int residenceId)
+        {
+            return _context.Unites.Count(u => u.ResidenceId == residenceId);
+        }
+
         public void Creer(Unite unite)
         {
             _context.Unites.Add(unite);

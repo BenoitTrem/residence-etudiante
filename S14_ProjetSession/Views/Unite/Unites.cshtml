@@ -7,22 +7,27 @@
         <h1>@ViewData["Title"]</h1>
          <a class="btn btn-outline-dark" asp-controller="Residence" asp-action="Index">Retour</a>
     </div>
-    <p class="mb-2 mt-2">Adresse : @ViewBag.Adresse</p>
-    <p>Campus : @ViewBag.Campus</p>
-    <p>
+    <strong class="mb-2 mt-2">Adresse : </strong>@ViewBag.Adresse
+    <br />
+    <strong>Campus : </strong>@ViewBag.Campus
+    <br />
+    <strong>Unités totales :</strong> @(ViewBag.NombreTotal ?? 0)
+
+    <div class="mb-4 mt-3 d-flex align-items-center">
+        <strong class="me-2">Unités disponibles :</strong>
         @if (ViewBag.NombreUnites == 0)
         {
-            <span class="text-danger">Aucune unité disponible</span>
+            <span class="badge bg-danger fs-6">Aucune unité disponible</span>
         }
         else if (ViewBag.NombreUnites == 1)
         {
-            <span>1 unité disponible</span>
+            <span class="badge bg-success fs-6">1 unité disponible</span>
         }
         else
         {
-            <span>@ViewBag.NombreUnites unités disponibles</span>
+            <span class="badge bg-success fs-6">@ViewBag.NombreUnites unités disponibles</span>
         }
-    </p>
+    </div>
 
       @if ((await AuthorizationService.AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded)
          {
@@ -41,6 +46,22 @@
 
                 <div>
                     <h5 class="mb-1">Unité #@unite.Numero</h5>
+
+                    <small class="text-muted d-block">
+                        <strong>Accessibilité :</strong>
+                        @if (unite.AdapteePourMobiliteReduite == true)
+                        {
+                            <span class="text-success">
+                                Adaptée pour les personnes à mobilité réduite
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="text-danger">
+                                Non adaptée pour les personnes à mobilité réduite
+                            </span>
+                        }
+                    </small>
 
                     <small class="text-muted d-block">
                         <strong>Capacité :</strong> @unite.Capacite étudiants
