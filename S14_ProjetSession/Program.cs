@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using S14_ProjetSession.Areas.Identity.Data;
 using S14_ProjetSession.Data;
+using S14_ProjetSession.Authorization;
 using System;
-using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,7 +41,13 @@ builder.Services.AddAuthorization(options =>
 
     options.AddPolicy("UtilisateurSeulement", policy =>
         policy.RequireRole("Utilisateur"));
+
+    options.AddPolicy("EstEtudiant", policy =>
+       policy.RequireAuthenticatedUser()
+             .AddRequirements(new EtudiantRequirement()));
 });
+
+builder.Services.AddScoped<IAuthorizationHandler, EtudiantHandler>();
 
 WebApplication app = builder.Build();
 

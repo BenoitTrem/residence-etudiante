@@ -5,7 +5,7 @@
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mt-5">
         <h1>@ViewData["Title"]</h1>
-         <a class="btn btn-outline-dark"" asp-controller="Residence" asp-action="Index">Retour</a>
+         <a class="btn btn-outline-dark" asp-controller="Residence" asp-action="Index">Retour</a>
     </div>
     <p class="mb-2 mt-2">Adresse : @ViewBag.Adresse</p>
     <p>Campus : @ViewBag.Campus</p>
@@ -83,10 +83,19 @@
                                     </button>
                                 }
                               @if (!User.IsInRole("Admin") && !User.IsInRole("Gestionnaire"))
-                              {
-                                    <a class="btn btn-outline-primary">
+                              {  
+                                  @if ((await AuthorizationService.AuthorizeAsync(User, "EstEtudiant")).Succeeded)
+                                     {
+
+                                      <a class="btn btn-outline-primary" asp-controller="Demande" asp-action="Creer">
                                         Faire une demande
                                     </a>
+                                    }
+                                    else{
+                                         <button class="btn btn-outline-primary" type="button" data-dialog-open="modalEtudiant">
+                                            Faire une demande
+                                        </button>
+                                    }
                                 }
                         </div>
 
@@ -114,6 +123,28 @@
                         <button class="btn btn-outline-dark" type="button" data-dialog-close>Fermer</button>
                     </div>
                     </dialog>
+
+                <dialog id="modalEtudiant" class="info-modal">
+                    <h3>Profil étudiant requis</h3>
+
+                    <p class="mt-3">
+                        Vous devez compléter votre profil étudiant avant de faire une demande.
+                    </p>
+
+                    <div class="d-flex justify-content-between align-items-center mt-5">
+                        <div>
+                            <a class="btn btn-outline-primary m-0" asp-controller="Etudiant" asp-action="Creer">
+                                Compléter mon profil
+                            </a>
+                        </div>
+
+                        <div>
+                            <button class="btn btn-outline-dark m-0" type="button" data-dialog-close>
+                                Fermer
+                            </button>
+                        </div>
+                    </div>
+                </dialog>
 
             </div>
         }

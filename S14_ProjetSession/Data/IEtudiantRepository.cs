@@ -11,8 +11,8 @@ namespace S14_ProjetSession.Data
 
         public Etudiant? GetEtudiant(int id);
 
-    
-        
+        Task<Etudiant?> GetByUserIdAsync(string userId);
+
 
 
 

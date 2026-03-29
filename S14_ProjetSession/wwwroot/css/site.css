@@ -286,17 +286,17 @@ dialog {
 
 
 .btn-tooltip {
-    position: relative; /* parent relative so tooltip is absolute inside */
+    position: relative; 
     cursor: not-allowed;
     display: inline-block;
 }
 
-    /* Tooltip inside card */
+
     .btn-tooltip .tooltip-text {
-        position: absolute; /* relative to the button */
-        bottom: 100%; /* appear above the button */
+        position: absolute; 
+        bottom: 100%; 
         left: 50%;
-        transform: translateX(-50%) translateY(-5px); /* small gap */
+        transform: translateX(-50%) translateY(-5px); 
         width: 200px;
         background-color: rgba(37, 99, 235, 1);
         color: #e5e7eb;
@@ -309,12 +309,11 @@ dialog {
         pointer-events: none;
         transition: all 0.2s ease;
         box-shadow: 0 10px 25px rgba(0,0,0,0.8);
-        z-index: 10; /* relative to the card */
+        z-index: 10; 
     }
 
-    /* Show tooltip on hover */
     .btn-tooltip:hover .tooltip-text {
         opacity: 1;
-        transform: translateX(-50%) translateY(-10px); /* floats slightly above button */
+        transform: translateX(-50%) translateY(-10px); 
     }
 
