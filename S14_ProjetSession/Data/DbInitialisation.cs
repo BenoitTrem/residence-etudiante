@@ -26,21 +26,58 @@ namespace S14_ProjetSession.Data
                 return;
             }
 
-            var residences = new Residence[]
+            // Campus
+            var campus = new Campus[]
             {
-                new Residence { Nom = "Résidence Maple", Adresse = "100 Rue Maple" },
-                new Residence { Nom = "Résidence Oak", Adresse = "200 Rue Oak" }
+                new Campus{ Nom = "Campus Gabrielle-Roy", Abreviation = "CGR" },
+                new Campus{ Nom = "Campus Félix-Leclerc", Abreviation = "CFL" }
             };
+
+            if (!context.Campus.Any())
+            {
+                context.Campus.AddRange(campus);
+                context.SaveChanges();
+            }
+
+            var campusDb = context.Campus.ToList();
+
+            var residences = new Residence[]
+             {
+                new Residence
+                {
+                    Nom = "Résidence Maple",
+                    CampusId = campusDb[0].Id,
+                    Adresse = new Adresse
+                    {
+                        AdresseString = "100 Rue Maple",
+                        Ville = "Gatineau",
+                        Province = "QC",
+                        CodePostal = "J8X 1A1"
+                    }
+                },
+                new Residence
+                {
+                    Nom = "Résidence Oak",
+                    CampusId = campusDb[1].Id,
+                    Adresse = new Adresse
+                    {
+                        AdresseString = "200 Rue Oak",
+                        Ville = "Gatineau",
+                        Province = "QC",
+                        CodePostal = "J8X 2B2"
+                    }
+                }
+             };
 
             context.Residences.AddRange(residences);
             context.SaveChanges();
 
             var unites = new Unite[]
             {
-                new Unite { Numero = 101, Capacite = 2, ResidenceId = residences[0].Id },
-                new Unite { Numero = 102, Capacite = 1, ResidenceId = residences[0].Id },
-                new Unite { Numero = 201, Capacite = 2, ResidenceId = residences[1].Id },
-                new Unite { Numero = 202, Capacite = 3, ResidenceId = residences[1].Id }
+                new Unite { Numero = 101, Capacite = 2, ResidenceId = residences[0].Id, AdapteePourMobiliteReduite = true },
+                new Unite { Numero = 102, Capacite = 1, ResidenceId = residences[0].Id, AdapteePourMobiliteReduite = false },
+                new Unite { Numero = 201, Capacite = 2, ResidenceId = residences[1].Id, AdapteePourMobiliteReduite = true },
+                new Unite { Numero = 202, Capacite = 3, ResidenceId = residences[1].Id, AdapteePourMobiliteReduite = true }
             };
 
             context.Unites.AddRange(unites);
@@ -58,18 +95,7 @@ namespace S14_ProjetSession.Data
             context.Genres.AddRange(genres);
             context.SaveChanges();
 
-            // Campus
-            var campus = new Campus[]
-            {
-                new Campus{ Nom = "Ottawa", Abreviation = "OTT" },
-                new Campus{ Nom = "Gatineau", Abreviation = "GAT" }
-            };
-
-            context.Campus.AddRange(campus);
-            context.SaveChanges();
-
             // Récupération DB
-            var campusDb = context.Campus.ToList();
             var genreDb = context.Genres.ToList();
 
             // Programmes (AVEC CampusId)
@@ -200,13 +226,27 @@ namespace S14_ProjetSession.Data
 
         private static async Task InitialiserRole(RoleManager<IdentityRole> roleManager)
         {
-            string[] roles = ["Admin", "Utilisateur", "Gestionnaire"];
-            foreach (string role in roles) 
+            string[] roles = { "Admin", "Utilisateur", "Gestionnaire" };
+
+            foreach (string role in roles)
             {
                 if (!await roleManager.RoleExistsAsync(role))
+                {
+                    string roleId = role switch
                     {
-                    await roleManager.CreateAsync(new IdentityRole(role));
+                        "Admin" => "ADMIN",
+                        "Gestionnaire" => "GESTIONNAIRE",
+                        "Utilisateur" => "USER",
+                        _ => role.ToUpper()
                     };
+
+                    await roleManager.CreateAsync(new IdentityRole
+                    {
+                        Id = roleId,
+                        Name = role,
+                        NormalizedName = role.ToUpper()
+                    });
+                }
             }
         }
 

@@ -18,12 +18,15 @@ namespace S14_ProjetSession.Data
         {
             return _context.Residences
                 .Include(r => r.Unites)
+                 .Include(r => r.Campus)
                 .ToList();
         }
 
         public Residence GetById(int id)
         {
-            return _context.Residences.Find(id);
+            return _context.Residences
+                .Include(r => r.Campus)
+                .FirstOrDefault(r => r.Id == id);
         }
 
         public void Creer(Residence residence)

@@ -20,6 +20,16 @@
                 <span asp-validation-for="Capacite" class="text-danger"></span>
             </div>
 
+            <div class="mb-3">
+                <label asp-for="AdapteePourMobiliteReduite" class="form-label"></label>
+                <select asp-for="AdapteePourMobiliteReduite" class="form-control">
+                    <option value="">-- Sélectionner --</option>
+                    <option value="true">Oui</option>
+                    <option value="false">Non</option>
+                </select>
+                <span asp-validation-for="AdapteePourMobiliteReduite" class="text-danger"></span>
+            </div>
+
             <div class="text-center mt-5">
                 <button type="submit" class="btn btn-outline-primary w-25">Enregistrer</button>
                 <a asp-controller="Unite" asp-action="Index" asp-route-id="@Model.ResidenceId"

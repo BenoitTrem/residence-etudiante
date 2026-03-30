@@ -26,6 +26,14 @@ namespace S14_ProjetSession.Data
             return Etudiants.FirstOrDefault(f => f.Id == id);
         }
 
+        public async Task<Etudiant?> GetByUserIdAsync(string userId)
+        {
+            return await _context.Etudiants
+                .Include(e => e.Genre)
+                .Include(e => e.Programme)
+                .FirstOrDefaultAsync(e => e.ApplicationUserId == userId);
+        }
+
         public void Creer(Etudiant etudiant)
         {
             _context.Etudiants.Add(etudiant);

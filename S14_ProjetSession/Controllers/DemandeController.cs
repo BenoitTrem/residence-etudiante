@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using S14_ProjetSession.Data;
 using S14_ProjetSession.Models;
@@ -37,9 +38,9 @@ namespace S14_ProjetSession.Controllers
             return View();
         }
 
-        
 
-        
+
+        [Authorize(Policy = "EstEtudiant")]
         public ViewResult Creer()
         {
             ViewBag.Etudiant = GenreParDefaut;

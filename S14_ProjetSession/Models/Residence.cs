@@ -12,11 +12,22 @@ namespace S14_ProjetSession.Models
         [Display(Name = "Nom de la résidence")]
         public string Nom { get; set; }
 
-        [Required(ErrorMessage = "L'adresse est obligatoire.")]
-        [StringLength(200, ErrorMessage = "L'adresse ne peut pas dépasser 200 caractères.")]
-        [Display(Name = "Adresse")]
-        public string Adresse { get; set; }
+        [Required(ErrorMessage = "L'adresse est requise.")]
+        public Adresse Adresse { get; set; }
+
+        [Required(ErrorMessage = "Veuillez sélectionner un campus.")]
+        public int? CampusId { get; set; }
+        public Campus? Campus { get; set; }
 
         public List<Unite> Unites { get; set; } = new();
+
+        public string AdresseString
+        {
+            get
+            {
+                if (Adresse == null) return "";
+                return $"{Adresse.AdresseString}, {Adresse.Ville}, {Adresse.Province} {Adresse.CodePostal}";
+            }
+        }
     }
 }

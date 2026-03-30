@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using S14_ProjetSession.Data;
 using S14_ProjetSession.Models;
 using System.Security.Policy;
 
 namespace S14_ProjetSession.Controllers
 {
+
+    [Authorize]
     public class UniteController : Controller
     {
         private readonly IUniteRepository _uniteRepository;
@@ -15,18 +18,22 @@ namespace S14_ProjetSession.Controllers
             _uniteRepository = uniteRepository;
             _residenceRepository = residenceRepository;
         }
-
+ 
         [HttpGet("Unite/Residence/{id}")]
+        [AllowAnonymous]
         public IActionResult Index(int id)
         {
             List<Unite> unitesDisponibles = _uniteRepository.GetByResidenceId(id);
+            int nombreTotal = _uniteRepository.GetTotalByResidenceId(id);
 
             Residence residence = _residenceRepository.GetById(id);
 
             if (residence != null)
             {
                 ViewBag.ResidenceId = residence.Id;
-                ViewBag.Adresse = residence.Adresse;
+                ViewBag.Adresse = residence.AdresseString;
+                ViewBag.Campus = residence.Campus?.Nom ?? "N/A";
+                ViewBag.NombreTotal = nombreTotal;
                 ViewBag.NombreUnites = unitesDisponibles.Count;
                 ViewData["Title"] = "Unités de la résidence " + residence.Nom;
             }
@@ -34,6 +41,8 @@ namespace S14_ProjetSession.Controllers
             return View("Unites", unitesDisponibles);
         }
 
+
+        [Authorize(Policy = "AdminOuGestionnaire")]
         public IActionResult AjouterUnite(int residenceId)
         {
             Residence residence = _residenceRepository.GetById(residenceId);
@@ -51,7 +60,8 @@ namespace S14_ProjetSession.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Creer([Bind("Numero, Capacite, ResidenceId")] Unite unite)
+        [Authorize(Policy = "AdminOuGestionnaire")]
+        public IActionResult Creer([Bind("Numero, Capacite, ResidenceId, AdapteePourMobiliteReduite")] Unite unite)
         {
             unite.PlacesOccupees = 0;
 
@@ -78,6 +88,7 @@ namespace S14_ProjetSession.Controllers
             return RedirectToAction("Index", new { id = unite.ResidenceId });
         }
 
+        [Authorize(Policy = "AdminOuGestionnaire")]
         public IActionResult Modifier(int id)
         {
             Unite unite = _uniteRepository.GetById(id);
@@ -94,7 +105,8 @@ namespace S14_ProjetSession.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Modifier([Bind("Id, Numero, Capacite, ResidenceId")] Unite unite)
+        [Authorize(Policy = "AdminOuGestionnaire")]
+        public IActionResult Modifier([Bind("Id, Numero, Capacite, ResidenceId, AdapteePourMobiliteReduite")] Unite unite)
         {
 
             if (_uniteRepository.UniteExiste(unite.Numero, unite.ResidenceId, unite.Id))
@@ -121,6 +133,7 @@ namespace S14_ProjetSession.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "AdminUniquement")]
         public IActionResult Supprimer(int id)
         {
             Unite? unite =  _uniteRepository.GetById(id);

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using S14_ProjetSession.Data;
 
@@ -11,9 +12,11 @@ using S14_ProjetSession.Data;
 namespace S14_ProjetSession.Migrations
 {
     [DbContext(typeof(ResidencesDbContext))]
-    partial class ResidencesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260327235749_ModificationDeAdresse")]
+    partial class ModificationDeAdresse
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -523,9 +526,6 @@ namespace S14_ProjetSession.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("AdapteePourMobiliteReduite")
-                        .HasColumnType("bit");
 
                     b.Property<int>("Capacite")
                         .HasColumnType("int");
