@@ -7,6 +7,7 @@ using S14_ProjetSession.Models;
 
 namespace S14_ProjetSession.Controllers
 {
+    [Authorize]
     public class ResidenceController : Controller
     {
 
@@ -19,6 +20,7 @@ namespace S14_ProjetSession.Controllers
             _campusRepository = campusRepository;
         }
 
+        [AllowAnonymous]
         public IActionResult Index()
         {
             ViewData["Title"] = "Résidences";

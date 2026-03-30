@@ -6,6 +6,8 @@ using System.Security.Policy;
 
 namespace S14_ProjetSession.Controllers
 {
+
+    [Authorize]
     public class UniteController : Controller
     {
         private readonly IUniteRepository _uniteRepository;
@@ -16,8 +18,9 @@ namespace S14_ProjetSession.Controllers
             _uniteRepository = uniteRepository;
             _residenceRepository = residenceRepository;
         }
-
+ 
         [HttpGet("Unite/Residence/{id}")]
+        [AllowAnonymous]
         public IActionResult Index(int id)
         {
             List<Unite> unitesDisponibles = _uniteRepository.GetByResidenceId(id);
@@ -37,6 +40,7 @@ namespace S14_ProjetSession.Controllers
 
             return View("Unites", unitesDisponibles);
         }
+
 
         [Authorize(Policy = "AdminOuGestionnaire")]
         public IActionResult AjouterUnite(int residenceId)

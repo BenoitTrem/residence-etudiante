@@ -8,6 +8,11 @@ using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
+if (!builder.Environment.IsEnvironment("Test"))
+{
+    string connectionString = builder.Configuration.GetConnectionString("ApplicationConnectionBD") ?? throw new InvalidOperationException("Connection string 'ConnectionBD' not found.");
+}
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 

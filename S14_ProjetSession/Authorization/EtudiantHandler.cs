@@ -36,7 +36,7 @@ namespace S14_ProjetSession.Authorization
             }
             else
             {
-                context.Fail(new AuthorizationFailureReason(this, "NotEtudiant"));
+                context.Fail(new AuthorizationFailureReason(this, "PasEtudiant"));
             }
         }
     }
