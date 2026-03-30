@@ -47,27 +47,51 @@ namespace S14_ProjetSession.Controllers
         }
 
 
-        public ViewResult Creer()
+        public async Task<IActionResult> Creer()
         {
-         
+
+
+            ApplicationUser? user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Challenge();
+            }
+
             ViewBag.Genres = _genresRepository.Genres;
             ViewBag.Programmes = _programmesRepository.Programmes;
+            ViewBag.EmailPerso =user.Email ;
+
             return View();
         }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Creer(Etudiant etudiant)
+        public async Task<IActionResult> Creer(Etudiant etudiant)
         {
             if (ModelState.IsValid)
             {
-                _etudiantRepository.Creer(etudiant);
                 Genre genre = _genresRepository.GetGenre(etudiant.GenreId);
-                etudiant.Genre = genre;
-
+              
                 Programme programme = _programmesRepository.GetProgramme(etudiant.ProgrammeId);
+              
+
+
+                ApplicationUser? user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return Challenge();
+                }
                 etudiant.Programme = programme;
+                etudiant.Genre = genre;
+                etudiant.User = user;
+                etudiant.ApplicationUserId = user.Id;
+
+       
+                _etudiantRepository.Creer(etudiant);
+            
+                
+                
                 TempData.Add("Succes", "L'étudiant " + etudiant.Nom + " a été créer");
                 return RedirectToAction("Index");
             }
