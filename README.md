@@ -19,7 +19,7 @@ Indiquer ici le sujet choisi.
 | Modifier son profil               | ✅                     | ❌           | ✅             |
 | Créer une demande de résidence    | ✅                     | ❌           | ✅             |
 | Modifier sa demande               | ✅ (avant validation)  | ✅           | ✅             |
-| Soumettre une demande             | ✅                     | ❌           | ✅             |
+| Soumettre une demande             | ✅                     | ❌           | ❌             |
 | Voir l’état de sa demande         | ✅                     | ✅           | ✅             |
 | Voir toutes les demandes          | ❌                     | ✅           | ✅             |
 | Valider / refuser une demande     | ❌                     | ✅           | ✅             |
