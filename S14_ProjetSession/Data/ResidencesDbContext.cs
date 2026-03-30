@@ -26,7 +26,10 @@ namespace S14_ProjetSession.Data;
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Residence>()
+        modelBuilder.Entity<Residence>()
+             .OwnsOne(r => r.Adresse);
+
+        modelBuilder.Entity<Residence>()
                 .HasMany(r => r.Unites)
                 .WithOne(u => u.Residence)
                 .HasForeignKey(u => u.ResidenceId)

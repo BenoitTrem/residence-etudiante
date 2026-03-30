@@ -26,21 +26,58 @@ namespace S14_ProjetSession.Data
                 return;
             }
 
-            var residences = new Residence[]
+            // Campus
+            var campus = new Campus[]
             {
-                new Residence { Nom = "Résidence Maple", Adresse = "100 Rue Maple" },
-                new Residence { Nom = "Résidence Oak", Adresse = "200 Rue Oak" }
+                new Campus{ Nom = "Campus Gabrielle-Roy", Abreviation = "CGR" },
+                new Campus{ Nom = "Campus Félix-Leclerc", Abreviation = "CFL" }
             };
+
+            if (!context.Campus.Any())
+            {
+                context.Campus.AddRange(campus);
+                context.SaveChanges();
+            }
+
+            var campusDb = context.Campus.ToList();
+
+            var residences = new Residence[]
+             {
+                new Residence
+                {
+                    Nom = "Résidence Maple",
+                    CampusId = campusDb[0].Id,
+                    Adresse = new Adresse
+                    {
+                        AdresseString = "100 Rue Maple",
+                        Ville = "Gatineau",
+                        Province = "QC",
+                        CodePostal = "J8X 1A1"
+                    }
+                },
+                new Residence
+                {
+                    Nom = "Résidence Oak",
+                    CampusId = campusDb[1].Id,
+                    Adresse = new Adresse
+                    {
+                        AdresseString = "200 Rue Oak",
+                        Ville = "Gatineau",
+                        Province = "QC",
+                        CodePostal = "J8X 2B2"
+                    }
+                }
+             };
 
             context.Residences.AddRange(residences);
             context.SaveChanges();
 
             var unites = new Unite[]
             {
-                new Unite { Numero = 101, Capacite = 2, ResidenceId = residences[0].Id },
-                new Unite { Numero = 102, Capacite = 1, ResidenceId = residences[0].Id },
-                new Unite { Numero = 201, Capacite = 2, ResidenceId = residences[1].Id },
-                new Unite { Numero = 202, Capacite = 3, ResidenceId = residences[1].Id }
+                new Unite { Numero = 101, Capacite = 2, ResidenceId = residences[0].Id, AdapteePourMobiliteReduite = true },
+                new Unite { Numero = 102, Capacite = 1, ResidenceId = residences[0].Id, AdapteePourMobiliteReduite = false },
+                new Unite { Numero = 201, Capacite = 2, ResidenceId = residences[1].Id, AdapteePourMobiliteReduite = true },
+                new Unite { Numero = 202, Capacite = 3, ResidenceId = residences[1].Id, AdapteePourMobiliteReduite = true }
             };
 
             context.Unites.AddRange(unites);
@@ -49,36 +86,25 @@ namespace S14_ProjetSession.Data
             // Genres
             var genres = new Genre[]
             {
-           new Genre{ Nom = "Homme" },
-           new Genre{ Nom = "Femme" },
-           new Genre{ Nom = "Non-binaire"},
-           new Genre{ Nom = "Autre" }
+               new Genre{ Nom = "Homme" },
+               new Genre{ Nom = "Femme" },
+               new Genre{ Nom = "Non-binaire"},
+               new Genre{ Nom = "Autre" }
             };
 
             context.Genres.AddRange(genres);
             context.SaveChanges();
 
-            // Campus
-            var campus = new Campus[]
-            {
-        new Campus{ Nom = "Ottawa", Abreviation = "OTT" },
-        new Campus{ Nom = "Gatineau", Abreviation = "GAT" }
-            };
-
-            context.Campus.AddRange(campus);
-            context.SaveChanges();
-
             // Récupération DB
-            var campusDb = context.Campus.ToList();
             var genreDb = context.Genres.ToList();
 
             // Programmes (AVEC CampusId)
             var programmes = new Programme[]
             {
-        new Programme{ Nom = "Techniques de l'informatique", Code = "420.A0", CampusId = campusDb[0].Id },
-        new Programme{ Nom = "Sciences de la nature", Code = "200.B0", CampusId = campusDb[0].Id },
-        new Programme{ Nom = "Administration des affaires", Code = "410.B0", CampusId = campusDb[1].Id },
-        new Programme{ Nom = "Techniques de génie logiciel", Code = "420.B1", CampusId = campusDb[1].Id }
+                new Programme{ Nom = "Techniques de l'informatique", Code = "420.A0", CampusId = campusDb[0].Id },
+                new Programme{ Nom = "Sciences de la nature", Code = "200.B0", CampusId = campusDb[0].Id },
+                new Programme{ Nom = "Administration des affaires", Code = "410.B0", CampusId = campusDb[1].Id },
+                new Programme{ Nom = "Techniques de génie logiciel", Code = "420.B1", CampusId = campusDb[1].Id }
             };
 
             context.Programmes.AddRange(programmes);
@@ -152,9 +178,6 @@ namespace S14_ProjetSession.Data
             };
             // Felix
             
-
-
-
             List<string> saisons = new List<string>
                 {
                     "printemps",
@@ -177,9 +200,9 @@ namespace S14_ProjetSession.Data
             {
                 string email = etudiant.CourrielInstitutionnel;
 
-                ApplicationUser? existingUser = await userManager.FindByEmailAsync(email);
+                ApplicationUser? utiliateurExistant = await userManager.FindByEmailAsync(email);
 
-                if (existingUser == null)
+                if (utiliateurExistant == null)
                 {
                     ApplicationUser user = new ApplicationUser
                     {
@@ -188,7 +211,7 @@ namespace S14_ProjetSession.Data
                         EmailConfirmed = true
                     };
 
-                    IdentityResult result = await userManager.CreateAsync(user, "User123!");
+                    IdentityResult result = await userManager.CreateAsync(user, "Password-123");
 
                     if (result.Succeeded)
                     {
@@ -203,36 +226,73 @@ namespace S14_ProjetSession.Data
 
         private static async Task InitialiserRole(RoleManager<IdentityRole> roleManager)
         {
-            string[] roles = ["Admin", "Utilisateur", "Gestionnaire"];
-            foreach (string role in roles) 
+            string[] roles = { "Admin", "Utilisateur", "Gestionnaire" };
+
+            foreach (string role in roles)
             {
                 if (!await roleManager.RoleExistsAsync(role))
+                {
+                    string roleId = role switch
                     {
-                    await roleManager.CreateAsync(new IdentityRole(role));
+                        "Admin" => "ADMIN",
+                        "Gestionnaire" => "GESTIONNAIRE",
+                        "Utilisateur" => "USER",
+                        _ => role.ToUpper()
                     };
+
+                    await roleManager.CreateAsync(new IdentityRole
+                    {
+                        Id = roleId,
+                        Name = role,
+                        NormalizedName = role.ToUpper()
+                    });
+                }
             }
         }
 
         private static async Task InitialiserUsers(UserManager<ApplicationUser> userManager)
         {
-            string adminEmail = "admin@college.ca";
 
-            ApplicationUser? admin = await userManager.FindByEmailAsync(adminEmail);
+            // L'utilisateur Admin
+            string emailAdmin = "admin@gmail.com";
+
+            ApplicationUser? admin = await userManager.FindByEmailAsync(emailAdmin);
 
             if (admin == null)
             {
                 admin = new ApplicationUser
                 {
-                    UserName = adminEmail,
-                    Email = adminEmail,
+                    UserName = emailAdmin,
+                    Email = emailAdmin,
                     EmailConfirmed = true
                 };
 
-                IdentityResult result = await userManager.CreateAsync(admin, "Admin123!");
+                IdentityResult result = await userManager.CreateAsync(admin, "Password-123");
 
                 if (result.Succeeded)
                 {
                     await userManager.AddToRoleAsync(admin, "Admin");
+                }
+
+                // L'utilisateur Gestionnaire
+                string emailGestionnaire = "gestionnaire@gmail.com";
+                ApplicationUser? gestionnaire = await userManager.FindByEmailAsync(emailGestionnaire);
+
+                if (gestionnaire == null)
+                {
+                    gestionnaire = new ApplicationUser
+                    {
+                        UserName = emailGestionnaire,
+                        Email = emailGestionnaire,
+                        EmailConfirmed = true
+                    };
+
+                    IdentityResult resultGestionnaire = await userManager.CreateAsync(gestionnaire, "Password-123");
+
+                    if (resultGestionnaire.Succeeded)
+                    {
+                        await userManager.AddToRoleAsync(gestionnaire, "Gestionnaire");
+                    }
                 }
             }
         }

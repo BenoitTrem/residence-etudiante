@@ -481,10 +481,8 @@ namespace S14_ProjetSession.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Adresse")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                    b.Property<int>("CampusId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Nom")
                         .IsRequired()
@@ -492,6 +490,8 @@ namespace S14_ProjetSession.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CampusId");
 
                     b.HasIndex("Nom")
                         .IsUnique();
@@ -523,6 +523,9 @@ namespace S14_ProjetSession.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("AdapteePourMobiliteReduite")
+                        .HasColumnType("bit");
 
                     b.Property<int>("Capacite")
                         .HasColumnType("int");
@@ -671,6 +674,52 @@ namespace S14_ProjetSession.Migrations
                     b.Navigation("Campus");
                 });
 
+            modelBuilder.Entity("S14_ProjetSession.Models.Residence", b =>
+                {
+                    b.HasOne("S14_ProjetSession.Models.Campus", "Campus")
+                        .WithMany("Residences")
+                        .HasForeignKey("CampusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsOne("S14_ProjetSession.Models.Adresse", "Adresse", b1 =>
+                        {
+                            b1.Property<int>("ResidenceId")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("AdresseString")
+                                .IsRequired()
+                                .HasMaxLength(150)
+                                .HasColumnType("nvarchar(150)");
+
+                            b1.Property<string>("CodePostal")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Province")
+                                .IsRequired()
+                                .HasMaxLength(2)
+                                .HasColumnType("nvarchar(2)");
+
+                            b1.Property<string>("Ville")
+                                .IsRequired()
+                                .HasMaxLength(50)
+                                .HasColumnType("nvarchar(50)");
+
+                            b1.HasKey("ResidenceId");
+
+                            b1.ToTable("Residences");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ResidenceId");
+                        });
+
+                    b.Navigation("Adresse")
+                        .IsRequired();
+
+                    b.Navigation("Campus");
+                });
+
             modelBuilder.Entity("S14_ProjetSession.Models.Unite", b =>
                 {
                     b.HasOne("S14_ProjetSession.Models.Residence", "Residence")
@@ -684,6 +733,8 @@ namespace S14_ProjetSession.Migrations
 
             modelBuilder.Entity("S14_ProjetSession.Models.Campus", b =>
                 {
+                    b.Navigation("Residences");
+
                     b.Navigation("programmes");
                 });
 

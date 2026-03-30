@@ -65,23 +65,25 @@ namespace S14_ProjetSession.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "Le courriel est requis.")]
+            [EmailAddress(ErrorMessage = "Adresse courriel invalide.")]
+            [Display(Name = "Adresse courriel")]
             public string Email { get; set; }
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
+            [Required(ErrorMessage = "Le mot de passe est requis.")]
             [DataType(DataType.Password)]
+            [Display(Name = "Mot de passe")]
             public string Password { get; set; }
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Display(Name = "Remember me?")]
+            [Display(Name = "Se souvenir de moi")]
             public bool RememberMe { get; set; }
         }
 
@@ -110,12 +112,31 @@ namespace S14_ProjetSession.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                var user = await _signInManager.UserManager.FindByEmailAsync(Input.Email);
+
+                if (user == null)
+                {
+                    ModelState.AddModelError(string.Empty, "Aucun compte n’est associé à cette adresse courriel.");
+                    return Page();
+                }
+
+                if (!await _signInManager.UserManager.IsEmailConfirmedAsync(user))
+                {
+                    ModelState.AddModelError(string.Empty, "Vous devez confirmer votre adresse courriel avant de vous connecter.");
+                    return Page();
+                }
+
+                if (!await _signInManager.UserManager.CheckPasswordAsync(user, Input.Password))
+                {
+                    ModelState.AddModelError(string.Empty, "Mot de passe incorrect.");
+                    return Page();
+                }
+
+                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
+
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User logged in.");
+                    _logger.LogInformation("Utilisateur connecté.");
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
@@ -124,17 +145,13 @@ namespace S14_ProjetSession.Areas.Identity.Pages.Account
                 }
                 if (result.IsLockedOut)
                 {
-                    _logger.LogWarning("User account locked out.");
-                    return RedirectToPage("./Lockout");
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    _logger.LogWarning("Compte utilisateur verrouillé.");
+                    ModelState.AddModelError(string.Empty, "Compte verrouillé temporairement en raison de trop nombreuses tentatives de connexion.");
                     return Page();
                 }
             }
 
-            // If we got this far, something failed, redisplay form
+            ModelState.AddModelError(string.Empty, "Tentative de connexion invalide.");
             return Page();
         }
     }

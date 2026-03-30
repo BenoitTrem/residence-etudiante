@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using S14_ProjetSession.Areas.Identity.Data;
 using S14_ProjetSession.Data;
 using S14_ProjetSession.Models;
 
@@ -17,14 +20,15 @@ namespace S14_ProjetSession.Controllers
 
         private readonly IProgrammesRepository _programmesRepository;
 
+        private readonly UserManager<ApplicationUser> _userManager;
 
 
-        public EtudiantController(IEtudiantRepository etudiantRepository, IGenresRepository genresRepository, IProgrammesRepository programmesRepository)
+        public EtudiantController(IEtudiantRepository etudiantRepository, IGenresRepository genresRepository, IProgrammesRepository programmesRepository, UserManager<ApplicationUser> userManager)
         {
             _etudiantRepository = etudiantRepository;
             _genresRepository = genresRepository;
             _programmesRepository = programmesRepository;
-
+            _userManager = userManager;
         }
 
 
@@ -138,6 +142,19 @@ namespace S14_ProjetSession.Controllers
                 TempData.Add("Succes", "L'étudiant " + etudiant.Prenom + " "+ etudiant.Nom + " a été supprimé");
                 return RedirectToAction("Index");
             }
+        }
+
+        public async Task<IActionResult> Profil()
+        {
+            ApplicationUser? user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Challenge(); 
+            }
+
+            Etudiant? etudiant = await _etudiantRepository.GetByUserIdAsync(user.Id);
+
+            return View(etudiant); 
         }
     }
 }

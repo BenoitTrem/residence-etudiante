@@ -3,15 +3,9 @@
 <div class="container mt-5">
     <h1 class="mb-4">@ViewData["Title"]</h1>
 
-    @if (TempData["Erreur"] != null)
-    {
-        <div class="alert alert-danger">
-            @TempData["Erreur"]
-        </div>
-    }
-
     <form asp-controller="Residence" asp-action="Modifier" method="post">
         <div class="form-container">
+
             <input type="hidden" asp-for="Id" />
 
             <div class="mb-4">
@@ -19,29 +13,51 @@
                 <input asp-for="Nom" class="form-control" placeholder="Entrez un nom..." />
                 <span asp-validation-for="Nom" class="text-danger"></span>
             </div>
-
             <div class="mb-3">
-                <label asp-for="Adresse" class="form-label">Adresse
+                <label asp-for="Adresse.AdresseString" class="form-label">Adresse
                     <span class="info-bulle">
                         ?
                         <span class="info-texte">
-                            <strong>Format attendu :</strong>
-                            Numéro civique, rue
-                            Ville, province
-                            Code postal<br /><br />
-                            <strong>Exemple :</strong><br />
-                            123 rue Sainte-Catherine, Gatineau, QC H2X 1Z6
+                            <strong>Format attendu :</strong>  Numéro civique, rue<br /><br />
+                            <strong>Exemple :</strong>  123 rue Sainte-Catherine
                         </span>
                     </span>
                 </label>
-                <input asp-for="Adresse" class="form-control" placeholder="Entrez une adresse..." />
-                <span asp-validation-for="Adresse" class="text-danger"></span>
+                <input asp-for="Adresse.AdresseString" class="form-control" placeholder="Entrez l'adresse complète..." />
+                <span asp-validation-for="Adresse.AdresseString" class="text-danger"></span>
             </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Ville</label>
+                    <input asp-for="Adresse.Ville" class="form-control" readonly />
+                    <span asp-validation-for="Adresse.Ville" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Province</label>
+                    <input asp-for="Adresse.Province" class="form-control" readonly />
+                    <span asp-validation-for="Adresse.Province" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Code postal</label>
+                    <input asp-for="Adresse.CodePostal" class="form-control" placeholder="Ex: J8X 3X2" />
+                    <span asp-validation-for="Adresse.CodePostal" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="CampusId" class="form-label">Campus</label>
+                <select asp-for="CampusId" asp-items="ViewBag.CampusList" class="form-control">
+                    <option value="">-- Sélectionner un campus --</option>
+                </select>
+                <span asp-validation-for="CampusId" class="text-danger"></span>
+            </div>
+
             <div class="text-center mt-5">
                 <button type="submit" class="btn btn-outline-primary w-25">Enregistrer</button>
                 <a asp-controller="Residence" asp-action="Index" class="btn btn-outline-dark ms-2 w-25">Annuler</a>
             </div>
+
         </div>
     </form>
 </div>
-

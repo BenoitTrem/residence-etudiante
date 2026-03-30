@@ -1,12 +1,18 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using S14_ProjetSession.Areas.Identity.Data;
 using S14_ProjetSession.Data;
+using S14_ProjetSession.Authorization;
 using System;
-using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+if (!builder.Environment.IsEnvironment("Test"))
+{
+    string connectionString = builder.Configuration.GetConnectionString("ApplicationConnectionBD") ?? throw new InvalidOperationException("Connection string 'ConnectionBD' not found.");
+}
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
@@ -25,6 +31,28 @@ builder.Services.AddScoped<IDemandeRepository, DbDemandeRepository>();
 builder.Services.AddScoped<ISemestreRepository, DbSemestreRepository>();
 builder.Services.AddScoped<IProgrammesRepository, DbProgrammesRepository>();
 builder.Services.AddScoped<IGenresRepository, DbGenresRepository>();
+builder.Services.AddScoped<ICampusRepository, DbCampusRepository>();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminUniquement", policy =>
+        policy.RequireRole("Admin"));
+
+    options.AddPolicy("AdminOuGestionnaire", policy =>
+        policy.RequireRole("Admin", "Gestionnaire"));
+
+    options.AddPolicy("GestionnaireUniquement", policy =>
+       policy.RequireRole("Gestionnaire"));
+
+    options.AddPolicy("UtilisateurSeulement", policy =>
+        policy.RequireRole("Utilisateur"));
+
+    options.AddPolicy("EstEtudiant", policy =>
+       policy.RequireAuthenticatedUser()
+             .AddRequirements(new EtudiantRequirement()));
+});
+
+builder.Services.AddScoped<IAuthorizationHandler, EtudiantHandler>();
 
 WebApplication app = builder.Build();
 

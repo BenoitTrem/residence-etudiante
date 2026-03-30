@@ -3,11 +3,6 @@
 <div class="container mt-5">
     <h1 class="mb-4">@ViewData["Title"]</h1>
 
-    @if (TempData["Erreur"] != null)
-    {
-        <div class="alert alert-danger">@TempData["Erreur"]</div>
-    }
-
     <form asp-controller="Unite" asp-action="Modifier" method="post">
         <input type="hidden" asp-for="Id" />
         <input type="hidden" asp-for="ResidenceId" />
@@ -23,6 +18,16 @@
                 <label asp-for="Capacite" class="form-label"></label>
                 <input asp-for="Capacite" class="form-control" placeholder="Nombre de places..." />
                 <span asp-validation-for="Capacite" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="AdapteePourMobiliteReduite" class="form-label"></label>
+                <select asp-for="AdapteePourMobiliteReduite" class="form-control">
+                    <option value="">-- Sélectionner --</option>
+                    <option value="true">Oui</option>
+                    <option value="false">Non</option>
+                </select>
+                <span asp-validation-for="AdapteePourMobiliteReduite" class="text-danger"></span>
             </div>
 
             <div class="text-center mt-5">

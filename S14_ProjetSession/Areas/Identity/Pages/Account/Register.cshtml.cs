@@ -75,28 +75,29 @@ namespace S14_ProjetSession.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
-            [EmailAddress]
-            [Display(Name = "Email")]
+            [Required(ErrorMessage = "Le courriel est requis.")]
+            [EmailAddress(ErrorMessage = "Format de courriel invalide.")]
+            [Display(Name = "Courriel")]
             public string Email { get; set; }
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [Required(ErrorMessage = "Le mot de passe est requis.")]
+            [StringLength(100, ErrorMessage = "Le {0} doit contenir entre {2} et {1} caractères.", MinimumLength = 6)]
             [DataType(DataType.Password)]
-            [Display(Name = "Password")]
+            [Display(Name = "Mot de passe")]
             public string Password { get; set; }
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
+            [Required(ErrorMessage = "La confirmation du mot de passe est requise.")]
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Display(Name = "Confirmer le mot de passe")]
+            [Compare("Password", ErrorMessage = "Les mots de passe ne correspondent pas.")]
             public string ConfirmPassword { get; set; }
         }
 
@@ -123,7 +124,7 @@ namespace S14_ProjetSession.Areas.Identity.Pages.Account
                 {
                     // cree un utilisateur
                     await _userManager.AddToRoleAsync(user, "Utilisateur");
-                    _logger.LogInformation("User created a new account with password.");
+                    _logger.LogInformation("Un utilisateur a créé un nouveau compte avec mot de passe.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -134,8 +135,11 @@ namespace S14_ProjetSession.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    await _emailSender.SendEmailAsync(
+                            Input.Email,
+                            "Confirmez votre courriel",
+                            $"Veuillez confirmer votre compte en <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>cliquant ici</a>."
+                        );
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
@@ -165,9 +169,8 @@ namespace S14_ProjetSession.Areas.Identity.Pages.Account
             }
             catch
             {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
-                    $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
+                throw new InvalidOperationException($"Impossible de créer une instance de '{nameof(ApplicationUser)}'. " +
+                    $"Assurez-vous que '{nameof(ApplicationUser)}' n'est pas une classe abstraite et possède un constructeur sans paramètre, ou remplacez la page d'inscription.");
             }
         }
 
@@ -175,7 +178,7 @@ namespace S14_ProjetSession.Areas.Identity.Pages.Account
         {
             if (!_userManager.SupportsUserEmail)
             {
-                throw new NotSupportedException("The default UI requires a user store with email support.");
+                throw new NotSupportedException("L'interface par défaut nécessite un magasin d'utilisateurs avec support du courriel.");
             }
             return (IUserEmailStore<ApplicationUser>)_userStore;
         }
