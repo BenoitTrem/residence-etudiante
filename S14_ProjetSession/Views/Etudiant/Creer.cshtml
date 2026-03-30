@@ -8,6 +8,11 @@
 
     <div class="row">
 
+        <div class="col-md-6">
+            <label asp-for="Prenom"></label>
+            <input asp-for="Prenom" class="form-control" />
+            <span asp-validation-for="Prenom" class="text-danger"></span>
+        </div>
     
         <div class="col-md-6">
             <label asp-for="Nom"></label>
@@ -15,11 +20,7 @@
             <span asp-validation-for="Nom" class="text-danger"></span>
         </div>
 
-        <div class="col-md-6">
-            <label asp-for="Prenom"></label>
-            <input asp-for="Prenom" class="form-control" />
-            <span asp-validation-for="Prenom" class="text-danger"></span>
-        </div>
+     
 
         <div class="col-md-6 mt-3">
             <label asp-for="DateNaissance"></label>
@@ -42,6 +43,7 @@
                 <label class="form-check-label">Mobilité réduite</label>
             </div>
         </div>
+ 
 
         <div class="col-12 mt-3">
             <label asp-for="AdressePermanente">Adresse</label>
@@ -66,6 +68,12 @@
             <input asp-for="CourrielInstitutionnel" class="form-control" />
         </div>
 
+        <div class="col-md-6 mt-3">
+            <label asp-for="CourrielPersonnel"></label>
+            <input asp-for="CourrielPersonnel" class="form-control" />
+        </div>
+
+  
         <div class="col-md-6 mt-3">
             <label asp-for="noEtudiant"></label>
             <input asp-for="noEtudiant" class="form-control" />
