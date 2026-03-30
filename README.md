@@ -5,7 +5,27 @@
 Indiquer ici le sujet choisi.
 
 ## Tableau d'autorisations
-À l'aide d'un tableau, indiquer quel type d'utilisateur a accès à quelle fonctionnalité
+Opération                                   Étudiant (Utilisateur)     Gestionnaire     Administrateur
+Index (liste)                               ❌                         ✅                ✅
+Détails                                     ❌                         ✅                ✅
+Créer                                       ✅                         ❌                ✅
+Modifier                                    ✅ (avant validation)      ✅                ✅
+Supprimer                                   ❌                         ❌                ✅
+Créer un compte                             ✅                         ❌                ✅
+Se connecter                                ✅                         ✅                ✅
+Modifier son profil                         ✅                         ❌                ✅
+Créer une demande de résidence              ✅                         ❌                ✅
+Modifier sa demande                         ✅ (avant validation)      ✅                ✅
+Soumettre une demande                       ✅                         ❌                ✅
+Voir l’état de sa demande                   ✅                         ✅                ✅
+Voir toutes les demandes                    ❌                         ✅                ✅
+Valider / refuser une demande               ❌                         ✅                ✅
+Jumeler des étudiants                       ❌                         ✅                ✅
+Attribuer une unité                         ❌                         ✅                ✅
+Gérer les résidences                        ❌                         ✅                ✅
+Ajouter / modifier une unité                ❌                         ✅                ✅
+Gérer les utilisateurs                      ❌                         ❌                ✅
+Supprimer des données                       ❌                         ❌                ✅
 
 ## Membres de l'équipe et responsabilités
 Indiquer ici les membres de l'équipe, puis indiquer qui est responsable de quoi pour chaque critère d'évaluation.
