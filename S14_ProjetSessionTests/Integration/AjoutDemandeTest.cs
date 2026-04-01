@@ -18,7 +18,7 @@ namespace S14_ProjetSessionTests.Integration
         private readonly HttpClient _client;
         private IDemandeRepository _demandeRepository = new MockDemandeRepository();
         private ISemestreRepository _semestreRepository = new MockSemestreRepository();
-        private Mock<IEtudiantRepository> _etudiantRepository = new Mock<IEtudiantRepository>();
+        private IEtudiantRepository _etudiantRepository = new MockEtudiantRepository();
         private IGenresRepository _genresRepository = new MockGenreRepository();
         private ClaimsPrincipal? _currentUser;
         private ClaimsPrincipal _utilisateur = AuthUtilities.CreerEtudiant();
@@ -33,7 +33,7 @@ namespace S14_ProjetSessionTests.Integration
                 {
                     // Juste pour les tests, comme on n'utilise pas une base de données
                     services.AddSingleton<IDemandeRepository>(_demandeRepository);
-                    services.AddSingleton<IEtudiantRepository>(_etudiantRepository.Object);
+                    services.AddSingleton<IEtudiantRepository>(_etudiantRepository);
                     services.AddSingleton<ISemestreRepository>(_semestreRepository);
                     services.AddSingleton<IGenresRepository>(_genresRepository);
 
@@ -48,7 +48,7 @@ namespace S14_ProjetSessionTests.Integration
             });
             _client = _factory.CreateClient(new WebApplicationFactoryClientOptions
             {
-                AllowAutoRedirect = true
+                AllowAutoRedirect = false
             });
             _currentUser = _utilisateur;
 
