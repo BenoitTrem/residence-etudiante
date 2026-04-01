@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using S14_ProjetSession.Data;
 using S14_ProjetSession.Models;
+using S14_ProjetSession.NewFolder;
 using System.Linq;
 using System.Net.Http.Headers;
 
@@ -40,7 +41,7 @@ namespace S14_ProjetSession.Controllers
 
 
 
-        [Authorize(Policy = "EstEtudiant")]
+        //[Authorize(Policy = "EstEtudiant")]
         public ViewResult Creer()
         {
             ViewBag.Etudiant = GenreParDefaut;
@@ -113,19 +114,46 @@ namespace S14_ProjetSession.Controllers
 
 
 
+        public void AjoutJumelageChoisis(Demande demande, List<JumelageViewModel> jumelages)
+        {
+            if (demande.Jumelages == null) 
+            {
+                demande.Jumelages = new List<Jumelage>();
+            }
+            demande.Jumelages.Clear();
+            foreach (JumelageViewModel jumelage in jumelages) 
+            {
+                if (jumelage.Nom != "" && jumelage.Courriel != "") 
+                {
+                    Jumelage nouveaJumelage = new Jumelage();
+                    nouveaJumelage.Courriel =jumelage.Courriel;
+                    nouveaJumelage.Nom = jumelage.Nom;
+                    demande.Jumelages.Add(nouveaJumelage);
+                }
+            }
+
+        }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Creer([Bind("SemestreId,EtudiantId,PreferencesGenreId,PrefDureeBail,AccepteReglements,AccepteTraitementDonnees,ConfirmeSoumission,NomGarant,PrenomGarant,DateNaissanceGarant,CourrielGarant,TelephoneGarant,NomParent,CourrielParent,NomUrgence,LienParenteUrgence,TelephoneUrgence")] Demande demande)
+        public IActionResult Creer([Bind("SemestreId,EtudiantId,PreferencesGenreId,PrefDureeBail,AccepteReglements,AccepteTraitementDonnees,ConfirmeSoumission,NomGarant,PrenomGarant,DateNaissanceGarant,CourrielGarant,TelephoneGarant,NomParent,CourrielParent,NomUrgence,LienParenteUrgence,TelephoneUrgence")] Demande demande, List<JumelageViewModel> jumelage)
         {
             ModelState.Remove("Etudiant");
             ModelState.Remove("Semestre");
             ModelState.Remove("PreferencesGenre");
-            ModelState.Remove("Jumelages");
+            ModelState.Remove("jumelages");
+            // jumelage ne voulait pas s'enlever sinon Fix rapide
+            ModelState.Keys
+                .Where(k => k.StartsWith("jumelage"))
+                .ToList()
+                .ForEach(k => ModelState.Remove(k));
             ModelState.Remove("DateNaissanceGarant");
             ModelState.Remove("DateDemande");
 
             // faire un tempDATA    
+            //  regarder la dateDenaissance si bonne 
+            // envoyer les Jumelages 
 
             if (ModelState.IsValid)
             {
@@ -140,7 +168,8 @@ namespace S14_ProjetSession.Controllers
                     demande.Semestre = semestre;
                     demande.Etudiant = etudiant;
                     demande.PreferencesGenre = genre;
-                    demande.Jumelages = [];
+                    AjoutJumelageChoisis(demande,jumelage);
+                    
                     if (TryValidateModel(demande))
                     {
                         _demandeRepository.Creer(demande);
@@ -148,16 +177,21 @@ namespace S14_ProjetSession.Controllers
                     }
                     else
                     {
-
+                        Console.WriteLine(ModelState.IsValid);
+                        ViewBag.Genres = _genreRepository.Genres;
+                        ViewBag.Semestre = _semestreRepository.Semestres;
                         return View(demande);
                     }
                     }
                 else
-
-                    return View(demande);
+                    ViewBag.Genres = _genreRepository.Genres;
+                    ViewBag.Semestre = _semestreRepository.Semestres;
+                return View(demande);
             }
             else
             {
+                ViewBag.Genres = _genreRepository.Genres;
+                ViewBag.Semestre = _semestreRepository.Semestres;
                 return View(demande);
             }
             }
