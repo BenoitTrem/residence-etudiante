@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using S14_ProjetSession.Areas.Identity.Data;
 using S14_ProjetSession.Data;
 using S14_ProjetSession.Models;
+using Microsoft.VisualBasic;
 
 
 namespace S14_ProjetSession.Controllers
@@ -33,7 +34,8 @@ namespace S14_ProjetSession.Controllers
 
 
 
-        [AllowAnonymous]
+
+        [Authorize(Policy = "AdminOuGestionnaire")]
         public ViewResult Index()
         {
             ViewData["Title"] = "Etudiant";
@@ -47,6 +49,7 @@ namespace S14_ProjetSession.Controllers
         }
 
 
+
         public async Task<IActionResult> Creer()
         {
 
@@ -55,6 +58,11 @@ namespace S14_ProjetSession.Controllers
             if (user == null)
             {
                 return Challenge();
+            }
+            Etudiant? etudiant = await _etudiantRepository.GetByUserIdAsync(user.Id);
+            if(etudiant != null)
+            {
+                return Forbid();
             }
 
             ViewBag.Genres = _genresRepository.Genres;
@@ -85,8 +93,16 @@ namespace S14_ProjetSession.Controllers
                 etudiant.Programme = programme;
                 etudiant.Genre = genre;
                 etudiant.User = user;
-                etudiant.ApplicationUserId = user.Id;
 
+                Etudiant? etudiant2 = await _etudiantRepository.GetByUserIdAsync(user.Id);
+                if (etudiant2 != null)
+                {
+                    return Forbid();
+                }
+                if (User.IsInRole("Utilisateur"))
+                {
+                    etudiant.ApplicationUserId = user.Id;
+                }
        
                 _etudiantRepository.Creer(etudiant);
             
@@ -106,7 +122,7 @@ namespace S14_ProjetSession.Controllers
 
 
 
-        public ActionResult Modifier(int id)
+        public async ActionResult Modifier(int id)
         {
             Etudiant? etudiant = _etudiantRepository.GetEtudiant(id);
 
@@ -116,7 +132,18 @@ namespace S14_ProjetSession.Controllers
                 return RedirectToAction("Index");
 
             }
-               
+            ApplicationUser? user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Challenge();
+            }
+            if (!User.IsInRole("Admin") &&
+               !User.IsInRole("Gestionnaire") &&
+               etudiant.ApplicationUserId != user.Id)
+            {
+                return Forbid();
+            }
+
 
             ViewBag.Genres = _genresRepository.Genres;
             ViewBag.Programmes = _programmesRepository.Programmes;
@@ -168,6 +195,7 @@ namespace S14_ProjetSession.Controllers
             }
         }
 
+        [Authorize(Policy = "EstEtudiant")]
         public async Task<IActionResult> Profil()
         {
             ApplicationUser? user = await _userManager.GetUserAsync(User);
@@ -177,6 +205,10 @@ namespace S14_ProjetSession.Controllers
             }
 
             Etudiant? etudiant = await _etudiantRepository.GetByUserIdAsync(user.Id);
+            if (etudiant is null)
+            {
+                return Forbid();
+            }
 
             return View(etudiant); 
         }
