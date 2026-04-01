@@ -7,10 +7,15 @@ using S14_ProjetSession.Data;
 using S14_ProjetSession.Models;
 using Microsoft.VisualBasic;
 
+/// J'ai utiliser l'AI pour documenter mes méthodes
+/// <author>John Zuleta</author>
 
 namespace S14_ProjetSession.Controllers
 {
-
+    /// <summary>
+    /// Contrôleur responsable de la gestion des étudiants (CRUD et profil).
+    /// </summary>
+    /// <author>John Zuleta</author>
     [Authorize]
     public class EtudiantController : Controller
     {
@@ -23,7 +28,14 @@ namespace S14_ProjetSession.Controllers
 
         private readonly UserManager<ApplicationUser> _userManager;
 
-
+        /// <summary>
+        /// Constructeur du contrôleur EtudiantController.
+        /// </summary>
+        /// <param name="etudiantRepository">Repository des étudiants</param>
+        /// <param name="genresRepository">Repository des genres</param>
+        /// <param name="programmesRepository">Repository des programmes</param>
+        /// <param name="userManager">Gestionnaire des utilisateurs</param>
+        /// <author>John Zuleta</author>
         public EtudiantController(IEtudiantRepository etudiantRepository, IGenresRepository genresRepository, IProgrammesRepository programmesRepository, UserManager<ApplicationUser> userManager)
         {
             _etudiantRepository = etudiantRepository;
@@ -34,7 +46,11 @@ namespace S14_ProjetSession.Controllers
 
 
 
-
+        /// <summary>
+        /// Affiche la liste des étudiants triés par nom et prénom.
+        /// </summary>
+        /// <returns>Vue contenant la liste des étudiants</returns>
+        /// <author>John Zuleta</author>
         [Authorize(Policy = "AdminOuGestionnaire")]
         public ViewResult Index()
         {
@@ -50,7 +66,11 @@ namespace S14_ProjetSession.Controllers
 
 
 
-
+        /// <summary>
+        /// Affiche le formulaire de création d’un étudiant.
+        /// </summary>
+        /// <returns>Vue du formulaire de création</returns>
+        /// <author>John Zuleta</author>
         [Authorize(Policy = "AdminOuUtilisateur")]
         public async Task<IActionResult> Creer()
         {
@@ -78,7 +98,12 @@ namespace S14_ProjetSession.Controllers
             return View();
         }
 
-
+        /// <summary>
+        /// Traite la création d’un étudiant.
+        /// </summary>
+        /// <param name="etudiant">Données de l’étudiant à créer</param>
+        /// <returns>Redirection vers la liste ou réaffichage du formulaire en cas d’erreur</returns>
+        /// <author>John Zuleta</author>
         [HttpPost]
         [Authorize(Policy = "AdminOuUtilisateur")]
         [ValidateAntiForgeryToken]
@@ -126,7 +151,12 @@ namespace S14_ProjetSession.Controllers
         }
 
 
-
+        /// <summary>
+        /// Affiche le formulaire de modification d’un étudiant.
+        /// </summary>
+        /// <param name="id">Identifiant de l’étudiant</param>
+        /// <returns>Vue de modification ou redirection si non trouvé</returns>
+        /// <author>John Zuleta</author>
         public async Task<IActionResult> Modifier(int id)
         {
 
@@ -160,7 +190,12 @@ namespace S14_ProjetSession.Controllers
 
 
 
-
+        /// <summary>
+        /// Traite la modification d’un étudiant.
+        /// </summary>
+        /// <param name="etudiant">Données mises à jour de l’étudiant</param>
+        /// <returns>Redirection ou réaffichage du formulaire</returns>
+        /// <author>John Zuleta</author>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Modifier([Bind("Id,Nom,Prenom,DateNaissance,GenreId,ProgrammeId,noEtudiant,noAdmission,MobiliteReduite,AdressePermanente,Telephone,CourrielInstitutionnel,CourrielPersonnel,ApplicationUserId")] Etudiant etudiant)
@@ -197,7 +232,12 @@ namespace S14_ProjetSession.Controllers
             return View(etudiant);
         }
 
-
+        /// <summary>
+        /// Supprime un étudiant.
+        /// </summary>
+        /// <param name="Id">Identifiant de l’étudiant à supprimer</param>
+        /// <returns>Redirection vers la liste des étudiants</returns>
+        /// <author>John Zuleta</author>
         [Authorize(Policy = "AdminUniquement")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -217,6 +257,11 @@ namespace S14_ProjetSession.Controllers
             }
         }
 
+        /// <summary>
+        /// Affiche le profil de l’étudiant connecté.
+        /// </summary>
+        /// <returns>Vue du profil de l’étudiant</returns>
+        /// <author>Benoit Tremblay</author>
         [Authorize(Policy = "EstEtudiant")]
         public async Task<IActionResult> Profil()
         {
