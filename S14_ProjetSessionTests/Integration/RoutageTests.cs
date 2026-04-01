@@ -48,6 +48,7 @@ namespace S14_ProjetSessionTests.Integration
         [Fact]
         public async Task DemandesAfficheBienDemande() 
         {
+            // il ne sent rend pas faut un mock etudiant etc ...
             HttpResponseMessage response = await _client.GetAsync("/demande/demandes");
             Console.Write(response.Content);
             Console.Write(response.Content);
