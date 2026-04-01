@@ -1,5 +1,8 @@
 ﻿@model IEnumerable<Etudiant>
 
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+
 <div class="container mt-4">
 
     <h1 class="mb-4">Les étudiants</h1>
@@ -8,6 +11,8 @@
 
         @foreach (Etudiant etudiant in Model)
         {
+            var isAdmin = (await AuthorizationService.AuthorizeAsync(User, "AdminUniquement")).Succeeded;
+
             <div class="col-md-6 mb-3">
 
                 <div class="card shadow-sm">
@@ -24,103 +29,104 @@
 
                     </div>
 
-                    @if(User.Identity.IsAuthenticated){
-                               <div class="card-footer d-flex justify-content-between">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <div class="card-footer d-flex justify-content-between">
 
-                        <a class="btn btn-primary btn-sm"
-                           asp-controller="Etudiant"
-                           asp-action="Modifier"
-                           asp-route-id="@etudiant.Id">
-                            Modifier
-                        </a>
-                        <!--J'ai réutiliser le code pour le modal de la Demo en classe' -->
-                        <button type="button"
-                                class="btn btn-danger btn-sm"
-                                data-bs-toggle="modal"
-                                data-bs-target="#supprimerModal-@etudiant.Id">
-                            Supprimer
-                        </button>
+                            <a class="btn btn-primary btn-sm"
+                               asp-controller="Etudiant"
+                               asp-action="Modifier"
+                               asp-route-id="@etudiant.Id">
+                                Modifier
+                            </a>
 
-                    </div>
-                    }
-
-              
-
-                </div>
-
-            </div>
-
-
-          
-            <div class="modal fade"
-                 id="supprimerModal-@etudiant.Id"
-                 tabindex="-1">
-
-                <div class="modal-dialog">
-                    <div class="modal-content">
-
-                        <div class="modal-header">
-                            <h5 class="modal-title">
-                                Supprimer étudiant
-                            </h5>
-
-                            <button type="button"
-                                    class="btn-close"
-                                    data-bs-dismiss="modal">
-                            </button>
-                        </div>
-
-                        <div class="modal-body">
-                            Voulez-vous supprimer
-                            <strong>
-                                @etudiant.Prenom @etudiant.Nom
-                            </strong> ?
-                        </div>
-
-                        <div class="modal-footer">
-
-                            <button type="button"
-                                    class="btn btn-secondary"
-                                    data-bs-dismiss="modal">
-                                Annuler
-                            </button>
-
-                            <form asp-controller="Etudiant"
-                                  asp-action="Supprimer"
-                                  method="post">
-
-                                <input type="hidden"
-                                       name="id"
-                                       value="@etudiant.Id" />
-
-                                <button type="submit"
-                                        class="btn btn-danger">
+                            @if (isAdmin)
+                            {
+                                <!--J'ai réutiliser le code pour le modal de la Demo en classe' -->
+                                <button type="button"
+                                        class="btn btn-danger btn-sm"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#supprimerModal-@etudiant.Id">
                                     Supprimer
                                 </button>
-
-                            </form>
+                            }
 
                         </div>
+                    }
 
-                    </div>
                 </div>
 
             </div>
+
+            @if (isAdmin)
+            {
+                <div class="modal fade"
+                     id="supprimerModal-@etudiant.Id"
+                     tabindex="-1">
+
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    Supprimer étudiant
+                                </h5>
+
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal">
+                                </button>
+                            </div>
+
+                            <div class="modal-body">
+                                Voulez-vous supprimer
+                                <strong>
+                                    @etudiant.Prenom @etudiant.Nom
+                                </strong> ?
+                            </div>
+
+                            <div class="modal-footer">
+
+                                <button type="button"
+                                        class="btn btn-secondary"
+                                        data-bs-dismiss="modal">
+                                    Annuler
+                                </button>
+
+                                <form asp-controller="Etudiant"
+                                      asp-action="Supprimer"
+                                      method="post">
+
+                                    <input type="hidden"
+                                           name="id"
+                                           value="@etudiant.Id" />
+
+                                    <button type="submit"
+                                            class="btn btn-danger">
+                                        Supprimer
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            }
         }
 
     </div>
-
 
     @if (User.Identity.IsAuthenticated)
     {
         <div class="mt-4">
 
             <a class="btn btn-success"
-            asp-controller="Etudiant"
-            asp-action="Creer">
-
+               asp-controller="Etudiant"
+               asp-action="Creer">
                 Ajouter un étudiant
-
             </a>
 
         </div>

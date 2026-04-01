@@ -52,22 +52,26 @@ namespace S14_ProjetSession.Controllers
 
         public async Task<IActionResult> Creer()
         {
-
-
             ApplicationUser? user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return Challenge();
             }
-            Etudiant? etudiant = await _etudiantRepository.GetByUserIdAsync(user.Id);
-            if(etudiant != null)
+
+     
+            if (!User.IsInRole("Admin") && !User.IsInRole("Organisateur"))
             {
-                return Forbid();
+                Etudiant? etudiant = await _etudiantRepository.GetByUserIdAsync(user.Id);
+
+                if (etudiant != null)
+                {
+                    return Forbid();
+                }
             }
 
             ViewBag.Genres = _genresRepository.Genres;
             ViewBag.Programmes = _programmesRepository.Programmes;
-            ViewBag.EmailPerso =user.Email ;
+            ViewBag.EmailPerso = user.Email;
 
             return View();
         }
@@ -77,66 +81,69 @@ namespace S14_ProjetSession.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Creer(Etudiant etudiant)
         {
-            if (ModelState.IsValid)
-            {
-                Genre genre = _genresRepository.GetGenre(etudiant.GenreId);
-              
-                Programme programme = _programmesRepository.GetProgramme(etudiant.ProgrammeId);
-              
-
-
-                ApplicationUser? user = await _userManager.GetUserAsync(User);
-                if (user == null)
-                {
-                    return Challenge();
-                }
-                etudiant.Programme = programme;
-                etudiant.Genre = genre;
-                etudiant.User = user;
-
-                Etudiant? etudiant2 = await _etudiantRepository.GetByUserIdAsync(user.Id);
-                if (etudiant2 != null)
-                {
-                    return Forbid();
-                }
-                if (User.IsInRole("Utilisateur"))
-                {
-                    etudiant.ApplicationUserId = user.Id;
-                }
-       
-                _etudiantRepository.Creer(etudiant);
-            
-                
-                
-                TempData.Add("Succes", "L'étudiant " + etudiant.Nom + " a été créer");
-                return RedirectToAction("Index");
-            }
-            else
+            if (!ModelState.IsValid)
             {
                 ViewBag.Genres = _genresRepository.Genres;
                 ViewBag.Programmes = _programmesRepository.Programmes;
                 return View(etudiant);
             }
 
+            ApplicationUser? user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Challenge();
+            }
+
+      
+            bool estSuperieur = User.IsInRole("Admin") || User.IsInRole("Organisateur");
+
+       
+            if (!estSuperieur)
+            {
+                Etudiant? existing = await _etudiantRepository.GetByUserIdAsync(user.Id);
+                if (existing != null)
+                {
+                    return Forbid();
+                }
+
+              
+                etudiant.ApplicationUserId = user.Id;
+            }
+
+         
+            Genre genre = _genresRepository.GetGenre(etudiant.GenreId);
+            Programme programme = _programmesRepository.GetProgramme(etudiant.ProgrammeId);
+
+            etudiant.Genre = genre;
+            etudiant.Programme = programme;
+            etudiant.User = user;
+
+            _etudiantRepository.Creer(etudiant);
+
+            TempData["Succes"] = "L'étudiant " + etudiant.Nom + " a été créé";
+
+            return RedirectToAction("Index");
         }
 
 
 
-        public async ActionResult Modifier(int id)
+        public async Task<IActionResult> Modifier(int id)
         {
-            Etudiant? etudiant = _etudiantRepository.GetEtudiant(id);
 
+            ApplicationUser? user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Challenge();
+            }
+
+            Etudiant? etudiant = _etudiantRepository.GetEtudiant(id);
             if (etudiant == null)
             {
                 TempData.Add("Erreur", "L'étudiant " + id + " n'existe pas");
                 return RedirectToAction("Index");
 
             }
-            ApplicationUser? user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return Challenge();
-            }
+       
             if (!User.IsInRole("Admin") &&
                !User.IsInRole("Gestionnaire") &&
                etudiant.ApplicationUserId != user.Id)
@@ -156,8 +163,22 @@ namespace S14_ProjetSession.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Modifier(Etudiant etudiant)
+        public async Task<IActionResult> Modifier(Etudiant etudiant)
         {
+
+            ApplicationUser? user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Challenge();
+            }
+
+            if (!User.IsInRole("Admin") &&
+               !User.IsInRole("Gestionnaire") &&
+               etudiant.ApplicationUserId != user.Id)
+            {
+                return Forbid();
+            }
+
             if (ModelState.IsValid)
             {
                 Genre genre = _genresRepository.GetGenre(etudiant.GenreId);
@@ -177,6 +198,7 @@ namespace S14_ProjetSession.Controllers
         }
 
 
+        [Authorize(Policy = "AdminUniquement")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Supprimer(int Id)
