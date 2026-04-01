@@ -44,6 +44,9 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("GestionnaireUniquement", policy =>
        policy.RequireRole("Gestionnaire"));
 
+    options.AddPolicy("AdminOuUtilisateur", policy =>
+      policy.RequireRole("Admin", "Utilisateur"));
+
     options.AddPolicy("UtilisateurSeulement", policy =>
         policy.RequireRole("Utilisateur"));
 

@@ -50,6 +50,8 @@ namespace S14_ProjetSession.Controllers
 
 
 
+
+        [Authorize(Policy = "AdminOuUtilisateur")]
         public async Task<IActionResult> Creer()
         {
             ApplicationUser? user = await _userManager.GetUserAsync(User);
@@ -59,7 +61,7 @@ namespace S14_ProjetSession.Controllers
             }
 
      
-            if (!User.IsInRole("Admin") && !User.IsInRole("Organisateur"))
+            if (User.IsInRole("Utilisateur"))
             {
                 Etudiant? etudiant = await _etudiantRepository.GetByUserIdAsync(user.Id);
 
@@ -78,8 +80,9 @@ namespace S14_ProjetSession.Controllers
 
 
         [HttpPost]
+        [Authorize(Policy = "AdminOuUtilisateur")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Creer(Etudiant etudiant)
+        public async Task<IActionResult> Creer([Bind("Nom,Prenom,DateNaissance,GenreId,ProgrammeId,noEtudiant,noAdmission,MobiliteReduite,AdressePermanente,Telephone,CourrielInstitutionnel,CourrielPersonnel")] Etudiant etudiant)
         {
             if (!ModelState.IsValid)
             {
@@ -94,20 +97,16 @@ namespace S14_ProjetSession.Controllers
                 return Challenge();
             }
 
-      
-            bool estSuperieur = User.IsInRole("Admin") || User.IsInRole("Organisateur");
-
+        
        
-            if (!estSuperieur)
+            if (User.IsInRole("Utilisateur"))
             {
-                Etudiant? existing = await _etudiantRepository.GetByUserIdAsync(user.Id);
-                if (existing != null)
+                Etudiant? existe = await _etudiantRepository.GetByUserIdAsync(user.Id);
+                if (existe != null)
                 {
                     return Forbid();
                 }
 
-              
-                etudiant.ApplicationUserId = user.Id;
             }
 
          
@@ -116,6 +115,7 @@ namespace S14_ProjetSession.Controllers
 
             etudiant.Genre = genre;
             etudiant.Programme = programme;
+            etudiant.ApplicationUserId = user.Id;
             etudiant.User = user;
 
             _etudiantRepository.Creer(etudiant);
@@ -163,7 +163,7 @@ namespace S14_ProjetSession.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Modifier(Etudiant etudiant)
+        public async Task<IActionResult> Modifier([Bind("Id,Nom,Prenom,DateNaissance,GenreId,ProgrammeId,noEtudiant,noAdmission,MobiliteReduite,AdressePermanente,Telephone,CourrielInstitutionnel,CourrielPersonnel,ApplicationUserId")] Etudiant etudiant)
         {
 
             ApplicationUser? user = await _userManager.GetUserAsync(User);
@@ -201,7 +201,7 @@ namespace S14_ProjetSession.Controllers
         [Authorize(Policy = "AdminUniquement")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Supprimer(int Id)
+        public ActionResult Supprimer([Bind("Id")] int Id)
         {
             Etudiant etudiant = _etudiantRepository.GetEtudiant(Id);
             if (etudiant is null)
