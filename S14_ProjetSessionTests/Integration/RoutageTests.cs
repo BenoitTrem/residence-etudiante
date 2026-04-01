@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using S14_ProjetSession.Data;
+using S14_ProjetSession.Models;
 namespace S14_ProjetSessionTests.Integration
 {
     public class RoutageTests : IClassFixture<WebApplicationFactory<Program>>
@@ -23,6 +24,7 @@ namespace S14_ProjetSessionTests.Integration
                 builder.ConfigureTestServices(services =>
                 {
                     services.AddScoped<IDemandeRepository, MockDemandeRepository>();
+                    services.AddScoped<IEtudiantRepository, MockEtudiantRepository>();
                 });
                 builder.UseEnvironment("Test");
             });
@@ -48,10 +50,16 @@ namespace S14_ProjetSessionTests.Integration
         [Fact]
         public async Task DemandesAfficheBienDemande() 
         {
-            // il ne sent rend pas faut un mock etudiant etc ...
-            HttpResponseMessage response = await _client.GetAsync("/demande/demandes");
-            Console.Write(response.Content);
-            Console.Write(response.Content);
+            
+            List<Demande> demande = new MockDemandeRepository().Demandes;
+            
+
+            HttpResponseMessage response = await _client.GetAsync("/demande/demandes", TestContext.Current.CancellationToken);
+            
+            string html = await response.Content.ReadAsStringAsync();
+            // regarder que ca affiche bien les demandes là le prenom
+            Assert.Contains("Alex", html);
+            Assert.Contains("hivers-2025", html);
         }
 
     }

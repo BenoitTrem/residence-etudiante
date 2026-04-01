@@ -15,9 +15,21 @@ namespace S14_ProjetSession.Data
                 SemestreId = 1,
                 EtudiantId = 1,
                 PreferencesGenreId = 1,
-
+                Etudiant = new Etudiant
+                {
+                    Id = 1,
+                    Nom = "Tremblay",
+                    Prenom = "Alex",
+                    DateNaissance = new DateTime(2003, 5, 14),
+                    noEtudiant = "20230001",
+                    noAdmission = "ADM001"
+                },
                 PrefDureeBail = 120,
-
+                Semestre = new Semestre() 
+                {
+                    Id= 1,
+                    NomSemestre = "hivers-2025"
+                },
                 AccepteReglements = true,
                 AccepteTraitementDonnees = true,
                 ConfirmeSoumission = true,
@@ -52,7 +64,20 @@ namespace S14_ProjetSession.Data
                 AccepteReglements = true,
                 AccepteTraitementDonnees = true,
                 ConfirmeSoumission = true,
-
+                Semestre = new Semestre()
+                {
+                    Id = 1,
+                    NomSemestre = "hivers-2025"
+                },
+                Etudiant = new Etudiant
+                {
+                    Id = 2,
+                    Nom = "Gagnon",
+                    Prenom = "Marie",
+                    DateNaissance = new DateTime(2002, 11, 2),
+                    noEtudiant = "20230002",
+                    noAdmission = "ADM002"
+                },
                 DateDemande = DateTime.Now.AddDays(-5),
 
                 NomGarant = "Robert",
