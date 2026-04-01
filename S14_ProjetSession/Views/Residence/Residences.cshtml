@@ -18,13 +18,19 @@
             <div class="col-md-4 mb-4">
                 <div class="carte card">
                     <div class="card-body">
-                        <h5 class="card-title">@residence.Nom</h5>
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h5 class="card-title mb-0 text-truncate"  title="@residence.Nom">
+                                @residence.Nom
+                            </h5>
+                            <a class="btn btn-sm btn-outline-primary ms-2 flex-shrink-0"
+                               asp-controller="Residence"
+                               asp-action="ResidenceDetails"
+                               asp-route-id="@residence.Id">
+                                Détails
+                            </a>
+                        </div>
                         <p class="card-text mb-1">@residence.AdresseString</p>
                         <p class="card-text">@residence.Campus.Nom</p>
-                        <p class="mb-1">
-                            <strong>Unités totales :</strong>
-                            @(residence.Unites != null ? residence.Unites.Count : 0)
-                        </p>
 
                         <p>
                             <strong>
@@ -55,7 +61,7 @@
                         <a class="btn btn-outline-primary w-100 mt-2" asp-controller="Unite" asp-action="Index" asp-route-id="@residence.Id">
                             Voir les unités
                         </a>
-
+                     
                         @if ((await AuthorizationService.AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded)
                         {
                             <div class="d-flex gap-2 mt-2">

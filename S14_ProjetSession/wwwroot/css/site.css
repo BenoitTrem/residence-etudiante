@@ -200,6 +200,32 @@ dialog {
     border-color: #9ca3af;
 }
 
+.description-input {
+    background-color: #ffffff;
+    color: #1f2937;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 0.35rem 0.7rem; 
+    font-size: 0.875rem; 
+    width: 75%; 
+    transition: all 0.2s ease;
+}
+
+    .description-input::placeholder {
+        color: #9ca3af;
+        font-size: 0.85rem;
+    }
+
+    .description-input:focus {
+        background-color: #ffffff;
+        border-color: #2563eb; 
+        box-shadow: 0 3px 5px -1px rgba(37, 99, 235, 0.5);
+    }
+
+    .description-input:hover {
+        border-color: #9ca3af;
+    }
+
 .info-bulle {
     position: relative;
     margin-left:5px;

@@ -17,3 +17,17 @@
         dialog?.close();
     });
 })();
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll('.form-check-input').forEach(cb => {
+        const input = cb.closest('li').querySelector('input[type=text]');
+        if (!input) return;
+
+        input.style.display = cb.checked ? 'block' : 'none';
+
+        cb.addEventListener('change', () => {
+            input.style.display = cb.checked ? 'block' : 'none';
+        });
+    });
+});

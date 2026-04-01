@@ -32,6 +32,7 @@ builder.Services.AddScoped<ISemestreRepository, DbSemestreRepository>();
 builder.Services.AddScoped<IProgrammesRepository, DbProgrammesRepository>();
 builder.Services.AddScoped<IGenresRepository, DbGenresRepository>();
 builder.Services.AddScoped<ICampusRepository, DbCampusRepository>();
+builder.Services.AddScoped<ICommoditeRepository, DbCommoditeRepository>();
 
 builder.Services.AddAuthorization(options =>
 {

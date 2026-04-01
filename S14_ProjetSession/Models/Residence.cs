@@ -21,6 +21,8 @@ namespace S14_ProjetSession.Models
 
         public List<Unite> Unites { get; set; } = new();
 
+        public List<ResidenceCommodite> ResidenceCommodites { get; set; } = new();
+
         public string AdresseString
         {
             get
