@@ -113,19 +113,41 @@ namespace S14_ProjetSession.Controllers
 
 
 
+        public void AjoutJumelageChoisis(Demande demande, List<Jumelage> jumelages)
+        {
+            if (demande.Jumelages == null) 
+            {
+                demande.Jumelages = new List<Jumelage>();
+            }
+            demande.Jumelages.Clear();
+            foreach (Jumelage jumelage in jumelages) 
+            {
+                if (jumelage.Nom != "" && jumelage.Courriel != "") 
+                {
+                    Jumelage nouveaJumelage = new Jumelage();
+                    nouveaJumelage.Courriel =jumelage.Courriel;
+                    nouveaJumelage.Nom = jumelage.Nom;
+                    demande.Jumelages.Add(nouveaJumelage);
+                }
+            }
+
+        }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Creer([Bind("SemestreId,EtudiantId,PreferencesGenreId,PrefDureeBail,AccepteReglements,AccepteTraitementDonnees,ConfirmeSoumission,NomGarant,PrenomGarant,DateNaissanceGarant,CourrielGarant,TelephoneGarant,NomParent,CourrielParent,NomUrgence,LienParenteUrgence,TelephoneUrgence")] Demande demande)
+        public IActionResult Creer([Bind("SemestreId,EtudiantId,PreferencesGenreId,PrefDureeBail,AccepteReglements,AccepteTraitementDonnees,ConfirmeSoumission,NomGarant,PrenomGarant,DateNaissanceGarant,CourrielGarant,TelephoneGarant,NomParent,CourrielParent,NomUrgence,LienParenteUrgence,TelephoneUrgence")] Demande demande, List<Jumelage> jumelages)
         {
             ModelState.Remove("Etudiant");
             ModelState.Remove("Semestre");
             ModelState.Remove("PreferencesGenre");
-            ModelState.Remove("Jumelages");
+            ModelState.Remove("jumelages");
             ModelState.Remove("DateNaissanceGarant");
             ModelState.Remove("DateDemande");
 
             // faire un tempDATA    
+            //  regarder la dateDenaissance si bonne 
+            // envoyer les Jumelages 
 
             if (ModelState.IsValid)
             {
@@ -140,7 +162,8 @@ namespace S14_ProjetSession.Controllers
                     demande.Semestre = semestre;
                     demande.Etudiant = etudiant;
                     demande.PreferencesGenre = genre;
-                    demande.Jumelages = [];
+                    AjoutJumelageChoisis(demande,jumelages);
+
                     if (TryValidateModel(demande))
                     {
                         _demandeRepository.Creer(demande);

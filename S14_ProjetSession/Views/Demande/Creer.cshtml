@@ -1,6 +1,8 @@
 ﻿@model Demande
 @using S14_ProjetSession.Models
 
+
+
 <form asp-action="Creer" method="post">
 
     <div class="mb-3">
@@ -44,6 +46,31 @@
         <input asp-for="ConfirmeSoumission" class="form-check-input" required />
         <label asp-for="ConfirmeSoumission" class="form-check-label">ConfirmeSoumission *</label>
     </div>
+
+    <h5>Jumelage</h5>
+
+    <div class="mb-3">
+        <id="Jumelage nom0" class="form-label">Jumelage 1 Nom </label>
+        <input id="Jumelage nom0" name="Jumelages[0].Nom" class="form-control"  />
+        <for="Jumelage email0" class="form-label">Jumelage 1 Email</label>
+        <input id="Jumelage email0" name="Jumelages[0].email" class="form-control"  />
+    </div>
+    
+    
+    <div class="mb-3">
+        <id="Jumelage nom1" class="form-label">Jumelage 2 Nom </label>
+        <input id="Jumelage nom1" name="Jumelages[1].Nom" class="form-control"  />
+        <for="Jumelage email1" class="form-label">Jumelage 2 Email</label>
+        <input id="Jumelage email1" name="Jumelages[1].email" class="form-control"  />
+    </div>
+
+    <div class="mb-3">
+        <id="Jumelage nom2" class="form-label">Jumelage 3 Nom </label>
+        <input id="Jumelage nom1" name="Jumelages[2].Nom" class="form-control"  />
+        <for="Jumelage email2" class="form-label">Jumelage 3 Email</label>
+        <input id="Jumelage email2" name="Jumelages[2].email" class="form-control"  />
+    </div>
+
 
     <h5>Garant</h5>
 
