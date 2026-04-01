@@ -9,7 +9,7 @@ namespace S14_ProjetSession.Data
 
 
 
-        public List<Genre> Genres => Genres;
+        public List<Genre> Genres => _context;
 
 
         public MockGenreRepository()
