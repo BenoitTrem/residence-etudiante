@@ -1,0 +1,88 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using S14_ProjetSession.Models;
+
+namespace S14_ProjetSession.Data
+{
+    public class MockEtudiantRepository : IEtudiantRepository
+    {
+        private readonly List<Etudiant> _etudiants;
+
+        public MockEtudiantRepository()
+        {
+            _etudiants = new List<Etudiant>
+            {
+                new Etudiant
+                {
+                    Id = 1,
+                    Nom = "Tremblay",
+                    Prenom = "Alex",
+                    DateNaissance = new DateTime(2003, 5, 14),
+                    noEtudiant = "20230001",
+                    noAdmission = "ADM001"
+                },
+                new Etudiant
+                {
+                    Id = 2,
+                    Nom = "Gagnon",
+                    Prenom = "Marie",
+                    DateNaissance = new DateTime(2002, 11, 2),
+                    noEtudiant = "20230002",
+                    noAdmission = "ADM002"
+                }
+                // Ajoute d'autres étudiants si nécessaire
+            };
+        }
+
+        public IEnumerable<Etudiant> Etudiants
+        {
+            get
+            {
+                return _etudiants;
+            }
+        }
+
+        public Etudiant? GetEtudiant(int id)
+        {
+            Etudiant? etudiant = _etudiants.FirstOrDefault(e => e.Id == id);
+            return etudiant;
+        }
+
+        public Task<Etudiant?> GetByUserIdAsync(string userId)
+        {
+            Etudiant? etudiant = _etudiants.FirstOrDefault(e => e.ApplicationUserId == userId);
+            return Task.FromResult(etudiant);
+        }
+
+        public void Creer(Etudiant etudiant)
+        {
+            _etudiants.Add(etudiant);
+        }
+
+        public void Modifier(Etudiant etudiant)
+        {
+            Etudiant? existing = GetEtudiant(etudiant.Id);
+            if (existing != null)
+            {
+                _etudiants.Remove(existing);
+                _etudiants.Add(etudiant);
+            }
+        }
+
+        public void Supprimer(Etudiant etudiant)
+        {
+            _etudiants.Remove(etudiant);
+        }
+
+        public void SupprimerParID(int etudiantID)
+        {
+            Etudiant? etudiant = GetEtudiant(etudiantID);
+            if (etudiant != null)
+            {
+                _etudiants.Remove(etudiant);
+            }
+        }
+    }
+}
