@@ -41,7 +41,7 @@ namespace S14_ProjetSession.Controllers
 
 
 
-        [Authorize(Policy = "EstEtudiant")]
+        //[Authorize(Policy = "EstEtudiant")]
         public ViewResult Creer()
         {
             ViewBag.Etudiant = GenreParDefaut;
