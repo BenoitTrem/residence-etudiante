@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestPlatform.TestHost;
 using System;
 using System.Collections.Generic;
 using System.Text;
-
+using S14_ProjetSession.Data;
 namespace S14_ProjetSessionTests.Integration
 {
     public class RoutageTests : IClassFixture<WebApplicationFactory<Program>>
@@ -22,11 +22,36 @@ namespace S14_ProjetSessionTests.Integration
             {
                 builder.ConfigureTestServices(services =>
                 {
-                    //services.AddScoped<IDemandeRepository, >
+                    services.AddScoped<IDemandeRepository, MockDemandeRepository>();
                 });
                 builder.UseEnvironment("Test");
             });
-            _client = _factory.CreateClient();
+            _client = _factory.CreateClient(new WebApplicationFactoryClientOptions
+            {
+                AllowAutoRedirect = false
+            });
         }
+        [Fact]
+        public async Task DemandeControllerEtat() 
+        {
+            HttpResponseMessage responseMessage = await _client.GetAsync("/demande", TestContext.Current.CancellationToken);
+            Assert.True(responseMessage.IsSuccessStatusCode);
+        }
+        [Fact]
+        public async Task DemandeCreeSansCompteRedirigeVersLogin()
+        {
+
+            HttpResponseMessage response = await _client.GetAsync("/demande/creer");
+            Assert.Contains("/Account/Login", response.Headers.Location?.ToString());
+        }
+        // s'assurer que les demande crée sont bien afficher Dans /demande/demandes
+        [Fact]
+        public async Task DemandesAfficheBienDemande() 
+        {
+            HttpResponseMessage response = await _client.GetAsync("/demande/demandes");
+            Console.Write(response.Content);
+            Console.Write(response.Content);
+        }
+
     }
 }
