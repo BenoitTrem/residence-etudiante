@@ -173,28 +173,32 @@ namespace S14_ProjetSession.Controllers
                     if (TryValidateModel(demande))
                     {
                         _demandeRepository.Creer(demande);
+                        TempData["Succes"] = $"Nouvelle demande Ajouter {demande.Etudiant.Nom} {demande.Semestre.NomSemestre}";
                         return RedirectToAction("Index");
                     }
                     else
                     {
-                        Console.WriteLine(ModelState.IsValid);
                         ViewBag.Genres = _genreRepository.Genres;
-                        ViewBag.Semestre = _semestreRepository.Semestres;
+                        ViewBag.Semestres = _semestreRepository.Semestres;
                         return View(demande);
                     }
-                    }
+                }
                 else
+                {
                     ViewBag.Genres = _genreRepository.Genres;
-                    ViewBag.Semestre = _semestreRepository.Semestres;
-                return View(demande);
+                    ViewBag.Semestres = _semestreRepository.Semestres;
+                    ModelState.AddModelError(string.Empty, "Impossible de créer la demande : données manquantes (semestre/étudiant/genre).");
+                    return View(demande);
+                }
             }
             else
             {
                 ViewBag.Genres = _genreRepository.Genres;
-                ViewBag.Semestre = _semestreRepository.Semestres;
+                ViewBag.Semestres = _semestreRepository.Semestres;
                 return View(demande);
             }
-            }
+        }
+
 
 
         public ViewResult EtapeDemande() 
@@ -226,7 +230,6 @@ namespace S14_ProjetSession.Controllers
         }
 
 
-
         public ViewResult EtapeInformation()
         {
             ViewBag.Genres = _genreRepository.Genres;
@@ -247,7 +250,6 @@ namespace S14_ProjetSession.Controllers
                 return View(demande);
             }
         }
-
 
 
 

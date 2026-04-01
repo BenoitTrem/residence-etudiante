@@ -79,14 +79,87 @@ namespace S14_ProjetSessionTests.Integration
             HttpResponseMessage response = await _client.GetAsync("/demande/creer");
             string body = await response.Content.ReadAsStringAsync();
 
-            Console.WriteLine($"Status: {(int)response.StatusCode} {response.StatusCode}");
-            Console.WriteLine(body);
-
-            Assert.True(response.IsSuccessStatusCode, body);
-
-            string responseBody = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
-            Assert.Contains("__RequestVerificationToken", responseBody);
+            Assert.Contains("__RequestVerificationToken", body);
         }
+
+        [Fact(DisplayName = "RequestVerificationToken est vérifié")]
+        public async Task CreerSansTokenRetourne400()
+        {
+            var formData = new Dictionary<string, string>
+                {
+                    { "SemestreId", "1" },
+                    { "EtudiantId", "1" },
+                    { "PreferencesGenreId", "1" },
+                    { "PrefDureeBail", "120" },
+
+                    { "AccepteReglements", "true" },
+                    { "AccepteTraitementDonnees", "true" },
+                    { "ConfirmeSoumission", "true" },
+
+                    { "NomGarant", "Tremblay" },
+                    { "PrenomGarant", "Jean" },
+                    { "DateNaissanceGarant", "1990-01-01" },
+                    { "CourrielGarant", "test@test.com" },
+                    { "TelephoneGarant", "8191234567" },
+
+                    { "NomParent", "Parent Test" },
+                    { "CourrielParent", "parent@test.com" },
+
+                    { "NomUrgence", "Urgence Test" },
+                    { "LienParenteUrgence", "Pere" },
+                    { "TelephoneUrgence", "8199999999" },
+
+                    // Jumelage list
+                    { "jumelage[0].Nom", "Alex" },
+                    { "jumelage[0].Courriel", "alex@test.com" }
+                };
+
+            var content = new FormUrlEncodedContent(formData);
+
+            var response = await _client.PostAsync("/Demande/Creer", content);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Fact(DisplayName = "Un nom vide retourne au formulaire et affiche message d'erreur")]
+        public async Task CreerRedirigeVersCreationSiInvalide()
+        {
+            // Créer les données du formulaire
+            var formData = new Dictionary<string, string>
+                {
+                    { "SemestreId", "1" },
+                    { "EtudiantId", "1" },
+                    { "PreferencesGenreId", "1" },
+                    { "PrefDureeBail", "120" },
+
+                    //{ "AccepteReglements", "true" },
+                    //{ "AccepteTraitementDonnees", "true" },
+                    //{ "ConfirmeSoumission", "true" },
+
+                    { "NomGarant", "Tremblay" },
+                    { "PrenomGarant", "Jean" },
+                    { "DateNaissanceGarant", "1990-01-01" },
+                    { "CourrielGarant", "test@test.com" },
+                    { "TelephoneGarant", "8191234567" },
+
+                    { "NomParent", "Parent Test" },
+                    { "CourrielParent", "parent@test.com" },
+
+                    { "NomUrgence", "Urgence Test" },
+                    { "LienParenteUrgence", "Pere" },
+                    { "TelephoneUrgence", "8199999999" },
+
+                    // Jumelage list
+                    { "jumelage[0].Nom", "Alex" },
+                    { "jumelage[0].Courriel", "alex@test.com" }
+                };
+            HttpContent form = await GetForm(formData);
+            HttpResponseMessage response = await _client.PostAsync("/Demande/Creer", form, TestContext.Current.CancellationToken);
+            
+            string responseBody = HttpUtility.HtmlDecode(await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken));
+            Assert.Contains(("Veuillez spécifier un nom pour votre merveilleuse recette"), responseBody);
+        }
+
 
 
 
