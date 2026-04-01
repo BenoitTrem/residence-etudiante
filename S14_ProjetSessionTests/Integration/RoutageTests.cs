@@ -61,6 +61,10 @@ namespace S14_ProjetSessionTests.Integration
             Assert.Contains("Alex", html);
             Assert.Contains("hivers-2025", html);
         }
-
+        [Fact]
+        public async Task CreationDuneDemande() 
+        {
+        
+        }
     }
 }

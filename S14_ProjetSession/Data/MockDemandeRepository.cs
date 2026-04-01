@@ -22,7 +22,8 @@ namespace S14_ProjetSession.Data
                     Prenom = "Alex",
                     DateNaissance = new DateTime(2003, 5, 14),
                     noEtudiant = "20230001",
-                    noAdmission = "ADM001"
+                    noAdmission = "ADM001",
+                    ApplicationUserId = "468a4852-42ee-4f45-9be5-41422b589904"
                 },
                 PrefDureeBail = 120,
                 Semestre = new Semestre() 

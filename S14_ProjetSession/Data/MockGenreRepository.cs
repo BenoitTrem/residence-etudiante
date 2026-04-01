@@ -1,0 +1,34 @@
+﻿using S14_ProjetSession.Models;
+
+namespace S14_ProjetSession.Data
+{
+    public class MockGenreRepository : IGenresRepository
+    {
+        private List<Genre> _context;
+
+
+
+
+        public List<Genre> Genres => Genres;
+
+
+        public MockGenreRepository()
+        {
+            _context = new List<Genre>()
+            {
+                new Genre
+                {
+                    Nom = "HOMME",
+                    Id = 1
+                }
+            };
+        }
+
+
+        public Genre? GetGenre(int id)
+        {
+            return Genres.FirstOrDefault(f => f.Id == id);
+        }
+
+    }
+}

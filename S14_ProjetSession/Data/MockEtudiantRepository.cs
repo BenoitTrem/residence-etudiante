@@ -32,7 +32,7 @@ namespace S14_ProjetSession.Data
                     noEtudiant = "20230002",
                     noAdmission = "ADM002"
                 }
-                // Ajoute d'autres étudiants si nécessaire
+                
             };
         }
 

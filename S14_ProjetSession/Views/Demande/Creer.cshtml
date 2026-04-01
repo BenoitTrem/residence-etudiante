@@ -4,7 +4,7 @@
 
 
 <form asp-action="Creer" method="post">
-
+    @Html.AntiForgeryToken()
     <div class="mb-3">
         <label for="SemestreId" class="form-label">Semestre *</label>
         <select id="SemestreId" name="SemestreId" class="form-control" required>
