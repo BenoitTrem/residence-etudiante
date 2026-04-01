@@ -75,5 +75,20 @@ namespace S14_ProjetSession.Models
         [Phone(ErrorMessage = "Le numéro de téléphone du contact d'urgence doit être valide.")]
         [StringLength(20, ErrorMessage = "Le téléphone du contact d'urgence ne peut pas dépasser 20 caractères.")]
         public string TelephoneUrgence { get; set; } = string.Empty;
+
+        // admin gere c'est attribut
+        public DateTime? DateDebutBail { get; set; }
+
+        public DateTime? DateFinBail { get; set; }
+        
+        public StatutDemande StatutDemande { get; set; } = StatutDemande.EnAttente;
+
+        public DateTime? DateTraitement { get; set; }
+
+        // attribuer des place a une personne Avec unité dans demande
+
+        public int? UniteId { get; set; }
+        public Unite? Unite { get; set; }
+
     }
 }
