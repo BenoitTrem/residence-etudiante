@@ -1,4 +1,5 @@
-﻿using S14_ProjetSession.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using S14_ProjetSession.Models;
 
 namespace S14_ProjetSession.Data
 {
@@ -11,14 +12,39 @@ namespace S14_ProjetSession.Data
             _context = context;
         }
 
-        public List<Campus> GetAll()
-        {
-            return _context.Campus.ToList();
-        }
+        IEnumerable<Campus> ICampusRepository.Campus => _context.Campus
+            .Include(e=> e.programmes)
+            .Include(e => e.Residences)
+            ;
 
         public Campus? GetById(int id)
         {
             return _context.Campus.FirstOrDefault(c => c.Id == id);
+        }
+
+        void ICampusRepository.Creer(Campus campus)
+        {
+            _context.Campus.Add(campus);
+            _context.SaveChanges();
+        }
+
+        void ICampusRepository.Modifier(Campus campus)
+        {
+            _context.Campus.Update(campus);
+            _context.SaveChanges();
+        }
+
+        void ICampusRepository.Supprimer(Campus campus)
+        {
+            _context.Campus.Remove(campus);
+            _context.SaveChanges();
+        }
+
+        void ICampusRepository.SupprimerParID(int id)
+        {
+            Campus campus = GetById(id);
+            _context.Campus.Remove(campus);
+            _context.SaveChanges();
         }
     }
 }

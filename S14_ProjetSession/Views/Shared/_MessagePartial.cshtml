@@ -1,4 +1,9 @@
-﻿@if (TempData["Erreur"] != null)
+﻿@*
+    Vue partielle : _MessagePartial.cshtml
+    Description : Affiche les messages temporaires (succès et erreur) via TempData.
+    @Author : John Zuleta
+*@
+@if (TempData["Erreur"] != null)
 {
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <i class="bi bi-exclamation-triangle-fill me-2"></i>

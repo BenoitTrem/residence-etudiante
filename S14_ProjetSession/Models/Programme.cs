@@ -6,8 +6,13 @@ namespace S14_ProjetSession.Models
     {
         public int Id { get; set; }
 
+
+        [Required(ErrorMessage = "Le Nom est obligatoire")]
+        [StringLength(50, ErrorMessage = "Max 50 caractères")]
         public string Nom { get; set; }
 
+        [Required(ErrorMessage = "Le Code est obligatoire")]
+        [StringLength(10, ErrorMessage = "Max 10 caractères")]
         public string Code { get; set; }
 
 
