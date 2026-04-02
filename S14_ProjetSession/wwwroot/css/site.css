@@ -343,3 +343,11 @@ dialog {
         transform: translateX(-50%) translateY(-10px); 
     }
 
+.width{
+    width:90%;
+}
+
+.width-2 {
+    width: 49%;
+}
+

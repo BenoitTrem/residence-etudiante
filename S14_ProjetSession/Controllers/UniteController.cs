@@ -20,7 +20,7 @@ namespace S14_ProjetSession.Controllers
         }
  
         [HttpGet("Unite/Residence/{id}")]
-        [AllowAnonymous]
+        [Authorize(Policy = "AdminOuGestionnaire")]
         public IActionResult Index(int id)
         {
             List<Unite> unitesDisponibles = _uniteRepository.GetByResidenceId(id);
