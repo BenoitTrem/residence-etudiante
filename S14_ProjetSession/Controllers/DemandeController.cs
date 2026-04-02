@@ -151,7 +151,15 @@ namespace S14_ProjetSession.Controllers
                 Etudiant? etudiant = _etudiantRepository.GetEtudiant(1);
                 
                 Genre? genre = _genreRepository.GetGenre(demande.PreferencesGenreId.Value);
-                if (semestre != null && etudiant != null && genre != null)
+                Demande? demandeDoubleExiste = _demandeRepository.Demandes.FirstOrDefault(d => d.EtudiantId == 1 && d.SemestreId == semestre.Id);
+                if (demandeDoubleExiste != null) 
+                {
+                    ModelState.AddModelError(string.Empty, "Une demande existe déjà pour cet étudiant et ce semestre.");
+                    ViewBag.Genres = _genreRepository.Genres;
+                    ViewBag.Semestres = _semestreRepository.Semestres;
+                    return View(demande);
+                }
+                    if (semestre != null && etudiant != null && genre != null)
                 {
                     demande.Semestre = semestre;
                     demande.Etudiant = etudiant;

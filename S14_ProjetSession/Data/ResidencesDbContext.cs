@@ -42,6 +42,10 @@ namespace S14_ProjetSession.Data;
             modelBuilder.Entity<Unite>()
                 .HasIndex(u => new { u.Numero, u.ResidenceId })
                 .IsUnique();
+        modelBuilder.Entity<Demande>()
+                    .HasIndex(d => new { d.EtudiantId, d.SemestreId })
+                    .IsUnique();
+        
         }
     }
 

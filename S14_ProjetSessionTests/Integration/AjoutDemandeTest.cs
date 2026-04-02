@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using Castle.Components.DictionaryAdapter;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using S14_ProjetSession.Data;
+using S14_ProjetSession.Models;
 using System.Net;
 using System.Security.Claims;
 using System.Web;
@@ -58,19 +60,21 @@ namespace S14_ProjetSessionTests.Integration
 
 
 
-        private async Task<string> ObtenirToken()
+        private async Task<string> ObtenirToken(string chemin)
         {
-            HttpResponseMessage response = await _client.GetAsync("/demande/creer", TestContext.Current.CancellationToken);
+            HttpResponseMessage response = await _client.GetAsync(chemin, TestContext.Current.CancellationToken);
             string responseBody = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
             return Utils.GetToken(responseBody);
         }
 
         // comprendre ca fait quoi CA
-        private async Task<HttpContent> GetForm(Dictionary<string, string> formData)
+        private async Task<HttpContent> GetForm(Dictionary<string, string> formData, string chemin)
         {
-            HttpContent form = new FormUrlEncodedContent(formData);
-            form.Headers.Add("RequestVerificationToken", await ObtenirToken());
-            return form;
+            string token = await ObtenirToken(chemin);
+
+            formData.Add("__RequestVerificationToken", token);
+
+            return new FormUrlEncodedContent(formData);
         }
 
         [Fact(DisplayName = "Le formulaire de création comporte token antiforgery")]
@@ -81,6 +85,8 @@ namespace S14_ProjetSessionTests.Integration
 
             Assert.Contains("__RequestVerificationToken", body);
         }
+
+
 
         [Fact(DisplayName = "RequestVerificationToken est vérifié")]
         public async Task CreerSansTokenRetourne400()
@@ -121,6 +127,77 @@ namespace S14_ProjetSessionTests.Integration
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
+        
+        
+
+        [Fact]
+        public async Task DemandeCreeSansCompteRedirigeVersLogin()
+        {
+
+            HttpResponseMessage response = await _client.GetAsync("/demande/creer");
+            Assert.Contains("/Account/Login", response.Headers.Location?.ToString());
+        }
+        // s'assurer que les demande crée sont bien afficher Dans /demande/demandes
+
+
+        // Test - Un test de vue pour vérifier qu’une propriété de l’objet s’affiche dans la vue
+
+        [Fact]
+        public async Task DemandesAfficheBienDemande()
+        {
+
+            List<Demande> demande = new MockDemandeRepository().Demandes;
+
+
+            HttpResponseMessage response = await _client.GetAsync("/demande/demandes", TestContext.Current.CancellationToken);
+
+            string html = await response.Content.ReadAsStringAsync();
+            // regarder que ca affiche bien les demandes là le prenom
+            Assert.Contains("Alex", html);
+            Assert.Contains("hivers-2025", html);
+        }
+
+
+        //- Un test pour vérifier que la création d’un objet s’effectue avec des données valides
+
+        [Fact]
+        public async Task CreationDuneDemande()
+        {
+            var formData = new Dictionary<string, string>
+                {
+                    { "SemestreId", "1" },
+                    { "EtudiantId", "1" },
+                    { "PreferencesGenreId", "1" },
+                    { "PrefDureeBail", "120" },
+
+                    { "AccepteReglements", "true" },
+                    { "AccepteTraitementDonnees", "true" },
+                    { "ConfirmeSoumission", "true" },
+
+                    { "NomGarant", "Tremblay" },
+                    { "PrenomGarant", "Jean" },
+                    { "DateNaissanceGarant", "1990-01-01" },
+                    { "CourrielGarant", "test@test.com" },
+                    { "TelephoneGarant", "8191234567" },
+
+                    { "NomParent", "Parent Test" },
+                    { "CourrielParent", "parent@test.com" },
+
+                    { "NomUrgence", "Urgence Test" },
+                    { "LienParenteUrgence", "Pere" },
+                    { "TelephoneUrgence", "8199999999" },
+
+                    // Jumelage list
+                    { "jumelage[0].Nom", "Alex" },
+                    { "jumelage[0].Courriel", "alex@test.com" }
+                };
+            string chemin = "/Demande/Creer";
+            HttpContent form = await GetForm(formData, chemin);
+            HttpResponseMessage response = await _client.PostAsync(chemin, form, TestContext.Current.CancellationToken);
+            Console.WriteLine(response);
+
+        }
+
         [Fact(DisplayName = "Un nom vide retourne au formulaire et affiche message d'erreur")]
         public async Task CreerRedirigeVersCreationSiInvalide()
         {
@@ -153,14 +230,34 @@ namespace S14_ProjetSessionTests.Integration
                     { "jumelage[0].Nom", "Alex" },
                     { "jumelage[0].Courriel", "alex@test.com" }
                 };
-            HttpContent form = await GetForm(formData);
-            HttpResponseMessage response = await _client.PostAsync("/Demande/Creer", form, TestContext.Current.CancellationToken);
-            
+            string chemin = "/Demande/Creer";
+
+            HttpContent form = await GetForm(formData, chemin);
+            HttpResponseMessage response = await _client.PostAsync(chemin, form, TestContext.Current.CancellationToken);
+
             string responseBody = HttpUtility.HtmlDecode(await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken));
             Assert.Contains(("Veuillez spécifier un nom pour votre merveilleuse recette"), responseBody);
         }
 
+        // - Un test pour vérifier que la création d’un objet est refusée avec des données invalides
 
+
+        // - Un test pour vérifier que la modification d’un objet s’effectue avec des données valides
+
+        // - Un test pour vérifier que la modification d’un objet est refusée avec des données invalides
+
+        // - Un test pour vérifier la suppression d’un objet
+
+        // - Un test pour vérifier la modification de la relation d’un objet
+
+        //- Deux tests pour vérifier qu’une route n’est pas accessible aux utilisateurs qui ne sont pas connectés
+        //(un test qui vérifie que la route est accessible à l’utilisateur connecté, un test qui vérifie que la même
+        //route n’est pas accessible à l’utilisateur qui n’est pas connecté)
+
+        //Deux tests pour vérifier une règle d’autorisation qui utilise un rôle (ex. un test pour vérifier que seul un
+        //admin peut supprimer une voiture). Un test vérifie que l’utilisateur qui n’a pas le rôle nécessaire ne
+        //peut effectuer l’opération.L’autre test vérifie que la même fonctionnalité est accessible aux
+        //utilisateurs possédant les permissions appropriées.
 
 
 

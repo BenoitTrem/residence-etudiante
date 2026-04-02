@@ -2,7 +2,7 @@
 @using S14_ProjetSession.Models
 
 
-
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 <form asp-action="Creer" method="post">
     @Html.AntiForgeryToken()
     <div class="mb-3">
@@ -14,6 +14,7 @@
                 <option value="@semestre.Id">@semestre.NomSemestre</option>
             }
         </select>
+        <span asp-validation-for="SemestreId" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
@@ -25,26 +26,31 @@
                 <option value="@genre.Id">@genre.Nom</option>
             }
         </select>
+        <span asp-validation-for="PreferencesGenreId" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label for="PrefDureeBail" class="form-label">Durée du bail *</label>
         <input asp-for="PrefDureeBail" id="PrefDureeBail" type="number" class="form-control" min="1" required />
+        <span asp-validation-for="PrefDureeBail" class="text-danger"></span>
     </div>
 
     <div class="form-check mb-2">
         <input asp-for="AccepteReglements" class="form-check-input" required />
         <label asp-for="AccepteReglements" class="form-check-label">AccepteReglements *</label>
+        <span asp-validation-for="AccepteReglements" class="text-danger"></span>
     </div>
 
     <div class="form-check mb-2">
         <input asp-for="AccepteTraitementDonnees" class="form-check-input" required />
         <label asp-for="AccepteTraitementDonnees" class="form-check-label">AccepteTraitementDonnees *</label>
+        <span asp-validation-for="AccepteTraitementDonnees" class="text-danger"></span>
     </div>
 
     <div class="form-check mb-3">
         <input asp-for="ConfirmeSoumission" class="form-check-input" required />
         <label asp-for="ConfirmeSoumission" class="form-check-label">ConfirmeSoumission *</label>
+        <span asp-validation-for="ConfirmeSoumission" class="text-danger"></span>
     </div>
 
     <h5>Jumelage</h5>
@@ -77,26 +83,31 @@
     <div class="mb-3">
         <label asp-for="NomGarant" class="form-label">NomGarant *</label>
         <input asp-for="NomGarant" class="form-control" required />
+        <span asp-validation-for="NomGarant" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="PrenomGarant" class="form-label">PrenomGarant *</label>
         <input asp-for="PrenomGarant" class="form-control" required />
+        <span asp-validation-for="PrenomGarant" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="DateNaissanceGarant" class="form-label">DateNaissanceGarant *</label>
         <input asp-for="DateNaissanceGarant" type="date" class="form-control" required />
+        <span asp-validation-for="DateNaissanceGarant" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="CourrielGarant" class="form-label">CourrielGarant *</label>
         <input asp-for="CourrielGarant" type="email" class="form-control" required />
+        <span asp-validation-for="CourrielGarant" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="TelephoneGarant" class="form-label">TelephoneGarant *</label>
         <input asp-for="TelephoneGarant" type="tel" class="form-control" required />
+        <span asp-validation-for="TelephoneGarant" class="text-danger"></span>
     </div>
 
     <h5>Parent (optionnel)</h5>
@@ -104,11 +115,13 @@
     <div class="mb-3">
         <label asp-for="NomParent" class="form-label"></label>
         <input asp-for="NomParent" class="form-control" />
+        <span asp-validation-for="NomParent" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="CourrielParent" class="form-label"></label>
         <input asp-for="CourrielParent" type="email" class="form-control" />
+        <span asp-validation-for="CourrielParent" class="text-danger"></span>
     </div>
 
     <h5>Contact d'urgence</h5>
@@ -116,17 +129,23 @@
     <div class="mb-3">
         <label asp-for="NomUrgence" class="form-label">NomUrgence *</label>
         <input asp-for="NomUrgence" class="form-control" required />
+        <span asp-validation-for="NomUrgence" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="LienParenteUrgence" class="form-label">LienParenteUrgence *</label>
         <input asp-for="LienParenteUrgence" class="form-control" required />
+        <span asp-validation-for="LienParenteUrgence" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="TelephoneUrgence" class="form-label">TelephoneUrgence *</label>
         <input asp-for="TelephoneUrgence" type="tel" class="form-control" required />
+        <span asp-validation-for="TelephoneUrgence" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
