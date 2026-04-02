@@ -165,7 +165,7 @@ namespace S14_ProjetSession.Controllers
                     demande.Etudiant = etudiant;
                     demande.PreferencesGenre = genre;
                     AjoutJumelageChoisis(demande,jumelage);
-                    
+                    Console.WriteLine(ModelState.IsValid);
                     if (TryValidateModel(demande))
                     {
                         _demandeRepository.Creer(demande);

@@ -127,8 +127,8 @@ namespace S14_ProjetSessionTests.Integration
                     { "jumelage[0].Courriel", "alex@test.com" }
                 };
 
-            var content = await GetForm(formData, "/demande/creer");
-
+            //var content = await GetForm(formData, "/demande/creer");
+            HttpContent content = new FormUrlEncodedContent(formData);
             var response = await _client.PostAsync("/Demande/Creer", content);
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -169,6 +169,7 @@ namespace S14_ProjetSessionTests.Integration
         [Fact]
         public async Task CreationDuneDemande()
         {
+            int avant = _demandeRepository.Demandes.Count();
             var formData = new Dictionary<string, string>
     {
         { "SemestreId", "5" },
@@ -201,9 +202,7 @@ namespace S14_ProjetSessionTests.Integration
             HttpContent form = await GetForm(formData, chemin);
             HttpResponseMessage response = await _client.PostAsync(chemin, form, TestContext.Current.CancellationToken);
 
-            Console.WriteLine(response.StatusCode);
-            string body = await response.Content.ReadAsStringAsync();
-            Console.WriteLine(body);
+            Assert.Equal(avant + 1, _demandeRepository.Demandes.Count());
         }
 
         [Fact(DisplayName = "Un nom vide retourne au formulaire et affiche message d'erreur")]
