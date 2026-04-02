@@ -18,16 +18,27 @@
     </div>
 
     <div class="mb-3">
-        <label for="PreferencesGenreId" class="form-label">Préférence de genre</label>
-        <select id="PreferencesGenreId" name="PreferencesGenreId" class="form-control">
-            <option value="@Model.PreferencesGenre.Id"> @Model.PreferencesGenre.Nom </option>
+        <label class="form-label">Préférences de genre</label>
+
+        <div class="border p-2 rounded">
             @foreach (Genre genre in ViewBag.Genres)
             {
-                if (@genre.Id != @Model.PreferencesGenre.Id){
-                <option value="@genre.Id">@genre.Nom</option>
-                }
+                bool estCoche = Model.PreferencesGenre != null
+                && Model.PreferencesGenre.Any(g => g.Id == genre.Id);
+
+                <div class="form-check">
+                    <input class="form-check-input"
+                           type="checkbox"
+                           name="PreferencesGenreIds"
+                           value="@genre.Id"
+                           @(estCoche ? "checked" : "") />
+
+                    <label class="form-check-label">
+                        @genre.Nom
+                    </label>
+                </div>
             }
-        </select>
+        </div>
     </div>
 
     <div class="mb-3">
