@@ -15,11 +15,14 @@ namespace S14_ProjetSession.Models
         public Etudiant Etudiant { get; set; }
         
         
-        public Genre? PreferencesGenre  { get; set; }
 
-        public int? PreferencesGenreId { get; set; }
+
 
         
+        public List<Genre> PreferencesGenre  { get; set; } = new List<Genre>();
+
+
+
         // simplement le nombre de jours pour le moment
         public int PrefDureeBail { get; set; }
 

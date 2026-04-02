@@ -137,7 +137,7 @@ namespace S14_ProjetSession.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Creer([Bind("SemestreId,EtudiantId,PreferencesGenreId,PrefDureeBail,AccepteReglements,AccepteTraitementDonnees,ConfirmeSoumission,NomGarant,PrenomGarant,DateNaissanceGarant,CourrielGarant,TelephoneGarant,NomParent,CourrielParent,NomUrgence,LienParenteUrgence,TelephoneUrgence")] Demande demande, List<JumelageViewModel> jumelage)
+        public IActionResult Creer([Bind("SemestreId,EtudiantId,PreferencesGenreIds,PrefDureeBail,AccepteReglements,AccepteTraitementDonnees,ConfirmeSoumission,NomGarant,PrenomGarant,DateNaissanceGarant,CourrielGarant,TelephoneGarant,NomParent,CourrielParent,NomUrgence,LienParenteUrgence,TelephoneUrgence")] Demande demande, List<JumelageViewModel> jumelage, List<int> PreferencesGenreIds)
         {
             ModelState.Remove("Etudiant");
             ModelState.Remove("Semestre");
@@ -162,7 +162,7 @@ namespace S14_ProjetSession.Controllers
 
                 Etudiant? etudiant = _etudiantRepository.GetEtudiant(1);
                 
-                Genre? genre = _genreRepository.GetGenre(demande.PreferencesGenreId.Value);
+              
                 if (semestre != null && etudiant != null && genre != null)
                 {
                     demande.Semestre = semestre;
