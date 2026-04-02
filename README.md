@@ -73,17 +73,17 @@ Spécifier les numéros de billets (vous pouvez compléter au fur et à mesure).
 
 - **Préparation de la base de données (00ST.1, 00ST.3)**
    - Felix : Modèle `Demande`, préférences de durée de bail
-   - John : Modèle `Étudiant`, programme, genre
-   - Benoit : Modèles `Résidence`, `Unité`, campus
+   - John : Modèle `Étudiant`, programme, genre,campus
+   - Benoit : Modèles `Résidence`, `Unité`
 
 - **Programmation côté serveur (00ST.1, 00ST.2, 00ST.5)**
    - Felix : Contrôleurs et logique des demandes
-   - John : Contrôleurs des étudiants, campus, programme et genre (CRUD complet)
-   - Benoit : Contrôleurs des résidences et unités
+   - John : Contrôleurs et logique des étudiants, campus, programme et genre.
+   - Benoit : Contrôleurs et lgogique des résidences et unités
 
 - **Réalisation d'une interface utilisateur (00ST.4, 00ST.6)**
    - Felix : Formulaire de création de demande
-   - John : Interface profil étudiant
+   - John : Interface profil étudiant , gestion de erreurs
    - Benoit : Interface gestion des résidences
 
 - **Contrôle rigoureux de la qualité de l'application (00ST.7)**
@@ -93,5 +93,5 @@ Spécifier les numéros de billets (vous pouvez compléter au fur et à mesure).
 
 - **Production de la documentation et respect des règles d'orthographe et de grammaire dans l'interface (00ST.2, 00ST.9)**
    - Felix : README et documentation des demandes
-   - John : Documentation des modèles étudiants
+   - John : Documentation des modèles étudiants 
    - Benoit : Documentation des résidences et unités
