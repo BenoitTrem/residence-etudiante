@@ -19,4 +19,15 @@ public static class AuthUtilities
         }, "TestAuth"
         ));
     }
+    public static ClaimsPrincipal CreerGerant()
+    {
+        return new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, "468a4852-42ee-4f45-9be5-41422b589904"),
+            new Claim(ClaimTypes.Name, "amin admin"),
+            new Claim(ClaimTypes.Email, "amin.admin@exemple.com"),
+            new Claim(ClaimTypes.Role, "Gestionnaire")
+        }, "TestAuth"
+        ));
+    }
 }

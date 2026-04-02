@@ -297,8 +297,7 @@ namespace S14_ProjetSessionTests.Integration
         // - Un test pour vérifier que la modification d’un objet est refusée avec des données invalides
 
 
-        // - Un test pour vérifier la suppression d’un objet
-
+        
 
         // - Un test pour vérifier la modification de la relation d’un objet
 
