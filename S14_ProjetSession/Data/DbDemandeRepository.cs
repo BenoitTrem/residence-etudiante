@@ -33,7 +33,14 @@ namespace S14_ProjetSession.Data
 
         public void Modifier(Demande demande)
         {
-            _context.Demandes.Update(demande);
+            
+            Demande? demandeExistante = GetDemande(demande.Id);
+            if (demandeExistante != null) 
+            {
+                //TODO fix temporaire
+                demande.EtudiantId = demandeExistante.EtudiantId;
+                _context.Entry(demandeExistante).CurrentValues.SetValues(demande);
+            }
             _context.SaveChanges();
         }
     }

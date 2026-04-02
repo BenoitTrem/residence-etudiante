@@ -92,19 +92,7 @@ namespace S14_ProjetSession.Controllers
         public IActionResult Modifier(Demande demande) 
         {
             // faire verification
-            Demande demandeDb = _demandeRepository.GetDemande(demande.Id);
-            if (demandeDb == null) 
-            {
-                return NotFound();
-            }
-            demandeDb.SemestreId = demande.SemestreId;
-            demandeDb.PreferencesGenreId = demande.PreferencesGenreId;
-            demandeDb.PrefDureeBail = demande.PrefDureeBail;
-            demandeDb.AccepteReglements = demande.AccepteReglements;
-            demandeDb.AccepteTraitementDonnees = demande.AccepteTraitementDonnees;
-            demandeDb.ConfirmeSoumission = demande.ConfirmeSoumission;
-            demandeDb.DateDemande = demande.DateDemande;
-
+            
             _demandeRepository.Modifier(demande);
 
 
