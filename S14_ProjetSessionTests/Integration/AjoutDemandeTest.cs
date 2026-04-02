@@ -209,41 +209,46 @@ namespace S14_ProjetSessionTests.Integration
         public async Task CreerRedirigeVersCreationSiInvalide()
         {
             // Créer les données du formulaire
+            // deja dans la liste des combinaison semestre 1 et etudiant 1 donc pas de doublon donc devrais retourné avec un texte    
+
             var formData = new Dictionary<string, string>
-                {
-                    { "SemestreId", "1" },
-                    { "EtudiantId", "1" },
-                    { "PreferencesGenreId", "1" },
-                    { "PrefDureeBail", "120" },
+            {
+                { "SemestreId", "1" },
+                { "EtudiantId", "1" },
+                { "PreferencesGenreId", "1" },
+                { "PrefDureeBail", "120" },
 
-                    //{ "AccepteReglements", "true" },
-                    //{ "AccepteTraitementDonnees", "true" },
-                    //{ "ConfirmeSoumission", "true" },
+                { "AccepteReglements", "true" },
+                { "AccepteTraitementDonnees", "true" },
+                { "ConfirmeSoumission", "true" },
 
-                    { "NomGarant", "Tremblay" },
-                    { "PrenomGarant", "Jean" },
-                    { "DateNaissanceGarant", "1990-01-01" },
-                    { "CourrielGarant", "test@test.com" },
-                    { "TelephoneGarant", "8191234567" },
+                { "NomGarant", "Tremblay" },
+                { "PrenomGarant", "Jean" },
+                { "DateNaissanceGarant", "1990-01-01" },
+                { "CourrielGarant", "test@test.com" },
+                { "TelephoneGarant", "8191234567" },
 
-                    { "NomParent", "Parent Test" },
-                    { "CourrielParent", "parent@test.com" },
+                { "NomParent", "Parent Test" },
+                { "CourrielParent", "parent@test.com" },
 
-                    { "NomUrgence", "Urgence Test" },
-                    { "LienParenteUrgence", "Pere" },
-                    { "TelephoneUrgence", "8199999999" },
+                { "NomUrgence", "Urgence Test" },
+                { "LienParenteUrgence", "Pere" },
+                { "TelephoneUrgence", "8199999999" },
 
-                    // Jumelage list
-                    { "jumelage[0].Nom", "Alex" },
-                    { "jumelage[0].Courriel", "alex@test.com" }
-                };
-            string chemin = "/demande/creer";
+                { "jumelage[0].Nom", "Alex" },
+                { "jumelage[0].Courriel", "alex@test.com" }
+            };
 
+            string chemin = "/Demande/Creer";
             HttpContent form = await GetForm(formData, chemin);
             HttpResponseMessage response = await _client.PostAsync(chemin, form, TestContext.Current.CancellationToken);
+            string html = await response.Content.ReadAsStringAsync();
+            // permet les accents et caractere spécial
+            html = WebUtility.HtmlDecode(html);
 
-            string responseBody = HttpUtility.HtmlDecode(await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken));
-            Assert.Contains(("Veuillez spécifier un nom pour votre merveilleuse recette"), responseBody);
+            Assert.Contains("Une demande existe déjà pour cet étudiant et ce semestre.", html);
+         
+
         }
 
         // - Un test pour vérifier que la création d’un objet est refusée avec des données invalides
