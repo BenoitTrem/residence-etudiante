@@ -57,7 +57,7 @@ namespace S14_ProjetSessionTests.Integration
         }
 
 
-
+       
 
 
         private async Task<string> ObtenirToken(string chemin)
@@ -71,8 +71,14 @@ namespace S14_ProjetSessionTests.Integration
         private async Task<HttpContent> GetForm(Dictionary<string, string> formData, string chemin)
         {
             string token = await ObtenirToken(chemin);
+            Console.WriteLine("TOKEN = " + token);
 
-            formData.Add("__RequestVerificationToken", token);
+            formData["__RequestVerificationToken"] = token;
+
+            foreach (var kvp in formData)
+            {
+                Console.WriteLine($"{kvp.Key} = {kvp.Value}");
+            }
 
             return new FormUrlEncodedContent(formData);
         }
@@ -80,20 +86,21 @@ namespace S14_ProjetSessionTests.Integration
         [Fact(DisplayName = "Le formulaire de création comporte token antiforgery")]
         public async Task CreerComporteToken()
         {
+            var Coins =  GetForm(new Dictionary<string, string>(), "/demande/creer");
+            
             HttpResponseMessage response = await _client.GetAsync("/demande/creer");
             string body = await response.Content.ReadAsStringAsync();
-
             Assert.Contains("__RequestVerificationToken", body);
         }
 
-
+       
 
         [Fact(DisplayName = "RequestVerificationToken est vérifié")]
         public async Task CreerSansTokenRetourne400()
         {
             var formData = new Dictionary<string, string>
                 {
-                    { "SemestreId", "1" },
+                    { "SemestreId", "5" },
                     { "EtudiantId", "1" },
                     { "PreferencesGenreId", "1" },
                     { "PrefDureeBail", "120" },
@@ -120,14 +127,13 @@ namespace S14_ProjetSessionTests.Integration
                     { "jumelage[0].Courriel", "alex@test.com" }
                 };
 
-            var content = new FormUrlEncodedContent(formData);
+            var content = await GetForm(formData, "/demande/creer");
 
             var response = await _client.PostAsync("/Demande/Creer", content);
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
-        
         
 
         [Fact]
@@ -164,38 +170,40 @@ namespace S14_ProjetSessionTests.Integration
         public async Task CreationDuneDemande()
         {
             var formData = new Dictionary<string, string>
-                {
-                    { "SemestreId", "1" },
-                    { "EtudiantId", "1" },
-                    { "PreferencesGenreId", "1" },
-                    { "PrefDureeBail", "120" },
+    {
+        { "SemestreId", "5" },
+        { "EtudiantId", "1" },
+        { "PreferencesGenreId", "1" },
+        { "PrefDureeBail", "120" },
 
-                    { "AccepteReglements", "true" },
-                    { "AccepteTraitementDonnees", "true" },
-                    { "ConfirmeSoumission", "true" },
+        { "AccepteReglements", "true" },
+        { "AccepteTraitementDonnees", "true" },
+        { "ConfirmeSoumission", "true" },
 
-                    { "NomGarant", "Tremblay" },
-                    { "PrenomGarant", "Jean" },
-                    { "DateNaissanceGarant", "1990-01-01" },
-                    { "CourrielGarant", "test@test.com" },
-                    { "TelephoneGarant", "8191234567" },
+        { "NomGarant", "Tremblay" },
+        { "PrenomGarant", "Jean" },
+        { "DateNaissanceGarant", "1990-01-01" },
+        { "CourrielGarant", "test@test.com" },
+        { "TelephoneGarant", "8191234567" },
 
-                    { "NomParent", "Parent Test" },
-                    { "CourrielParent", "parent@test.com" },
+        { "NomParent", "Parent Test" },
+        { "CourrielParent", "parent@test.com" },
 
-                    { "NomUrgence", "Urgence Test" },
-                    { "LienParenteUrgence", "Pere" },
-                    { "TelephoneUrgence", "8199999999" },
+        { "NomUrgence", "Urgence Test" },
+        { "LienParenteUrgence", "Pere" },
+        { "TelephoneUrgence", "8199999999" },
 
-                    // Jumelage list
-                    { "jumelage[0].Nom", "Alex" },
-                    { "jumelage[0].Courriel", "alex@test.com" }
-                };
+        { "jumelage[0].Nom", "Alex" },
+        { "jumelage[0].Courriel", "alex@test.com" }
+    };
+
             string chemin = "/Demande/Creer";
             HttpContent form = await GetForm(formData, chemin);
             HttpResponseMessage response = await _client.PostAsync(chemin, form, TestContext.Current.CancellationToken);
-            Console.WriteLine(response);
 
+            Console.WriteLine(response.StatusCode);
+            string body = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(body);
         }
 
         [Fact(DisplayName = "Un nom vide retourne au formulaire et affiche message d'erreur")]
@@ -230,7 +238,7 @@ namespace S14_ProjetSessionTests.Integration
                     { "jumelage[0].Nom", "Alex" },
                     { "jumelage[0].Courriel", "alex@test.com" }
                 };
-            string chemin = "/Demande/Creer";
+            string chemin = "/demande/creer";
 
             HttpContent form = await GetForm(formData, chemin);
             HttpResponseMessage response = await _client.PostAsync(chemin, form, TestContext.Current.CancellationToken);
