@@ -2,6 +2,7 @@
 @using S14_ProjetSession.Models
 
 <form asp-action="Modifier" method="post">
+    @Html.AntiForgeryToken()
 
     <div class="mb-3">
         <label for="SemestreId" class="form-label">Semestre *</label>
@@ -20,12 +21,12 @@
     <div class="mb-3">
         <label for="PreferencesGenreId" class="form-label">Préférence de genre</label>
         <select id="PreferencesGenreId" name="PreferencesGenreId" class="form-control">
-            <option value="@Model.PreferencesGenre.Id"> @Model.PreferencesGenre.Nom </option>
+            
             @foreach (Genre genre in ViewBag.Genres)
             {
-                if (@genre.Id != @Model.PreferencesGenre.Id){
+               
                 <option value="@genre.Id">@genre.Nom</option>
-                }
+                
             }
         </select>
     </div>

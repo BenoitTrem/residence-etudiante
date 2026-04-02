@@ -1,4 +1,5 @@
-﻿using S14_ProjetSession.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using S14_ProjetSession.Models;
 
 namespace S14_ProjetSession.Data
 {
@@ -58,7 +59,7 @@ namespace S14_ProjetSession.Data
                 Id = 2,
                 SemestreId = 2,
                 EtudiantId = 2,
-                PreferencesGenreId = 2,
+                PreferencesGenreId = 1,
 
                 PrefDureeBail = 90,
 
@@ -110,12 +111,28 @@ namespace S14_ProjetSession.Data
 
         public void Modifier(Demande demande)
         {
-            var existante = _demandes.FirstOrDefault(x => x.Id == demande.Id);
+            Demande? demandeExistante = GetDemande(demande.Id);
 
-            if (existante != null)
+            if (demandeExistante != null)
             {
-                _demandes.Remove(existante);
-                _demandes.Add(demande);
+                demande.EtudiantId = demandeExistante.EtudiantId;
+
+                demandeExistante.SemestreId = demande.SemestreId;
+                demandeExistante.PreferencesGenreId = demande.PreferencesGenreId;
+                demandeExistante.PrefDureeBail = demande.PrefDureeBail;
+                demandeExistante.AccepteReglements = demande.AccepteReglements;
+                demandeExistante.AccepteTraitementDonnees = demande.AccepteTraitementDonnees;
+                demandeExistante.ConfirmeSoumission = demande.ConfirmeSoumission;
+                demandeExistante.NomGarant = demande.NomGarant;
+                demandeExistante.PrenomGarant = demande.PrenomGarant;
+                demandeExistante.DateNaissanceGarant = demande.DateNaissanceGarant;
+                demandeExistante.CourrielGarant = demande.CourrielGarant;
+                demandeExistante.TelephoneGarant = demande.TelephoneGarant;
+                demandeExistante.NomParent = demande.NomParent;
+                demandeExistante.CourrielParent = demande.CourrielParent;
+                demandeExistante.NomUrgence = demande.NomUrgence;
+                demandeExistante.LienParenteUrgence = demande.LienParenteUrgence;
+                demandeExistante.TelephoneUrgence = demande.TelephoneUrgence;
             }
         }
 

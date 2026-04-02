@@ -205,6 +205,7 @@ namespace S14_ProjetSessionTests.Integration
             Assert.Equal(avant + 1, _demandeRepository.Demandes.Count());
         }
 
+        // - Un test pour vérifier que la création d’un objet est refusée avec des données invalides
         [Fact(DisplayName = "Un nom vide retourne au formulaire et affiche message d'erreur")]
         public async Task CreerRedirigeVersCreationSiInvalide()
         {
@@ -250,21 +251,75 @@ namespace S14_ProjetSessionTests.Integration
          
 
         }
-
-        // - Un test pour vérifier que la création d’un objet est refusée avec des données invalides
-
+    
 
         // - Un test pour vérifier que la modification d’un objet s’effectue avec des données valides
+        [Fact(DisplayName = "vérifier que la modification d’un objet s’effectue avec des données valides")]
+        public async Task VerifierModificationValide()
+        {
+            // Créer les données du formulaire
+            // deja dans la liste des combinaison semestre 1 et etudiant 1 donc pas de doublon donc devrais retourné avec un texte    
+
+            var formData = new Dictionary<string, string>
+            {
+                { "Id", "1" },
+                { "SemestreId", "10" },
+                { "EtudiantId", "1" },
+                { "PreferencesGenreId", "1" },
+                { "PrefDureeBail", "120" },
+
+                { "AccepteReglements", "true" },
+                { "AccepteTraitementDonnees", "true" },
+                { "ConfirmeSoumission", "true" },
+
+                { "NomGarant", "Tremblay" },
+                { "PrenomGarant", "Jean" },
+                { "DateNaissanceGarant", "1990-01-01" },
+                { "CourrielGarant", "test@test.com" },
+                { "TelephoneGarant", "8191234567" },
+
+                { "NomParent", "Parent Test" },
+                { "CourrielParent", "parent@test.com" },
+
+                { "NomUrgence", "Urgence Test" },
+                { "LienParenteUrgence", "Pere" },
+                { "TelephoneUrgence", "8199999999" },
+
+                { "jumelage[0].Nom", "Alex" },
+                { "jumelage[0].Courriel", "alex@test.com" }
+            };
+
+            string chemin = $"/Demande/Modifier/{1}";
+            
+            HttpContent form = await GetForm(formData, chemin);
+           
+            int demandeAvant = _demandeRepository.GetDemande(1).SemestreId;
+            
+            HttpResponseMessage response = await _client.PostAsync(chemin, form, TestContext.Current.CancellationToken);
+            
+            Demande demandeApres = _demandeRepository.GetDemande(1);
+            
+            Assert.NotEqual(demandeAvant, demandeApres.SemestreId);
+
+
+        }
+
 
         // - Un test pour vérifier que la modification d’un objet est refusée avec des données invalides
 
+
         // - Un test pour vérifier la suppression d’un objet
 
+
         // - Un test pour vérifier la modification de la relation d’un objet
+
+
 
         //- Deux tests pour vérifier qu’une route n’est pas accessible aux utilisateurs qui ne sont pas connectés
         //(un test qui vérifie que la route est accessible à l’utilisateur connecté, un test qui vérifie que la même
         //route n’est pas accessible à l’utilisateur qui n’est pas connecté)
+
+
 
         //Deux tests pour vérifier une règle d’autorisation qui utilise un rôle (ex. un test pour vérifier que seul un
         //admin peut supprimer une voiture). Un test vérifie que l’utilisateur qui n’a pas le rôle nécessaire ne

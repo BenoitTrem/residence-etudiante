@@ -50,6 +50,7 @@ namespace S14_ProjetSession.Controllers
             return View();
         }
 
+        [Authorize(Policy = "AdminOuGestionnaire")]
         public ViewResult Demandes() 
         {
             ViewBag.Demandes = _demandeRepository.Demandes;
@@ -72,6 +73,8 @@ namespace S14_ProjetSession.Controllers
             ViewBag.Demandes = _demandeRepository.Demandes;
             return View("demandes");
         }
+
+        // la personne qui possède ou Admin
         public ViewResult Modifier(int Id) 
         {
             Demande demande = _demandeRepository.GetDemande(Id);
@@ -83,6 +86,7 @@ namespace S14_ProjetSession.Controllers
                 ViewBag.Semestres = _semestreRepository.Semestres;
                 return View(demande);
             }
+            ViewBag.Semestres = _semestreRepository.Semestres;
             ViewBag.Demandes = _demandeRepository.Demandes;
             return View("demandes");
         }
