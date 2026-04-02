@@ -11,6 +11,7 @@ namespace S14_ProjetSession.Data
 
         public List<Genre> Genres => _context;
 
+        IEnumerable<Genre> IGenresRepository.Genres => Genres;
 
         public MockGenreRepository()
         {
@@ -30,5 +31,24 @@ namespace S14_ProjetSession.Data
             return Genres.FirstOrDefault(f => f.Id == id);
         }
 
+        void IGenresRepository.SupprimerParID(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        void IGenresRepository.Creer(Genre genre)
+        {
+            throw new NotImplementedException();
+        }
+
+        void IGenresRepository.Modifier(Genre genre)
+        {
+            throw new NotImplementedException();
+        }
+
+        void IGenresRepository.Supprimer(Genre genre)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -31,7 +31,7 @@ namespace S14_ProjetSession.Controllers
         public IActionResult AjouterResidence()
         {
             ViewData["Title"] = "Ajout d'une résidence";
-            var campusList = _campusRepository.GetAll(); 
+            var campusList = _campusRepository.Campus; 
 
             ViewBag.CampusList = new SelectList(campusList, "Id", "Nom");
             return View(new Residence{Adresse = new Adresse()});
@@ -46,7 +46,7 @@ namespace S14_ProjetSession.Controllers
             {
                 TempData["Erreur"] = "Ce nom de résidence existe déjà.";
                 ViewData["Title"] = "Ajout d'une résidence";
-                ViewBag.CampusList = new SelectList(_campusRepository.GetAll(), "Id", "Nom");
+                ViewBag.CampusList = new SelectList(_campusRepository.Campus, "Id", "Nom");
                 return View("AjouterResidence", residence);
             }
 
@@ -56,7 +56,7 @@ namespace S14_ProjetSession.Controllers
             {
                 TempData["Erreur"] = "Veuillez remplir toutes les informations d'adresse.";
                 ViewData["Title"] = "Ajout d'une résidence";
-                ViewBag.CampusList = new SelectList(_campusRepository.GetAll(), "Id", "Nom");
+                ViewBag.CampusList = new SelectList(_campusRepository.Campus, "Id", "Nom");
                 return View("AjouterResidence", residence);
             }
 
@@ -64,7 +64,7 @@ namespace S14_ProjetSession.Controllers
             {
                 TempData["Erreur"] = "Veuillez sélectionner un campus.";
                 ViewData["Title"] = "Ajout d'une résidence";
-                ViewBag.CampusList = new SelectList(_campusRepository.GetAll(), "Id", "Nom");
+                ViewBag.CampusList = new SelectList(_campusRepository.Campus, "Id", "Nom");
                 return View("AjouterResidence", residence);
             }
 
@@ -72,7 +72,7 @@ namespace S14_ProjetSession.Controllers
             {
                 TempData["Erreur"] = "Une erreur s'est produite.";
                 ViewData["Title"] = "Ajout d'une résidence";
-                ViewBag.CampusList = new SelectList(_campusRepository.GetAll(), "Id", "Nom");
+                ViewBag.CampusList = new SelectList(_campusRepository.Campus, "Id", "Nom");
                 return View("AjouterResidence", residence);
             }
 
@@ -95,7 +95,7 @@ namespace S14_ProjetSession.Controllers
             ViewData["Title"] = "Modification de la résidence " + residence.Nom;
 
             ViewBag.CampusList = new SelectList(
-                _campusRepository.GetAll(),
+                _campusRepository.Campus,
                 "Id",
                 "Nom",
                 residence.CampusId 
@@ -113,7 +113,7 @@ namespace S14_ProjetSession.Controllers
             {
                 TempData["Erreur"] = "Ce nom de résidence existe déjà.";
                 ViewData["Title"] = "Modification de la résidence " + residence.Nom;
-                ViewBag.CampusList = new SelectList(_campusRepository.GetAll(), "Id", "Nom", residence.CampusId);
+                ViewBag.CampusList = new SelectList(_campusRepository.Campus, "Id", "Nom", residence.CampusId);
 
                 return View("ModifierResidence", residence);
             }
@@ -124,7 +124,7 @@ namespace S14_ProjetSession.Controllers
             {
                 TempData["Erreur"] = "Veuillez remplir toutes les informations d'adresse.";
                 ViewData["Title"] = "Modification de la résidence " + residence.Nom;
-                ViewBag.CampusList = new SelectList(_campusRepository.GetAll(), "Id", "Nom", residence.CampusId);
+                ViewBag.CampusList = new SelectList(_campusRepository.Campus, "Id", "Nom", residence.CampusId);
 
                 return View("ModifierResidence", residence);
             }
@@ -133,7 +133,7 @@ namespace S14_ProjetSession.Controllers
             {
                 TempData["Erreur"] = "Une erreur s'est produite.";
                 ViewData["Title"] = "Modification de la résidence " + residence.Nom;
-                ViewBag.CampusList = new SelectList(_campusRepository.GetAll(), "Id", "Nom", residence.CampusId);
+                ViewBag.CampusList = new SelectList(_campusRepository.Campus, "Id", "Nom", residence.CampusId);
 
                 return View("ModifierResidence", residence);
             }

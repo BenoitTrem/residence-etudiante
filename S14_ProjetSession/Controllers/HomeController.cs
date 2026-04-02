@@ -35,7 +35,7 @@ namespace S14_ProjetSession.Controllers
         /// <returns>Vue Error avec modèle</returns>
         /// <author>John Zuleta , Par defaut </author>
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error(int? statusCode = null)
+        public IActionResult Erreur(int? statusCode = null)
         {
             var model = new ErreurViewModel
             {

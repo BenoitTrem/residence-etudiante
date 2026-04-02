@@ -14,11 +14,7 @@ namespace S14_ProjetSession.Models
 
         public Etudiant Etudiant { get; set; }
         
-        
-
-
-
-        
+                
         public List<Genre> PreferencesGenre  { get; set; } = new List<Genre>();
 
 

@@ -5,16 +5,22 @@ namespace S14_ProjetSession.Data
     public class MockDemandeRepository : IDemandeRepository
     {
         private List<Demande> _demandes = new List<Demande>();
+
+        private List<Genre> _genres = new List<Genre>();
         public List<Demande> Demandes => _demandes;
+        
+        public List<Genre> Genres => _genres;
 
         public MockDemandeRepository()
         {
+            _genres.Add(new Genre { Id = 1 , Nom = "Homme"} );
+            _genres.Add(new Genre { Id = 2, Nom = "Femme" });
             _demandes.Add(new Demande
             {
                 Id = 1,
                 SemestreId = 1,
                 EtudiantId = 1,
-                PreferencesGenreId = 1,
+                PreferencesGenre = { _genres[0] } ,
                 Etudiant = new Etudiant
                 {
                     Id = 1,
@@ -58,8 +64,7 @@ namespace S14_ProjetSession.Data
                 Id = 2,
                 SemestreId = 2,
                 EtudiantId = 2,
-                PreferencesGenreId = 2,
-
+                PreferencesGenre = { _genres[1] },
                 PrefDureeBail = 90,
 
                 AccepteReglements = true,

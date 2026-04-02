@@ -66,7 +66,7 @@ namespace S14_ProjetSession.Controllers
         {
             try
             {
-                var campus = _repo.GetCampus(id);
+                var campus = _repo.GetById(id);
 
                 if (campus == null)
                     return Erreur(404, "Campus introuvable.");
@@ -107,7 +107,7 @@ namespace S14_ProjetSession.Controllers
         {
             try
             {
-                var campus = _repo.GetCampus(id);
+                var campus = _repo.GetById(id);
 
                 if (campus == null)
                 {
