@@ -136,18 +136,7 @@ namespace S14_ProjetSessionTests.Integration
 
         
 
-        [Fact]
-        public async Task DemandeCreeSansCompteRedirigeVersLogin()
-        {
-
-            HttpResponseMessage response = await _client.GetAsync("/demande/creer");
-            Assert.Contains("/Account/Login", response.Headers.Location?.ToString());
-        }
-        // s'assurer que les demande crée sont bien afficher Dans /demande/demandes
-
-
-        // Test - Un test de vue pour vérifier qu’une propriété de l’objet s’affiche dans la vue
-
+        
         [Fact]
         public async Task DemandesAfficheBienDemande()
         {
@@ -318,7 +307,14 @@ namespace S14_ProjetSessionTests.Integration
         //- Deux tests pour vérifier qu’une route n’est pas accessible aux utilisateurs qui ne sont pas connectés
         //(un test qui vérifie que la route est accessible à l’utilisateur connecté, un test qui vérifie que la même
         //route n’est pas accessible à l’utilisateur qui n’est pas connecté)
+        [Fact]
+        public async Task DemandeCreeSansCompteRedirigeVersLogin()
+        {
 
+            HttpResponseMessage response = await _client.GetAsync("/demande/creer");
+            Assert.Contains("/Account/Login", response.Headers.Location?.ToString());
+        }
+        
 
 
         //Deux tests pour vérifier une règle d’autorisation qui utilise un rôle (ex. un test pour vérifier que seul un
