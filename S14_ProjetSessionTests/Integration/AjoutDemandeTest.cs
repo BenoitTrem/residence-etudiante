@@ -297,10 +297,18 @@ namespace S14_ProjetSessionTests.Integration
         // - Un test pour vérifier que la modification d’un objet est refusée avec des données invalides
 
 
-        
+
 
         // - Un test pour vérifier la modification de la relation d’un objet
+        [Fact]
+        public async Task LaRouteDemandesPasPourEtudiant()
+        {
 
+            HttpResponseMessage response = await _client.GetAsync("/demande/demandes");
+            Console.WriteLine(response.Content);
+            Console.WriteLine(response.StatusCode);
+            Assert.True(response.StatusCode == HttpStatusCode.Forbidden);
+        }
 
 
         //- Deux tests pour vérifier qu’une route n’est pas accessible aux utilisateurs qui ne sont pas connectés
