@@ -65,7 +65,7 @@ namespace S14_ProjetSession.Controllers
             if (demande != null)
             {
                 _demandeRepository.Supprimer(demande);
-                TempData["success"] = "demande supprimée avec succès";
+                TempData["succes"] = "demande supprimée avec succès";
                 
             }
 
