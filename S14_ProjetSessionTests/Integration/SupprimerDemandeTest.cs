@@ -111,48 +111,6 @@ namespace S14_ProjetSessionTests.Integration
             );
             Assert.False(_demandeRepository.Demandes.Contains(demande));
         }
-        [Fact]
-        public async Task ModifierDemandeMauvaisInfo() 
-        {
-            string chemin = $"demande/Modifier";
-
-            Dictionary<string, string> formData = new Dictionary<string, string>()
-                {
-                    { "Id", "1" },
-
-                    { "SemestreId", "1" },
-                    { "EtudiantId", "1" },
-                    { "PreferencesGenreId", "1" },
-
-                    { "PrefDureeBail", "120" },
-
-                    { "AccepteReglements", "true" },
-                    { "AccepteTraitementDonnees", "true" },
-                    { "ConfirmeSoumission", "true" },
-
-                    { "NomGarant", "Martin" },
-                    { "PrenomGarant", "Jean" },
-                    { "DateNaissanceGarant", "1970-05-12" },
-                    { "CourrielGarant", "jean.martin@email.com" },
-                    { "TelephoneGarant", "8191112222" },
-
-                    { "NomParent", "Luc Martin" },
-                    { "CourrielParent", "luc.martin@email.com" },
-
-                    { "NomUrgence", "Marie Martin" },
-                    { "LienParenteUrgence", "Mère" },
-                    { "TelephoneUrgence", "8193334444" }
-                };
-
-            HttpContent form = await GetForm(formData, chemin);
-
-            HttpResponseMessage response = await _client.PostAsync(
-                "demande/Modifier",
-                form,
-                TestContext.Current.CancellationToken
-            );
-
-
-        }
+        
     }
 }

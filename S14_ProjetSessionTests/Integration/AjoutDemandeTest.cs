@@ -360,12 +360,6 @@ namespace S14_ProjetSessionTests.Integration
         
 
 
-        //Deux tests pour vérifier une règle d’autorisation qui utilise un rôle (ex. un test pour vérifier que seul un
-        //admin peut supprimer une voiture). Un test vérifie que l’utilisateur qui n’a pas le rôle nécessaire ne
-        //peut effectuer l’opération.L’autre test vérifie que la même fonctionnalité est accessible aux
-        //utilisateurs possédant les permissions appropriées.
-
-
 
     }
 }
