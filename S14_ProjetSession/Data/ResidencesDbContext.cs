@@ -15,7 +15,7 @@ namespace S14_ProjetSession.Data;
         public DbSet<Commodite> Commodites { get; set; }
         public DbSet<ResidenceCommodite> ResidenceCommodites { get; set; }
 
-    public DbSet<Demande> Demandes { get; set; }
+         public DbSet<Demande> Demandes { get; set; }
         public DbSet<Etudiant> Etudiants { get; set; }
 
         public DbSet<Genre> Genres { get; set; }
@@ -57,6 +57,10 @@ namespace S14_ProjetSession.Data;
             modelBuilder.Entity<Unite>()
                 .HasIndex(u => new { u.Numero, u.ResidenceId })
                 .IsUnique();
-        }
+
+            modelBuilder.Entity<Commodite>()
+               .HasIndex(c => c.Nom)
+               .IsUnique();
+            }
     }
 

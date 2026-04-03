@@ -6,5 +6,11 @@ namespace S14_ProjetSession.Data
     {
         IEnumerable<Commodite> Commodites { get; }
         Commodite? GetCommodite(int id);
+        public List<Commodite> GetAll();
+
+        void Ajouter(Commodite commodite);               
+        void Modifier(Commodite commodite);                 
+        void Supprimer(Commodite commodite);         
+        bool NomExiste(string nom, int id = 0);
     }
 }

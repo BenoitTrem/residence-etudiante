@@ -31,7 +31,7 @@ namespace S14_ProjetSession.Controllers
 
                 return new ResidenceCommoditeViewModel(
                     c,
-                    commodite != null,
+                    commodite?.IsChecked ?? false,
                     commodite?.Description
                 );
             });
@@ -66,7 +66,7 @@ namespace S14_ProjetSession.Controllers
         {
             residence.ResidenceCommodites.Clear();
 
-            foreach (var c in commodites.Where(x => x.Id != 0))
+            foreach (var c in commodites.Where(x => x.IsChecked))
             {
                 var commodite = _commoditeRepository.GetCommodite(c.Id);
 
@@ -141,7 +141,7 @@ namespace S14_ProjetSession.Controllers
 
 
         [Authorize(Policy = "AdminOuGestionnaire")]
-        public IActionResult Modifier(int id)
+        public IActionResult ModifierResidence(int id)
         {
             Residence? residence = _residenceRepository.GetById(id);
 
@@ -151,7 +151,8 @@ namespace S14_ProjetSession.Controllers
                 .Select(rc => new CommoditeDescriptionViewModel
                 {
                     Id = rc.CommoditeId,
-                    Description = rc.Description
+                    Description = rc.Description,
+                    IsChecked = true
                 })
                 .ToList()
                 ?? new List<CommoditeDescriptionViewModel>();
