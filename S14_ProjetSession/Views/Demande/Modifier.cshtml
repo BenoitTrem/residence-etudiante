@@ -7,13 +7,12 @@
     <div class="mb-3">
         <label for="SemestreId" class="form-label">Semestre *</label>
         <select id="SemestreId" name="SemestreId" class="form-control" required>
-            <option selected value="@Model.Semestre.Id" >@Model.Semestre.NomSemestre</option>
 
             @foreach (Semestre semestre in ViewBag.Semestres)
             {
-                if (semestre.Id != @Model.Semestre.Id){
+               
                 <option value="@semestre.Id">@semestre.NomSemestre</option>
-            }
+            
             }
         </select>
     </div>

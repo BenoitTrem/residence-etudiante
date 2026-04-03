@@ -19,7 +19,7 @@ public static class AuthUtilities
         }, "TestAuth"
         ));
     }
-    public static ClaimsPrincipal CreerGerant()
+    public static ClaimsPrincipal CreerGestionnaire()
     {
         return new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
         {

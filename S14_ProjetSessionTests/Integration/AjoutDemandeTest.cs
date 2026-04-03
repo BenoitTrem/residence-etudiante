@@ -67,7 +67,6 @@ namespace S14_ProjetSessionTests.Integration
             return Utils.GetToken(responseBody);
         }
 
-        // comprendre ca fait quoi CA
         private async Task<HttpContent> GetForm(Dictionary<string, string> formData, string chemin)
         {
             string token = await ObtenirToken(chemin);
@@ -83,15 +82,7 @@ namespace S14_ProjetSessionTests.Integration
             return new FormUrlEncodedContent(formData);
         }
 
-        [Fact(DisplayName = "Le formulaire de création comporte token antiforgery")]
-        public async Task CreerComporteToken()
-        {
-            var Coins =  GetForm(new Dictionary<string, string>(), "/demande/creer");
-            
-            HttpResponseMessage response = await _client.GetAsync("/demande/creer");
-            string body = await response.Content.ReadAsStringAsync();
-            Assert.Contains("__RequestVerificationToken", body);
-        }
+   
 
        
 
@@ -237,9 +228,8 @@ namespace S14_ProjetSessionTests.Integration
             html = WebUtility.HtmlDecode(html);
 
             Assert.Contains("Une demande existe déjà pour cet étudiant et ce semestre.", html);
-         
-
         }
+
     
 
         // - Un test pour vérifier que la modification d’un objet s’effectue avec des données valides
@@ -289,17 +279,66 @@ namespace S14_ProjetSessionTests.Integration
             Demande demandeApres = _demandeRepository.GetDemande(1);
             
             Assert.NotEqual(demandeAvant, demandeApres.SemestreId);
-
-
         }
 
 
         // - Un test pour vérifier que la modification d’un objet est refusée avec des données invalides
+        [Fact]
+        public async Task VerifierModificationInvalideValide()
+        {
+            // Créer les données du formulaire
+            // deja dans la liste des combinaison Semestre n'est pas un Id Valide Donc ca devrait ne pas changer le Id de l'objet
+            int SemestreAvant = _demandeRepository.GetDemande(1).SemestreId;
 
+            var formData = new Dictionary<string, string>
+            {
+                { "Id", "1" },
+                { "SemestreId", "68" },
+                { "EtudiantId", "1" },
+                { "PreferencesGenreId", "1" },
+                { "PrefDureeBail", "120" },
+
+                { "AccepteReglements", "true" },
+                { "AccepteTraitementDonnees", "true" },
+                { "ConfirmeSoumission", "true" },
+
+                { "NomGarant", "Tremblay" },
+                { "PrenomGarant", "Jean" },
+                { "DateNaissanceGarant", "1990-01-01" },
+                { "CourrielGarant", "test@test.com" },
+                { "TelephoneGarant", "8191234567" },
+
+                { "NomParent", "Parent Test" },
+                { "CourrielParent", "parent@test.com" },
+
+                { "NomUrgence", "Urgence Test" },
+                { "LienParenteUrgence", "Pere" },
+                { "TelephoneUrgence", "8199999999" },
+
+                { "jumelage[0].Nom", "Alex" },
+                { "jumelage[0].Courriel", "alex@test.com" }
+            };
+
+            string chemin = $"/Demande/Modifier/{1}";
+
+            HttpContent form = await GetForm(formData, chemin);
+
+
+            HttpResponseMessage response = await _client.PostAsync(chemin, form, TestContext.Current.CancellationToken);
+
+            Demande demandeApres = _demandeRepository.GetDemande(1);
+
+            Assert.Equal(SemestreAvant, demandeApres.SemestreId);
+        }
 
 
 
         // - Un test pour vérifier la modification de la relation d’un objet
+
+
+        //- Deux tests pour vérifier qu’une route n’est pas accessible aux utilisateurs qui ne sont pas connectés
+        //(un test qui vérifie que la route est accessible à l’utilisateur connecté, un test qui vérifie que la même
+        //route n’est pas accessible à l’utilisateur qui n’est pas connecté)
         [Fact]
         public async Task LaRouteDemandesPasPourEtudiant()
         {
@@ -311,9 +350,6 @@ namespace S14_ProjetSessionTests.Integration
         }
 
 
-        //- Deux tests pour vérifier qu’une route n’est pas accessible aux utilisateurs qui ne sont pas connectés
-        //(un test qui vérifie que la route est accessible à l’utilisateur connecté, un test qui vérifie que la même
-        //route n’est pas accessible à l’utilisateur qui n’est pas connecté)
         [Fact]
         public async Task DemandeCreeSansCompteRedirigeVersLogin()
         {

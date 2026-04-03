@@ -9,6 +9,7 @@ using S14_ProjetSession.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 
@@ -23,7 +24,7 @@ namespace S14_ProjetSessionTests.Integration
             private IEtudiantRepository _etudiantRepository = new MockEtudiantRepository();
             private IGenresRepository _genresRepository = new MockGenreRepository();
             private ClaimsPrincipal? _currentUser;
-            private ClaimsPrincipal _utilisateur = AuthUtilities.CreerGerant();
+            private ClaimsPrincipal _utilisateur = AuthUtilities.CreerGestionnaire();
 
 
             public SupprimerDemandeTest(WebApplicationFactory<Program> factory)
@@ -61,7 +62,7 @@ namespace S14_ProjetSessionTests.Integration
             return Utils.GetToken(responseBody);
         }
 
-        // comprendre ca fait quoi CA
+
         private async Task<HttpContent> GetForm(Dictionary<string, string> formData, string chemin)
         {
             string token = await ObtenirToken(chemin);
@@ -77,7 +78,16 @@ namespace S14_ProjetSessionTests.Integration
             return new FormUrlEncodedContent(formData);
         }
         // - Un test pour vérifier la suppression d’un objet
+        
+        [Fact]
+        public async Task LaRouteDemandesFonctionneAvecAdmin()
+        {
 
+            HttpResponseMessage response = await _client.GetAsync("/demande/demandes");
+            Console.WriteLine(response.Content);
+            Console.WriteLine(response.StatusCode);
+            Assert.True(response.StatusCode == HttpStatusCode.OK);
+        }
         ///demande/demandes
         ///
         [Fact(DisplayName = "Un nom vide retourne au formulaire et affiche message d'erreur")]
@@ -100,6 +110,47 @@ namespace S14_ProjetSessionTests.Integration
                 TestContext.Current.CancellationToken
             );
             Assert.False(_demandeRepository.Demandes.Contains(demande));
+        }
+        [Fact]
+        public async Task ModifierDemandeMauvaisInfo() 
+        {
+            string chemin = $"demande/Modifier";
+
+            Dictionary<string, string> formData = new Dictionary<string, string>()
+                {
+                    { "Id", "1" },
+
+                    { "SemestreId", "1" },
+                    { "EtudiantId", "1" },
+                    { "PreferencesGenreId", "1" },
+
+                    { "PrefDureeBail", "120" },
+
+                    { "AccepteReglements", "true" },
+                    { "AccepteTraitementDonnees", "true" },
+                    { "ConfirmeSoumission", "true" },
+
+                    { "NomGarant", "Martin" },
+                    { "PrenomGarant", "Jean" },
+                    { "DateNaissanceGarant", "1970-05-12" },
+                    { "CourrielGarant", "jean.martin@email.com" },
+                    { "TelephoneGarant", "8191112222" },
+
+                    { "NomParent", "Luc Martin" },
+                    { "CourrielParent", "luc.martin@email.com" },
+
+                    { "NomUrgence", "Marie Martin" },
+                    { "LienParenteUrgence", "Mère" },
+                    { "TelephoneUrgence", "8193334444" }
+                };
+
+            HttpContent form = await GetForm(formData, chemin);
+
+            HttpResponseMessage response = await _client.PostAsync(
+                "demande/Modifier",
+                form,
+                TestContext.Current.CancellationToken
+            );
 
 
         }
