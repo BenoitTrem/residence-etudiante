@@ -1,8 +1,6 @@
 ﻿@model Demande
 @using S14_ProjetSession.Models
 
-
-<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 <form asp-action="Modifier" method="post">
     @Html.AntiForgeryToken()
 
@@ -12,8 +10,7 @@
 
             @foreach (Semestre semestre in ViewBag.Semestres)
             {
-               
-                <option value="@semestre.Id">@semestre.NomSemestre</option>
+             <option value="@semestre.Id">@semestre.NomSemestre</option>
             
             }
         </select>

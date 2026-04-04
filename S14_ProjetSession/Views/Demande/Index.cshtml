@@ -1,1 +1,9 @@
-﻿<h1>test</h1>
+﻿@model List<Demande>
+
+<ul>
+@foreach (Demande demande in Model)
+{
+    <li> @demande.EtudiantId @demande.SemestreId</li>
+}
+
+</ul>
