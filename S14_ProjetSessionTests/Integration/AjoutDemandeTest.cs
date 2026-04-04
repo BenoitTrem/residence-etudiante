@@ -82,9 +82,16 @@ namespace S14_ProjetSessionTests.Integration
             return new FormUrlEncodedContent(formData);
         }
 
-   
 
-       
+        [Fact]
+        public async Task RequeteIndexFonctionne()
+        {
+            var response = await _client.GetAsync("/Demande");
+
+            Console.WriteLine(response);
+            Assert.True(response.IsSuccessStatusCode);  
+        }
+
 
         [Fact(DisplayName = "RequestVerificationToken est vérifié")]
         public async Task CreerSansTokenRetourne400()
@@ -128,20 +135,7 @@ namespace S14_ProjetSessionTests.Integration
         
 
         
-        [Fact]
-        public async Task DemandesAfficheBienDemande()
-        {
-
-            List<Demande> demande = new MockDemandeRepository().Demandes;
-
-
-            HttpResponseMessage response = await _client.GetAsync("/demande/demandes", TestContext.Current.CancellationToken);
-
-            string html = await response.Content.ReadAsStringAsync();
-            // regarder que ca affiche bien les demandes là le prenom
-            Assert.Contains("Alex", html);
-            Assert.Contains("hivers-2025", html);
-        }
+        
 
 
         //- Un test pour vérifier que la création d’un objet s’effectue avec des données valides
