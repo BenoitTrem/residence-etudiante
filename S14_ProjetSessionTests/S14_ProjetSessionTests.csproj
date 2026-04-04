@@ -30,4 +30,8 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\S14_ProjetSession\S14_ProjetSession.csproj" />
+  </ItemGroup>
+
 </Project>

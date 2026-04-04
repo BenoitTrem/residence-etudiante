@@ -12,8 +12,8 @@ using S14_ProjetSession.Data;
 namespace S14_ProjetSession.Migrations
 {
     [DbContext(typeof(ResidencesDbContext))]
-    [Migration("20260327144810_AjoutResidenceAdresse")]
-    partial class AjoutResidenceAdresse
+    [Migration("20260401004551_felix")]
+    partial class felix
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -434,14 +434,16 @@ namespace S14_ProjetSession.Migrations
 
                     b.Property<string>("Courriel")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<int?>("DemandeId")
                         .HasColumnType("int");
 
                     b.Property<string>("Nom")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -526,6 +528,9 @@ namespace S14_ProjetSession.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("AdapteePourMobiliteReduite")
+                        .HasColumnType("bit");
 
                     b.Property<int>("Capacite")
                         .HasColumnType("int");
@@ -687,24 +692,19 @@ namespace S14_ProjetSession.Migrations
                             b1.Property<int>("ResidenceId")
                                 .HasColumnType("int");
 
+                            b1.Property<string>("AdresseString")
+                                .IsRequired()
+                                .HasMaxLength(150)
+                                .HasColumnType("nvarchar(150)");
+
                             b1.Property<string>("CodePostal")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("Numero")
-                                .IsRequired()
-                                .HasMaxLength(10)
-                                .HasColumnType("nvarchar(10)");
 
                             b1.Property<string>("Province")
                                 .IsRequired()
                                 .HasMaxLength(2)
                                 .HasColumnType("nvarchar(2)");
-
-                            b1.Property<string>("Rue")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("nvarchar(100)");
 
                             b1.Property<string>("Ville")
                                 .IsRequired()
