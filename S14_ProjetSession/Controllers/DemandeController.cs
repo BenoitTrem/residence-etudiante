@@ -6,6 +6,7 @@ using S14_ProjetSession.Models;
 using S14_ProjetSession.NewFolder;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Security.Claims;
 
 namespace S14_ProjetSession.Controllers
 {
@@ -33,10 +34,26 @@ namespace S14_ProjetSession.Controllers
             Genre genre = _genreRepository.GetGenre(1);
         }
 
-
-        public IActionResult Index()
+        [Authorize(Policy = "EstEtudiant")]
+        public async Task<IActionResult> Index()
         {
-            return View();
+            // id du User avec le login je sais pas comment faire donc default a 1 
+            // id connecté 
+            // get l'identifiant de l'utilisateur
+            
+            string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null) 
+            {
+                return Unauthorized();
+            }
+            Etudiant? etudiantConnecte  = await _etudiantRepository.GetByUserIdAsync(userId);
+            if (etudiantConnecte == null) 
+            {
+                return Unauthorized();
+            }
+            List<Demande> demandes = _demandeRepository.Demandes.Where(E => E.EtudiantId == etudiantConnecte.Id).ToList();
+            return View(demandes);
         }
 
 
