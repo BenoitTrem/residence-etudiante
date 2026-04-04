@@ -19,7 +19,7 @@ namespace S14_ProjetSession.Data
             await InitialiserRole(roleManager);
             await InitialiserUsers(userManager);
 
-            context.Database.Migrate();
+           
 
             if (context.Etudiants.Any())
             {

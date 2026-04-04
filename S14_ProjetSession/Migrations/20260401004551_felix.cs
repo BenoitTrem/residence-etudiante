@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace S14_ProjetSession.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class felix : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -77,20 +77,6 @@ namespace S14_ProjetSession.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Genres", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Residences",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nom = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Adresse = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Residences", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -234,6 +220,30 @@ namespace S14_ProjetSession.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Residences",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nom = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Adresse_AdresseString = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Adresse_Ville = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Adresse_Province = table.Column<string>(type: "nvarchar(2)", maxLength: 2, nullable: false),
+                    Adresse_CodePostal = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CampusId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Residences", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Residences_Campus_CampusId",
+                        column: x => x.CampusId,
+                        principalTable: "Campus",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Unites",
                 columns: table => new
                 {
@@ -242,6 +252,7 @@ namespace S14_ProjetSession.Migrations
                     Numero = table.Column<int>(type: "int", nullable: false),
                     Capacite = table.Column<int>(type: "int", nullable: false),
                     PlacesOccupees = table.Column<int>(type: "int", nullable: false),
+                    AdapteePourMobiliteReduite = table.Column<bool>(type: "bit", nullable: false),
                     ResidenceId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -356,8 +367,8 @@ namespace S14_ProjetSession.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nom = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Courriel = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Nom = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Courriel = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     DemandeId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -455,6 +466,11 @@ namespace S14_ProjetSession.Migrations
                 column: "CampusId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Residences_CampusId",
+                table: "Residences",
+                column: "CampusId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Residences_Nom",
                 table: "Residences",
                 column: "Nom",
@@ -518,10 +534,10 @@ namespace S14_ProjetSession.Migrations
                 name: "Unites");
 
             migrationBuilder.DropTable(
-                name: "Campus");
+                name: "Residences");
 
             migrationBuilder.DropTable(
-                name: "Residences");
+                name: "Campus");
         }
     }
 }

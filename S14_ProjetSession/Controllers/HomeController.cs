@@ -11,7 +11,7 @@ namespace S14_ProjetSession.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Confidentialite()
         {
             return View();
         }
