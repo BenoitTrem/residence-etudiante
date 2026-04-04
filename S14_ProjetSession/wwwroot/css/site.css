@@ -32,11 +32,11 @@ body {
 }
 
 .carte {
-    border-radius: 10px;
-    border-top: 3px solid #0d6efd;
+    border-radius: 5px;
+    border-top: 3px solid white;
     padding: 10px;
-    background: linear-gradient(145deg, #ffffff, #f8fafc);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    background: white;
+    box-shadow: 0 15px 25px rgba(0,0,0,0.3);
     transition: all 0.2s ease;
     height: 100%;
     display: flex;
@@ -45,11 +45,9 @@ body {
 }
 
     .carte:hover {
-        border-left: 1px solid #0d6efd;
-        border-right: 1px solid #0d6efd;
-        border-bottom: 1px solid #0d6efd;
+        border-top: 3px solid #0d6efd;
         transform: translateY(-8px) scale(1.02);
-        box-shadow: 0 18px 40px rgba(37, 99, 235, 0.25);
+        box-shadow: 0 18px 40px rgba(37, 99, 235, 0.5);
     }
     .carte .card-body {
         padding: 1.5rem;
@@ -99,30 +97,29 @@ body {
     }
 
 .unite-row {
-    border-radius: 10px;
-    border-left: 3px solid #0d6efd;
+    border-radius: 5px;
+    border-left: 3px solid white;
     padding: 2rem;
     margin-bottom: 15px;
     background: linear-gradient(145deg, #ffffff, #f8fafc);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
     transition: all 0.2s ease;
     cursor: pointer;
 }
 
     .unite-row:hover {
-        border-top: 1px solid #0d6efd;
-        border-right: 1px solid #0d6efd;
-        border-bottom: 1px solid #0d6efd;
+        border-left: 3px solid #0d6efd;
         transform: translateY(-5px);
-        box-shadow: 0 18px 40px rgba(37, 99, 235, 0.25);
+        box-shadow: 0 18px 40px rgba(37, 99, 235, 0.5);
     }
     .unite-row .btn {
         font-size: 1.1rem;
         padding: 0.5rem 1.4rem;
-        border-radius: 8px;
+        border-radius: 5px;
     }
 
 .btn {
+    border-radius:5px;
     font-weight: 500;
     border: 2px solid;
 }
@@ -140,7 +137,7 @@ dialog {
     max-width: 900px;
     min-width: 600px;
     border: none;
-    border-radius: 16px;
+    border-radius: 5px;
     background: white;
     color: black;
 }
@@ -193,7 +190,7 @@ dialog {
     background-color: #ffffff;
     color: #1f2937;
     border: 1px solid #d1d5db;
-    border-radius: 8px;
+    border-radius: 5px;
     padding: 0.6rem 0.9rem;
     transition: all 0.2s ease;
 }
@@ -228,16 +225,15 @@ dialog {
 .form-container {
     background: #ffffff;
     padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
-    border-top: 2px solid #0d6efd;
+    border-radius: 5px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
     transition: all 0.2s ease;
 }
 
     .form-container:hover {
-        box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3), 0 15px 40px rgba(0, 0, 0, 0.4);
-        border-top-color: #2563eb; 
+        box-shadow: 0 25px 35px rgba(37, 99, 235, 0.5);
     }
+
 .form-control:hover,
 .form-select:hover {
     border-color: #9ca3af;
@@ -247,7 +243,7 @@ dialog {
     background-color: #ffffff;
     color: #1f2937;
     border: 1px solid #d1d5db;
-    border-radius: 6px;
+    border-radius: 5px;
     padding: 0.35rem 0.7rem;
     font-size: 0.875rem;
     width: 75%;
@@ -297,7 +293,7 @@ dialog {
     background-color: rgba(37, 99, 235, 1);
     color: #e5e7eb;
     padding: 12px;
-    border-radius: 8px;
+    border-radius: 5px;
     font-size: 0.85rem;
     font-weight: 500;
     text-align: left;
@@ -343,13 +339,13 @@ dialog {
     background-color: rgba(37, 99, 235, 1);
     color: #e5e7eb;
     padding: 16px;
-    border-radius: 10px;
+    border-radius: 5px;
     font-size: 0.95rem;
     font-weight: 500;
     text-align: left;
     opacity: 0;
     pointer-events: none;
-    transition: all 0.25s ease;
+    transition: all 0.2s ease;
     box-shadow: 0 12px 30px rgba(0,0,0,0.8);
     z-index: 20;
 }
@@ -362,23 +358,22 @@ dialog {
 .utilisateur-container {
     background: #ffffff;
     padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
-    border-top: 2px solid #0d6efd;
+    border-radius: 5px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
     transition: all 0.2s ease;
 }
 
     .utilisateur-container:hover {
-        box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3), 0 15px 40px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 20px 35px rgba(37, 99, 235, 0.5);
     }
 
 
 .nav-pills .nav-link.active {
     color: #ffffff !important;
     background-color: rgba(0, 123, 255, 0.8) !important; 
-    border-radius: 10px;
+    border-radius: 5px;
     border-bottom: none !important;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
     .nav-pills .nav-link.active:hover {
@@ -390,8 +385,8 @@ dialog {
 .nav-pills .nav-link:not(.active):hover {
     color: black !important; 
     background-color: rgba(0, 123, 255, 0.15) !important; 
-    border-radius: 10px;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    border-radius: 5px;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .margin-top {
@@ -419,7 +414,7 @@ dialog {
         background-color: rgba(37, 99, 235, 1);
         color: #e5e7eb;
         padding: 12px 14px;
-        border-radius: 8px;
+        border-radius: 5px;
         font-size: 0.8rem;
         font-weight: 500;
         text-align: center;
@@ -453,7 +448,7 @@ dialog {
 }
 
 .commodite-item {
-    transition: background-color 0.2s, transform 0.1s;
+    transition: background-color 0.2s, transform 0.2s;
 }
 
     .commodite-item:hover {
@@ -469,20 +464,33 @@ dialog {
 }
 
 .carte-commodite {
-    border-radius: 10px;
-    border-left: 3px solid #0d6efd;
+    border-radius: 5px;
+    border-left: 3px solid white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     padding: 0.2rem;
+    padding: 1rem;
     transition: all 0.2s ease;
 }
 
     .carte-commodite:hover {
-        border-top: 1px solid #0d6efd;
-        border-right: 1px solid #0d6efd;
-        border-bottom: 1px solid #0d6efd;
+        border-left: 3px solid #0d6efd;
         transform: translateY(-5px);
-        box-shadow: 0 6px 15px rgba(37, 99, 235, 0.25);
+        box-shadow: 0 6px 15px rgba(37, 99, 235, 0.5);
     }
 
 .commodite-hover {
     transition: all 0.2s ease;
 }
+
+.index-container {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 5px;
+    box-shadow: 0 15px 25px rgba(0,0,0,0.3);
+    transition: all 0.2s ease;
+}
+
+    .index-container:hover {
+        transform: scale(1.01);
+        box-shadow: 0 20px 30px rgba(37, 99, 235, 0.5);
+    }
