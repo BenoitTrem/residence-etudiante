@@ -1,6 +1,8 @@
 ﻿@model Demande
 @using S14_ProjetSession.Models
 
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 <form asp-action="Modifier" method="post">
     @Html.AntiForgeryToken()
 
