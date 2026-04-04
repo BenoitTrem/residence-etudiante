@@ -1,4 +1,4 @@
-﻿namespace S14_ProjetSession.NewFolder
+﻿namespace S14_ProjetSession.ViewModels
 {
     public class JumelageViewModel
     {
