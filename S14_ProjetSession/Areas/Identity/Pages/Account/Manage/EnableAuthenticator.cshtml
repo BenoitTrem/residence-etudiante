@@ -1,0 +1,83 @@
+﻿@page
+@model EnableAuthenticatorModel
+@{
+    ViewData["Title"] = "Configurer l'application Authenticator";
+    ViewData["ActivePage"] = ManageNavPages.TwoFactorAuthentication;
+}
+
+<partial name="_StatusMessage" for="StatusMessage" />
+
+<h3 class="text-center">@ViewData["Title"]</h3>
+<div class="row justify-content-center mt-4 mb-5">
+    <div class="col-md-10">
+        <div class="utilisateur-container">
+            <div class="text-center">
+                <p>Pour utiliser une application Authenticator, suivez les étapes ci-dessous :</p>
+            </div>
+
+            <ol class="list text-center">
+                <li class="mb-3">
+                    <p>
+                        Téléchargez une application Authenticator pour votre téléphone, comme Microsoft Authenticator pour
+                        <a href="https://go.microsoft.com/fwlink/?Linkid=825072">Android</a> et
+                        <a href="https://go.microsoft.com/fwlink/?Linkid=825073">iOS</a>, ou
+                        Google Authenticator pour
+                        <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&amp;hl=en">Android</a> et
+                        <a href="https://itunes.apple.com/us/app/google-authenticator/id388497605?mt=8">iOS</a>.
+                    </p>
+                </li>
+
+                <li class="mb-3">
+                    <p>
+                        Scannez le QR Code ou saisissez cette clé <kbd>@Model.SharedKey</kbd> dans votre application Authenticator. Les espaces et la casse n’ont pas d’importance.
+                    </p>
+                    <div class="text-center mb-2">
+                        <div id="qrCode" style="display: inline-block;"></div>
+                    </div>
+                    <div id="qrCodeData" data-url="@Model.AuthenticatorUri"></div>
+                </li>
+
+                <li class="mb-3">
+                    <p>
+                        Une fois le QR Code scanné ou la clé saisie, votre application Authenticator vous fournira un code unique.
+                        Saisissez ce code dans le champ ci-dessous pour confirmer.
+                    </p>
+                    <div class="row justify-content-center">
+                        <div class="col-md-6">
+                            <form id="send-code" method="post">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Input.Code" class="form-control" autocomplete="off" placeholder="Entrez le code" />
+                                    <label asp-for="Input.Code" class="form-label">Code de vérification</label>
+                                    <span asp-validation-for="Input.Code" class="text-danger"></span>
+                                </div>
+                                <button type="submit" class="w-100 btn btn-lg btn-outline-primary">Vérifier</button>
+                                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                            </form>
+                        </div>
+                    </div>
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var qrData = document.getElementById("qrCodeData").dataset.url;
+            if (qrData) {
+                new QRCode(document.getElementById("qrCode"), {
+                    text: qrData,
+                    width: 200,
+                    height: 200,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+            }
+        });
+    </script>
+}

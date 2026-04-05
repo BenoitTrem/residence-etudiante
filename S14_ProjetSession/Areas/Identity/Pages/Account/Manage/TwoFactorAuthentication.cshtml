@@ -1,0 +1,77 @@
+﻿@page
+@using Microsoft.AspNetCore.Http.Features
+@model TwoFactorAuthenticationModel
+@{
+    ViewData["Title"] = "Authentification à deux facteurs (2FA)";
+    ViewData["ActivePage"] = ManageNavPages.TwoFactorAuthentication;
+}
+
+<partial name="_StatusMessage" for="StatusMessage" />
+
+<h3 class="text-center">@ViewData["Title"]</h3>
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8">
+            <div class="utilisateur-container">
+                @{
+                    var consentFeature = HttpContext.Features.Get<ITrackingConsentFeature>();
+                    if (consentFeature?.CanTrack ?? true)
+                    {
+                        if (Model.Is2faEnabled)
+                        {
+                            if (Model.RecoveryCodesLeft == 0)
+                            {
+                                <div class="alert alert-danger text-center">
+                                    <strong>Vous n'avez plus de codes de récupération.</strong>
+                                    <p>Vous devez <a asp-page="./GenerateRecoveryCodes">générer un nouveau jeu de codes</a> avant de pouvoir vous connecter avec un code de récupération.</p>
+                                </div>
+                            }
+                            else if (Model.RecoveryCodesLeft == 1)
+                            {
+                                <div class="alert alert-danger text-center">
+                                    <strong>Il ne vous reste qu’un code de récupération.</strong>
+                                    <p>Vous pouvez <a asp-page="./GenerateRecoveryCodes">générer un nouveau jeu de codes</a>.</p>
+                                </div>
+                            }
+                            else if (Model.RecoveryCodesLeft <= 3)
+                            {
+                                <div class="alert alert-warning text-center">
+                                    <strong>Il vous reste @Model.RecoveryCodesLeft codes de récupération.</strong>
+                                    <p>Vous devriez <a asp-page="./GenerateRecoveryCodes">générer un nouveau jeu de codes</a>.</p>
+                                </div>
+                            }
+
+                            if (Model.IsMachineRemembered)
+                            {
+                                <form method="post" style="display: inline-block">
+                                    <button type="submit" class="btn btn-outline-primary">Oublier ce navigateur</button>
+                                </form>
+                            }
+                            <a asp-page="./Disable2fa" class="btn btn-outline-primary">Désactiver 2FA</a>
+                            <a asp-page="./GenerateRecoveryCodes" class="btn btn-outline-primary">Réinitialiser les codes de récupération</a>
+                        }
+
+                        <h4 class="text-center">Application Authenticator</h4>
+                        @if (!Model.HasAuthenticator)
+                        {
+                        <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-outline-primary d-block mx-auto mt-5">Ajouter une application Authenticator</a>
+                        }
+                        else
+                        {
+                            <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-outline-primary d-block mx-auto mt-5">Configurer l'application Authenticator</a>
+                            <a id="reset-authenticator" asp-page="./ResetAuthenticator" class="btn btn-outline-primary d-block mx-auto mt-2">Réinitialiser l'application Authenticator</a>
+                        }
+                    }
+                    else
+                    {
+                        <div class="alert alert-danger text-center">
+                            <strong>La politique de confidentialité et des cookies n'a pas été acceptée.</strong>
+                            <p>Vous devez accepter la politique avant de pouvoir activer l'authentification à deux facteurs.</p>
+                        </div>
+                    }
+                }
+            </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

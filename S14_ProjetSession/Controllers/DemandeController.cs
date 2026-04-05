@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using S14_ProjetSession.Data;
 using S14_ProjetSession.Models;
-using S14_ProjetSession.NewFolder;
+using S14_ProjetSession.ViewModels;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Security.Claims;
