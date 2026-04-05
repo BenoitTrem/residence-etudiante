@@ -8,6 +8,8 @@ namespace S14_ProjetSession.Data
         private ResidencesDbContext _context;
         public List<Demande> Demandes => _context.Demandes.Include(E => E.Etudiant)
             .Include(S => S.Semestre)
+            .Include(d => d.PreferencesGenre)
+            .Include(j => j.Jumelages)
             .ToList();
 
         public DbDemandeRepository(ResidencesDbContext context) 
@@ -33,7 +35,23 @@ namespace S14_ProjetSession.Data
 
         public void Modifier(Demande demande)
         {
-            _context.Demandes.Update(demande);
+            
+            Demande? demandeExistante = GetDemande(demande.Id);
+            if (demandeExistante != null) 
+            {
+                //TODO fix temporaire
+                demandeExistante.Jumelages.Clear();
+               
+
+                _context.Entry(demandeExistante).CurrentValues.SetValues(demande);
+                if (demande.Jumelages != null)
+                {
+                    foreach (Jumelage jumelage in demande.Jumelages)
+                    {
+                        demandeExistante.Jumelages.Add(jumelage);
+                    }
+                }
+            }
             _context.SaveChanges();
         }
     }

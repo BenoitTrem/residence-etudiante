@@ -2,17 +2,16 @@
 @using S14_ProjetSession.Models
 
 <form asp-action="Modifier" method="post">
+    @Html.AntiForgeryToken()
 
     <div class="mb-3">
         <label for="SemestreId" class="form-label">Semestre *</label>
         <select id="SemestreId" name="SemestreId" class="form-control" required>
-            <option selected value="@Model.Semestre.Id" >@Model.Semestre.NomSemestre</option>
 
             @foreach (Semestre semestre in ViewBag.Semestres)
             {
-                if (semestre.Id != @Model.Semestre.Id){
-                <option value="@semestre.Id">@semestre.NomSemestre</option>
-            }
+             <option value="@semestre.Id">@semestre.NomSemestre</option>
+            
             }
         </select>
     </div>
@@ -20,12 +19,12 @@
     <div class="mb-3">
         <label for="PreferencesGenreId" class="form-label">Préférence de genre</label>
         <select id="PreferencesGenreId" name="PreferencesGenreId" class="form-control">
-            <option value="@Model.PreferencesGenre.Id"> @Model.PreferencesGenre.Nom </option>
+            
             @foreach (Genre genre in ViewBag.Genres)
             {
-                if (@genre.Id != @Model.PreferencesGenre.Id){
+               
                 <option value="@genre.Id">@genre.Nom</option>
-                }
+                
             }
         </select>
     </div>
@@ -49,6 +48,31 @@
         <input asp-for="ConfirmeSoumission" class="form-check-input" required />
         <label asp-for="ConfirmeSoumission" class="form-check-label">ConfirmeSoumission *</label>
     </div>
+
+     <h5>Jumelage</h5>
+
+    <div class="mb-3">
+        <id="Jumelage nom0" class="form-label">Jumelage 1 Nom </label>
+        <input id="Jumelage nom0" name="jumelageNouveau[0].Nom" class="form-control"  />
+        <for="Jumelage email0" class="form-label">Jumelage 1 Email</label>
+                <input id="Jumelage email0" name="jumelageNouveau[0].Courriel" class="form-control" />
+    </div>
+    
+    
+    <div class="mb-3">
+        <id="Jumelage nom1" class="form-label">Jumelage 2 Nom </label>
+        <input id="Jumelage nom1" name="jumelageNouveau[1].Nom" class="form-control"  />
+        <for="Jumelage email1" class="form-label">Jumelage 2 Email</label>
+                <input id="Jumelage email1" name="jumelageNouveau[1].Courriel" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <id="Jumelage nom2" class="form-label">Jumelage 3 Nom </label>
+        <input id="Jumelage nom1" name="jumelageNouveau[2].Nom" class="form-control"  />
+        <for="Jumelage email2" class="form-label">Jumelage 3 Email</label>
+                <input id="Jumelage email2" name="jumelageNouveau[2].Courriel" class="form-control" />
+    </div>
+
 
     <h5>Garant</h5>
 
@@ -108,3 +132,6 @@
 
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

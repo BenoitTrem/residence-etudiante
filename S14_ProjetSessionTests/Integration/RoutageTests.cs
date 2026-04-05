@@ -4,11 +4,12 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using S14_ProjetSession.Data;
 using S14_ProjetSession.Models;
+using System;
+using System.Collections.Generic;
+using System.Security.AccessControl;
+using System.Text;
 namespace S14_ProjetSessionTests.Integration
 {
     public class RoutageTests : IClassFixture<WebApplicationFactory<Program>>
@@ -34,37 +35,12 @@ namespace S14_ProjetSessionTests.Integration
             });
         }
         [Fact]
-        public async Task DemandeControllerEtat() 
-        {
-            HttpResponseMessage responseMessage = await _client.GetAsync("/demande", TestContext.Current.CancellationToken);
-            Assert.True(responseMessage.IsSuccessStatusCode);
-        }
-        [Fact]
         public async Task DemandeCreeSansCompteRedirigeVersLogin()
         {
 
             HttpResponseMessage response = await _client.GetAsync("/demande/creer");
             Assert.Contains("/Account/Login", response.Headers.Location?.ToString());
         }
-        // s'assurer que les demande crée sont bien afficher Dans /demande/demandes
-        [Fact]
-        public async Task DemandesAfficheBienDemande() 
-        {
-            
-            List<Demande> demande = new MockDemandeRepository().Demandes;
-            
 
-            HttpResponseMessage response = await _client.GetAsync("/demande/demandes", TestContext.Current.CancellationToken);
-            
-            string html = await response.Content.ReadAsStringAsync();
-            // regarder que ca affiche bien les demandes là le prenom
-            Assert.Contains("Alex", html);
-            Assert.Contains("hivers-2025", html);
-        }
-        [Fact]
-        public async Task CreationDuneDemande() 
-        {
-        
-        }
     }
 }

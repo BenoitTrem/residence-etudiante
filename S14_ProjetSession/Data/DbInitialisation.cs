@@ -222,7 +222,38 @@ namespace S14_ProjetSession.Data
                 }
             }
             context.SaveChanges();
+
+            var commodites = new Commodite[]
+            {
+                new Commodite { Nom = "WiFi" },
+                new Commodite { Nom = "Salle de sport" },
+                new Commodite { Nom = "Stationnement" },
+                new Commodite { Nom = "Buanderie" },
+                new Commodite { Nom = "Piscine" },
+                new Commodite { Nom = "Sécurité 24h" }
+            };
+
+            context.Commodites.AddRange(commodites);
+            context.SaveChanges();
+
+            var commoditesDb = context.Commodites.ToList();
+            var residencesDb = context.Residences.ToList();
+
+            var residenceCommodites = new ResidenceCommodite[]
+            {
+                new ResidenceCommodite { ResidenceId = residencesDb[0].Id, CommoditeId = commoditesDb[0].Id, Description = "WiFi rapide dans toutes les chambres" },
+                new ResidenceCommodite { ResidenceId = residencesDb[0].Id, CommoditeId = commoditesDb[1].Id, Description = "Salle de sport ouverte 6h-22h" },
+                new ResidenceCommodite { ResidenceId = residencesDb[0].Id, CommoditeId = commoditesDb[3].Id, Description = "Buanderie avec 4 machines" },
+
+                new ResidenceCommodite { ResidenceId = residencesDb[1].Id, CommoditeId = commoditesDb[0].Id, Description = "WiFi illimité" },
+                new ResidenceCommodite { ResidenceId = residencesDb[1].Id, CommoditeId = commoditesDb[2].Id, Description = "Stationnement extérieur gratuit" },
+                new ResidenceCommodite { ResidenceId = residencesDb[1].Id, CommoditeId = commoditesDb[5].Id}
+            };
+
+            context.ResidenceCommodites.AddRange(residenceCommodites);
+            context.SaveChanges();
         }
+
 
         private static async Task InitialiserRole(RoleManager<IdentityRole> roleManager)
         {

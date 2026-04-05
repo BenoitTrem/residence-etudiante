@@ -1,6 +1,7 @@
 ﻿@model S14_ProjetSession.Models.Residence
+@using S14_ProjetSession.ViewModels
 
-<div class="container mt-5">
+<div class="container mt-5 mb-5">
     <h1 class="mb-4">@ViewData["Title"]</h1>
 
     <form asp-controller="Residence" asp-action="Creer" method="post">
@@ -52,8 +53,41 @@
                 <span asp-validation-for="CampusId" class="text-danger"></span>
             </div>
 
+            <div class="mb-3">
+                <label class="form-label">
+                    Commodités
+                    <span class="info-bulle">
+                        ?
+                        <span class="info-texte">
+                            Sélectionnez les commodités offertes par la résidence.<br /><br />
+                            Vous pouvez ajouter une description pour préciser les détails (ex. : horaires, conditions, particularités).
+                        </span>
+                    </span>
+                </label>
+                <ul class="row row-cols-3">
+                    @{
+                        int index = 0;
+
+                        foreach (ResidenceCommoditeViewModel commodite in ViewBag.Commodites)
+                        {
+                            <li class="form-check col">
+                                <label>
+                                    <input type="hidden" name="commodites[@index].Id" value="@commodite.CheckBoxViewModel.Value" />
+                                    <input type="checkbox" class="form-check-input" name="commodites[@index].IsChecked" value="true" @(commodite.CheckBoxViewModel.IsChecked ? "checked" : "") />
+                                    @commodite.CheckBoxViewModel.Label
+                                </label>
+
+                                <textarea name="commodites[@index].Description" class="form-control mt-1 mb-3 description-input" rows="2" placeholder="Ajouter une description..."
+                                  style="display:none;">@commodite.DescriptionViewModel.Description</textarea>
+                            </li>
+
+                            index++;
+                        }
+                    }
+            </ul>
+            </div>
             <div class="text-center mt-5">
-                <button type="submit" class="btn btn-outline-primary w-25">Créer</button>
+                <button type="submit" class="btn btn-outline-primary w-25">Ajouter</button>
                 <a asp-controller="Residence" asp-action="Index" class="btn btn-outline-dark ms-2 w-25">Annuler</a>
             </div>
 

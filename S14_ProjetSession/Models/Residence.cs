@@ -21,6 +21,12 @@ namespace S14_ProjetSession.Models
 
         public List<Unite> Unites { get; set; } = new();
 
+        public List<ResidenceCommodite> ResidenceCommodites { get; set; } = new();
+
+        public int TotalUnites => Unites?.Count ?? 0;
+        public int UnitesDisponibles => Unites?.Count(u => u.PlacesDisponibles > 0) ?? 0;
+        public int TotalPlacesDisponibles => Unites?.Sum(u => u.PlacesDisponibles) ?? 0;
+
         public string AdresseString
         {
             get

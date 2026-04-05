@@ -9,66 +9,7 @@
         }else{
         @foreach (Demande demande in ViewBag.Demandes)
         {
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-sm h-100">
-                    
-                    <div class="card-body">
-                        
-                        <!-- Étudiant -->
-                        <h5 class="card-title">
-                            @demande.Etudiant.Prenom @demande.Etudiant.Nom
-                        </h5>
-
-                        <!-- Infos principales -->
-                        <p class="card-text">
-                            <strong>Semestre :</strong> @demande.Semestre.NomSemestre <br />
-                            <strong>Date :</strong> @demande.DateDemande.ToShortDateString() <br />
-                            <strong>Durée bail :</strong> @demande.PrefDureeBail jours
-                        </p>
-
-                        <!-- Garant -->
-                        <p class="card-text">
-                            <strong>Garant :</strong> @demande.NomGarant @demande.PrenomGarant <br />
-                            <strong>Téléphone :</strong> @demande.TelephoneGarant
-                        </p>
-
-                        <!-- Urgence -->
-                        <p class="card-text">
-                            <strong>Urgence :</strong> @demande.NomUrgence <br />
-                            <strong>Lien :</strong> @demande.LienParenteUrgence
-                        </p>
-
-                        <!-- Statut -->
-                        <p>
-                            @if (demande.ConfirmeSoumission)
-                            {
-                                <span class="badge bg-success">Confirmée</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-warning text-dark">En attente</span>
-                            }
-                        </p>
-
-                    </div>
-
-                    <div class="card-footer text-end">
-                        <a asp-action="Modifier" asp-route-id="@demande.Id" class="btn btn-primary btn-sm">
-                            Voir détails
-                        </a>
-                        
-                        <form asp-action="Supprimer" asp-route-id="@demande.Id" method="post" style="display:inline;">
-                            <button type="submit" class="btn btn-danger btn-sm">
-                                Supprimer
-                            </button>
-                        </form>
-                    </div>
-
-                     
-
-
-                </div>
-            </div>
+            <partial name="_CarteDemande" model="demande" />
         }
         }
     </div>

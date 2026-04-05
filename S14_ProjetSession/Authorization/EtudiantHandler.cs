@@ -1,43 +1,34 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using S14_ProjetSession.Areas.Identity.Data;
 using S14_ProjetSession.Data;
 using S14_ProjetSession.Models;
+using System.Security.Claims;
 
 namespace S14_ProjetSession.Authorization
 {
     public class EtudiantHandler : AuthorizationHandler<EtudiantRequirement>
     {
-        private readonly ResidencesDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IEtudiantRepository _etudiantRepository;
 
-        public EtudiantHandler(ResidencesDbContext context, UserManager<ApplicationUser> userManager)
+        public EtudiantHandler(IEtudiantRepository etudiantRepository)
         {
-            _context = context;
-            _userManager = userManager;
+            _etudiantRepository = etudiantRepository;
         }
 
         protected override async Task HandleRequirementAsync(
             AuthorizationHandlerContext context,
             EtudiantRequirement requirement)
         {
-            ApplicationUser? user = await _userManager.GetUserAsync(context.User);
+            string? userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (user == null)
+            if (userId == null)
                 return;
 
-            Etudiant? etudiant = await _context.Etudiants
-                .FirstOrDefaultAsync(e => e.ApplicationUserId == user.Id);
+            Etudiant? etudiant = await _etudiantRepository.GetByUserIdAsync(userId);
 
             if (etudiant != null)
-            {
                 context.Succeed(requirement);
-            }
             else
-            {
                 context.Fail(new AuthorizationFailureReason(this, "PasEtudiant"));
-            }
         }
     }
 }

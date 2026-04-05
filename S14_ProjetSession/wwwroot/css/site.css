@@ -32,15 +32,50 @@ body {
 }
 
 .carte {
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    border-radius: 10px;
+    border-top: 3px solid #0d6efd;
+    padding: 10px;
+    background: linear-gradient(145deg, #ffffff, #f8fafc);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    transition: all 0.2s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
     .carte:hover {
-        background-color: rgba(37, 99, 235, 0.08);
-        transform: translateY(-3px) scale(1.03);
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+        border-left: 1px solid #0d6efd;
+        border-right: 1px solid #0d6efd;
+        border-bottom: 1px solid #0d6efd;
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 18px 40px rgba(37, 99, 235, 0.25);
+    }
+    .carte .card-body {
+        padding: 1.5rem;
+    }
+    .carte .card-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1e293b;
+    }
+    .carte .btn {
+        padding: 6px 12px;
     }
 
+.dispo {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+.dispo-ok {
+    color: #16a34a;
+}
+
+.dispo-none {
+    color: #dc2626;
+}
 
 .navbar-brand {
     font-size: 1.8rem;
@@ -65,16 +100,21 @@ body {
 
 .unite-row {
     border-radius: 10px;
-    padding:2rem;
+    border-left: 3px solid #0d6efd;
+    padding: 2rem;
     margin-bottom: 15px;
+    background: linear-gradient(145deg, #ffffff, #f8fafc);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
     transition: all 0.2s ease;
     cursor: pointer;
 }
 
     .unite-row:hover {
-        background-color: rgba(37, 99, 235, 0.08); 
-        transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+        border-top: 1px solid #0d6efd;
+        border-right: 1px solid #0d6efd;
+        border-bottom: 1px solid #0d6efd;
+        transform: translateY(-5px);
+        box-shadow: 0 18px 40px rgba(37, 99, 235, 0.25);
     }
     .unite-row .btn {
         font-size: 1.1rem;
@@ -190,15 +230,47 @@ dialog {
     padding: 2rem;
     border-radius: 12px;
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+    border-top: 2px solid #0d6efd;
     transition: all 0.2s ease;
 }
-.form-container:hover {
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
-}
+
+    .form-container:hover {
+        box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3), 0 15px 40px rgba(0, 0, 0, 0.4);
+        border-top-color: #2563eb; 
+    }
 .form-control:hover,
 .form-select:hover {
     border-color: #9ca3af;
 }
+
+.description-input {
+    background-color: #ffffff;
+    color: #1f2937;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.875rem;
+    width: 75%;
+    max-height: 200px; 
+    overflow-y: auto; 
+    resize: vertical;
+    transition: all 0.2s ease;
+}
+
+    .description-input::placeholder {
+        color: #9ca3af;
+        font-size: 0.85rem;
+    }
+
+    .description-input:focus {
+        background-color: #ffffff;
+        border-color: #2563eb; 
+        box-shadow: 0 3px 5px -1px rgba(37, 99, 235, 0.5);
+    }
+
+    .description-input:hover {
+        border-color: #9ca3af;
+    }
 
 .info-bulle {
     position: relative;
@@ -245,15 +317,61 @@ dialog {
     background-color: rgba(37, 99, 235, 1);
 }
 
+.info-bulle-lg {
+    position: relative;
+    margin-left: 10px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 25px;
+    height: 25px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: #2563eb;
+    border-radius: 50%;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+.info-texte-lg {
+    position: absolute;
+    top: 130%; 
+    left: 50%;
+    transform: translateX(-50%);
+    width: 520px;
+    background-color: rgba(37, 99, 235, 1);
+    color: #e5e7eb;
+    padding: 16px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-align: left;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.25s ease;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.8);
+    z-index: 20;
+}
+
+.info-bulle-lg:hover .info-texte-lg {
+    opacity: 1;
+    transform: translateX(-50%) translateY(8px);
+}
+
 .utilisateur-container {
-    transition: all 0.2s ease;
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 12px;
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+    border-top: 2px solid #0d6efd;
+    transition: all 0.2s ease;
 }
 
+    .utilisateur-container:hover {
+        box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3), 0 15px 40px rgba(0, 0, 0, 0.4);
+    }
 
-.utilisateur-container:hover {
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
-}
 
 .nav-pills .nav-link.active {
     color: #ffffff !important;
@@ -317,3 +435,54 @@ dialog {
         transform: translateX(-50%) translateY(-10px); 
     }
 
+.width{
+    width:90%;
+}
+
+.width-2 {
+    width: 49%;
+}
+
+.width-3 {
+    max-width: 550px;
+}
+
+.badge-available {
+    background-color: darkorange;
+    color: #ffffff; 
+}
+
+.commodite-item {
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+    .commodite-item:hover {
+        background-color: #f8f9fa; 
+        transform: translateY(-2px);
+        cursor: pointer;
+    }
+
+.modal-description {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    text-align: left;
+}
+
+.carte-commodite {
+    border-radius: 10px;
+    border-left: 3px solid #0d6efd;
+    padding: 0.2rem;
+    transition: all 0.2s ease;
+}
+
+    .carte-commodite:hover {
+        border-top: 1px solid #0d6efd;
+        border-right: 1px solid #0d6efd;
+        border-bottom: 1px solid #0d6efd;
+        transform: translateY(-5px);
+        box-shadow: 0 6px 15px rgba(37, 99, 235, 0.25);
+    }
+
+.commodite-hover {
+    transition: all 0.2s ease;
+}

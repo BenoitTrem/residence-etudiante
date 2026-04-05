@@ -3,13 +3,18 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace S14_ProjetSessionTests;
-
-internal static class Utils
+namespace S14_ProjetSessionTests
 {
-    public static string GetToken(string Html)
+    internal static class Utils
     {
-        string pattern = @"<input .*name=""__RequestVerificationToken"" .* value=""(.*)""";
-        return Regex.Match(Html, pattern).Groups[1].Value;
+        public static string GetToken(string html)
+        {
+            var match = Regex.Match(
+                html,
+                @"<input[^>]*name=""__RequestVerificationToken""[^>]*value=""([^""]+)""",
+                RegexOptions.IgnoreCase);
+
+            return match.Success ? match.Groups[1].Value : "";
+        }
     }
 }

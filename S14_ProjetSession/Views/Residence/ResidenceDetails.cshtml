@@ -1,0 +1,287 @@
+﻿@model S14_ProjetSession.Models.Residence
+@using S14_ProjetSession.Models
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+@using Microsoft.AspNetCore.Identity
+@using S14_ProjetSession.Areas.Identity.Data
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mt-5 mb-5">
+        <h1>Détails de la résidence</h1>
+        <a class="btn btn-outline-dark px-4" asp-controller="Residence" asp-action="Index">Retour</a>
+    </div>
+    <div class="p-5 form-container mb-5">
+        <h2 class="card-title mb-3 text-truncate width">@Model.Nom</h2>
+
+        <div class="mb-2">
+            <strong class="fs-6">Adresse :</strong> @Model.Adresse.AdresseString,
+            @Model.Adresse.Ville, @Model.Adresse.Province, @Model.Adresse.CodePostal
+        </div>
+
+        <div class="mb-5">
+            <strong class="fs-6">Campus :</strong> @Model.Campus.Nom
+        </div>
+        <hr />
+        <div class="mb-2">
+            <strong class="fs-6">
+                @(Model.TotalUnites > 1 ? "Unités totales :" : "Unité totale :")
+            </strong>
+            @if (Model.TotalUnites == 0)
+            {
+                <span class="badge bg-danger fs-6">Aucune</span>
+            }
+            else if (Model.TotalUnites == 1)
+            {
+                <span class="badge bg-primary fs-6">1 unité</span>
+            }
+            else
+            {
+                <span class="badge bg-primary fs-6">@Model.TotalUnites unités</span>
+            }
+        </div>
+
+        <div class="mb-2">
+            <strong class="fs-6">
+                @(Model.UnitesDisponibles > 1 ? "Unités disponibles :" : "Unité disponible :")
+            </strong>
+            @if (Model.UnitesDisponibles == 0)
+            {
+                <span class="badge bg-danger fs-6">Aucune</span>
+            }
+            else if (Model.UnitesDisponibles == 1)
+            {
+                <span class="badge bg-success fs-6">1 unité disponible</span>
+            }
+            else
+            {
+                <span class="badge bg-success fs-6">@Model.UnitesDisponibles unités disponibles</span>
+            }
+        </div>
+
+        <div class="mb-5">
+            <strong class="fs-6">
+                @(Model.TotalPlacesDisponibles > 1 ? "Places disponibles :" : "Place disponible :")
+            </strong>
+            @if (Model.TotalPlacesDisponibles == 0)
+            {
+                <span class="badge bg-danger fs-6">Aucune</span>
+            }
+            else if (Model.TotalPlacesDisponibles == 1)
+            {
+                <span class="badge badge-available fs-6">1 place disponible</span>
+            }
+            else
+            {
+                <span class="badge badge-available fs-6">@Model.TotalPlacesDisponibles places disponibles</span>
+            }
+        </div>
+        <hr />
+        <div class="mb-4">
+            <h3 class="mb-3">Commodités</h3>
+            @if (Model.ResidenceCommodites != null && Model.ResidenceCommodites.Any())
+            {
+                <ul class="list-group">
+                    @foreach (ResidenceCommodite commodite in Model.ResidenceCommodites)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center commodite-item commodite-hover"
+                            data-dialog-open="@($"modalCommodite_{commodite.Commodite.Id}")">
+                            @commodite.Commodite.Nom
+                            @if (!string.IsNullOrWhiteSpace(commodite.Description))
+                            {
+                                <span class="badge bg-secondary text-truncate width-3">
+                                    @commodite.Description
+                                </span>
+                            }
+                        </li>
+
+                        <dialog id="@($"modalCommodite_{commodite.Commodite.Id}")" class="info-modal">
+                            <div class="text-center py-3 px-3">
+                                <h3 class="mb-3 fw-bold">@commodite.Commodite.Nom</h3>
+                                <p class="text-muted fs-6 modal-description">
+                                    @if (!string.IsNullOrWhiteSpace(commodite.Description))
+                                    {
+                                        @commodite.Description
+                                    }
+                                    else
+                                    {
+                                        <span class="d-block text-center">Aucune description disponible.</span>
+                                    }
+                                </p>
+                                <div class="d-flex justify-content-center mt-4">
+                                    <button class="btn btn-outline-dark px-5" type="button" data-dialog-close>
+                                        Fermer
+                                    </button>
+                                </div>
+                            </div>
+                        </dialog>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p class="text-muted">Aucune commodité disponible.</p>
+            }
+        </div>
+      
+        @if (!User.IsInRole("Admin") && !User.IsInRole("Gestionnaire"))
+        {
+            if (Model.UnitesDisponibles == 0)
+            {
+                <div class="d-flex justify-content-center mb-3">
+                    <button class="btn btn-outline-secondary mt-5 px-5" type="button" data-dialog-open="@($"modalIndisponible_{Model.Id}")">
+                        Faire une demande
+                    </button>
+                </div>
+
+                <dialog id="@($"modalIndisponible_{Model.Id}")" class="info-modal">
+                    <div class="text-center py-3 px-3">
+                        <h3 class="mb-3 text-danger fw-bold">
+                            Aucune unité disponible
+                        </h3>
+                        <p class="text-muted fs-5">
+                            Il n’y a actuellement aucune unité disponible dans la résidence
+                            <strong class="text-truncate">@Model.Nom</strong>.
+                        </p>
+                        <p class="text-muted">
+                            Revenez plus tard ou consultez une autre résidence.
+                        </p>
+                        <div class="d-flex justify-content-center mt-4">
+                            <button class="btn btn-outline-dark px-5" type="button" data-dialog-close>
+                                Fermer
+                            </button>
+                        </div>
+                    </div>
+                </dialog>
+            }
+            else
+            {
+                if (!SignInManager.IsSignedIn(User))
+                {
+                    <div class="d-flex justify-content-center mb-3">
+                        <button class="btn btn-outline-primary mt-5 px-5" type="button" data-dialog-open="modalConnexion">
+                            Faire une demande
+                        </button>
+                    </div>
+                }
+                else if ((await AuthorizationService.AuthorizeAsync(User, "EstEtudiant")).Succeeded)
+                {
+                    <div class="d-flex justify-content-center mb-3">
+                        <a class="btn btn-outline-primary mt-5" asp-controller="Demande" asp-action="Creer">
+                            Faire une demande
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="d-flex justify-content-center mb-3">
+                        <button class="btn btn-outline-primary mt-5" type="button" data-dialog-open="modalEtudiant">
+                            Faire une demande
+                        </button>
+                     </div>
+                }
+            }
+
+            <dialog id="modalConnexion" class="info-modal">
+                <h3>Connexion requise</h3>
+                <p class="mt-3">
+                    Vous devez être connecté pour faire une demande.
+                </p>
+                <div class="d-flex justify-content-between align-items-center mt-5">
+                    <div>
+                        <a class="btn btn-outline-primary m-0 px-4" asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Context.Request.Path">
+                            Se connecter
+                        </a>
+                    </div>
+                    <div>
+                        <button class="btn btn-outline-dark m-0 px-4" type="button" data-dialog-close>
+                            Fermer
+                        </button>
+                    </div>
+                </div>
+            </dialog>
+
+
+            <dialog id="modalEtudiant" class="info-modal">
+                <h3>Profil étudiant requis</h3>
+                <p class="mt-3">
+                    Vous devez compléter votre profil étudiant avant de faire une demande.
+                </p>
+                <div class="d-flex justify-content-between align-items-center mt-5">
+                    <div>
+                        <a class="btn btn-outline-primary m-0 px-4" asp-controller="Etudiant" asp-action="Creer">
+                            Compléter mon profil
+                        </a>
+                    </div>
+                    <div>
+                        <button class="btn btn-outline-dark m-0 px-4" type="button" data-dialog-close>
+                            Fermer
+                        </button>
+                    </div>
+                </div>
+            </dialog>
+        }
+
+        @if ((await AuthorizationService.AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded)
+        {
+            <div class="d-flex justify-content-center mt-5">
+                <a class="btn btn-outline-primary w-50"
+                   asp-controller="Unite" asp-action="Index" asp-route-id="@Model.Id">
+                    Voir les unités
+                </a>
+            </div>
+
+            <div class="d-flex justify-content-center gap-2 mt-2 flex-wrap w-50 mx-auto mb-3">
+                <a class="btn btn-outline-success flex-fill"
+                   asp-controller="Residence" asp-action="ModifierResidence" asp-route-id="@Model.Id">
+                    Modifier
+                </a>
+
+                @if ((await AuthorizationService.AuthorizeAsync(User, "AdminUniquement")).Succeeded)
+                {
+                    <button class="btn btn-outline-danger flex-fill"
+                            type="button"
+                            data-dialog-open="modalSupprimer">
+                        Supprimer
+                    </button>
+                }
+
+                @if ((await AuthorizationService.AuthorizeAsync(User, "GestionnaireUniquement")).Succeeded)
+                {
+                    <button class="btn btn-outline-danger btn-tooltip flex-fill"
+                            type="button"
+                            data-dialog-open="modalNonAdmin">
+                        Supprimer
+                        <span class="tooltip-text">
+                            Vous devez être Admin pour effectuer cette action
+                        </span>
+                    </button>
+                }
+            </div>
+        
+
+            <dialog id="modalSupprimer" class="danger">
+                <h3>Supprimer une résidence</h3>
+                <p class="mt-3">
+                    Êtes-vous sûr de vouloir supprimer la résidence <strong class="text-truncate">@Model.Nom</strong> ?
+                </p>
+                <form asp-action="Supprimer" asp-controller="Residence" method="post">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-outline-danger px-4">Supprimer</button>
+                        <button type="button" class="btn btn-outline-dark px-4" data-dialog-close>Annuler</button>
+                    </div>
+                </form>
+            </dialog>
+
+            <dialog id="modalNonAdmin" class="info-modal">
+                <h3>Accès refusé</h3>
+                <p>Vous devez être Admin pour effectuer cette action.</p>
+                <div class="d-flex justify-content-end mt-3">
+                    <button class="btn btn-outline-dark px-4" type="button" data-dialog-close>Fermer</button>
+                </div>
+            </dialog>
+        }
+    </div>
+</div>

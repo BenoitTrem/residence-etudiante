@@ -20,21 +20,21 @@ namespace S14_ProjetSession.Controllers
         }
  
         [HttpGet("Unite/Residence/{id}")]
-        [AllowAnonymous]
+        [Authorize(Policy = "AdminOuGestionnaire")]
         public IActionResult Index(int id)
         {
-            List<Unite> unitesDisponibles = _uniteRepository.GetByResidenceId(id);
-            int nombreTotal = _uniteRepository.GetTotalByResidenceId(id);
-
             Residence residence = _residenceRepository.GetById(id);
+
+            List<Unite> unitesDisponibles = _uniteRepository.GetByResidenceId(id);
 
             if (residence != null)
             {
                 ViewBag.ResidenceId = residence.Id;
                 ViewBag.Adresse = residence.AdresseString;
                 ViewBag.Campus = residence.Campus?.Nom ?? "N/A";
-                ViewBag.NombreTotal = nombreTotal;
-                ViewBag.NombreUnites = unitesDisponibles.Count;
+                ViewBag.NombreTotal = residence.TotalUnites; 
+                ViewBag.NombreUnites = residence.UnitesDisponibles;
+                ViewBag.TotalPlacesDisponibles = residence.TotalPlacesDisponibles;
                 ViewData["Title"] = "Unités de la résidence " + residence.Nom;
             }
 
@@ -89,7 +89,7 @@ namespace S14_ProjetSession.Controllers
         }
 
         [Authorize(Policy = "AdminOuGestionnaire")]
-        public IActionResult Modifier(int id)
+        public IActionResult ModifierUnite(int id)
         {
             Unite unite = _uniteRepository.GetById(id);
 
