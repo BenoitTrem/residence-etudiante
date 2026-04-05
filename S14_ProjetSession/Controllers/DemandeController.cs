@@ -34,7 +34,7 @@ namespace S14_ProjetSession.Controllers
             Genre genre = _genreRepository.GetGenre(1);
         }
 
-        [Authorize(Policy = "EstEtudiant")]
+        
         public async Task<IActionResult> Index()
         {
             // id du User avec le login je sais pas comment faire donc default a 1 
@@ -110,106 +110,122 @@ namespace S14_ProjetSession.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Modifier(Demande demande, List<JumelageViewModel> jumelage) 
+        public async Task<IActionResult> Modifier(Demande demande, List<JumelageViewModel> jumelageNouveau)
         {
-            // faire verification
             ModelState.Remove("Etudiant");
             ModelState.Remove("Semestre");
             ModelState.Remove("PreferencesGenre");
             ModelState.Remove("jumelages");
-            // jumelage ne voulait pas s'enlever sinon Fix rapide
+
             ModelState.Keys
                 .Where(k => k.StartsWith("jumelage"))
                 .ToList()
                 .ForEach(k => ModelState.Remove(k));
+
             ModelState.Remove("DateNaissanceGarant");
             ModelState.Remove("DateDemande");
 
-            // faire un tempDATA    
-            //  regarder la dateDenaissance si bonne 
-            // envoyer les Jumelages 
-
-            if (ModelState.IsValid)
-            {
-                Semestre? semestre = _semestreRepository.GetSemestreParId(demande.SemestreId);
-                // par défaut en attendant Login
-
-                Etudiant? etudiant = _etudiantRepository.GetEtudiant(1);
-
-                Genre? genre = _genreRepository.GetGenre(demande.PreferencesGenreId.Value);
-                
-                if (semestre != null && etudiant != null && genre != null)
-                {
-                    demande.Semestre = semestre;
-                    demande.Etudiant = etudiant;
-                    demande.PreferencesGenre = genre;
-                    AjoutJumelageChoisis(demande, jumelage);
-                    Console.WriteLine(ModelState.IsValid);
-                    Demande? demandeDoubleExiste = _demandeRepository.Demandes.FirstOrDefault(d => d.EtudiantId == 1 && d.SemestreId == semestre.Id);
-                    if (demandeDoubleExiste != null)
-                    {
-                        ModelState.AddModelError(string.Empty, "Une demande existe déjà pour cet étudiant et ce semestre.");
-                        ViewBag.Genres = _genreRepository.Genres;
-                        ViewBag.Semestres = _semestreRepository.Semestres;
-                        return View(demande);
-                    }
-                    if (TryValidateModel(demande))
-                    {
-                        _demandeRepository.Modifier(demande);
-
-
-                        TempData["Succes"] = "La demande a bien été modifiée";
-                        return RedirectToAction("index");
-                    }
-                    else
-                    {
-                        ViewBag.Genres = _genreRepository.Genres;
-                        ViewBag.Semestres = _semestreRepository.Semestres;
-                        return View(demande);
-                    }
-                }
-                else
-                {
-                    ViewBag.Genres = _genreRepository.Genres;
-                    ViewBag.Semestres = _semestreRepository.Semestres;
-                    ModelState.AddModelError(string.Empty, "Impossible de créer la demande : données manquantes (semestre/étudiant/genre).");
-                    return View(demande);
-                }
-            }
-            else
+            if (!ModelState.IsValid)
             {
                 ViewBag.Genres = _genreRepository.Genres;
                 ViewBag.Semestres = _semestreRepository.Semestres;
                 return View(demande);
             }
+
+            Semestre? semestre = _semestreRepository.GetSemestreParId(demande.SemestreId);
+            string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+            Etudiant? etudiantConnecte = await _etudiantRepository.GetByUserIdAsync(userId);
+            if (etudiantConnecte == null)
+            {
+                return Unauthorized();
+            }
+            Etudiant? etudiant = _etudiantRepository.GetEtudiant(etudiantConnecte.Id); // temporaire
+            Genre? genre = null;
+
+            if (demande.PreferencesGenreId.HasValue)
+            {
+                genre = _genreRepository.GetGenre(demande.PreferencesGenreId.Value);
+            }
+
+            if (semestre == null || etudiant == null || genre == null)
+            {
+                ViewBag.Genres = _genreRepository.Genres;
+                ViewBag.Semestres = _semestreRepository.Semestres;
+                ModelState.AddModelError(string.Empty, "Impossible de modifier la demande : données manquantes.");
+                return View(demande);
+            }
+
+            demande.Semestre = semestre;
+            demande.Etudiant = etudiant;
+            demande.EtudiantId = etudiant.Id;
+            demande.PreferencesGenre = genre;
+
+            AjoutJumelageChoisis(demande, jumelageNouveau);
+
+            Demande? demandeDoubleExiste = _demandeRepository.Demandes
+                .FirstOrDefault(d => d.Id != demande.Id
+                                  && d.EtudiantId == demande.EtudiantId
+                                  && d.SemestreId == demande.SemestreId);
+
+            if (demandeDoubleExiste != null)
+            {
+                ModelState.AddModelError(string.Empty, "Une demande existe déjà pour cet étudiant et ce semestre.");
+                ViewBag.Genres = _genreRepository.Genres;
+                ViewBag.Semestres = _semestreRepository.Semestres;
+                return View(demande);
+            }
+
+            if (!TryValidateModel(demande))
+            {
+                ViewBag.Genres = _genreRepository.Genres;
+                ViewBag.Semestres = _semestreRepository.Semestres;
+                return View(demande);
+            }
+
+            _demandeRepository.Modifier(demande);
+            TempData["Succes"] = "La demande a bien été modifiée";
+            return RedirectToAction("Index");
         }
 
 
 
-        public void AjoutJumelageChoisis(Demande demande, List<JumelageViewModel> jumelages)
+        public void AjoutJumelageChoisis(Demande demande, List<JumelageViewModel>? jumelages)
         {
-            if (demande.Jumelages == null) 
-            {
+            if (jumelages == null)
+                return;
+
+            // initialiser la liste si null
+            if (demande.Jumelages == null)
                 demande.Jumelages = new List<Jumelage>();
-            }
+
+            // reset
             demande.Jumelages.Clear();
-            foreach (JumelageViewModel jumelage in jumelages) 
+
+            foreach (JumelageViewModel jumelage in jumelages)
             {
-                if (jumelage.Nom != "" && jumelage.Courriel != "") 
+                if (!string.IsNullOrWhiteSpace(jumelage.Nom) &&
+                    !string.IsNullOrWhiteSpace(jumelage.Courriel))
                 {
-                    Jumelage nouveaJumelage = new Jumelage();
-                    nouveaJumelage.Courriel =jumelage.Courriel;
-                    nouveaJumelage.Nom = jumelage.Nom;
-                    demande.Jumelages.Add(nouveaJumelage);
+                    Jumelage nouveauJumelage = new Jumelage
+                    {
+                        Nom = jumelage.Nom,
+                        Courriel = jumelage.Courriel
+                    };
+
+                    demande.Jumelages.Add(nouveauJumelage);
                 }
             }
-
         }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Creer([Bind("SemestreId,EtudiantId,PreferencesGenreId,PrefDureeBail,AccepteReglements,AccepteTraitementDonnees,ConfirmeSoumission,NomGarant,PrenomGarant,DateNaissanceGarant,CourrielGarant,TelephoneGarant,NomParent,CourrielParent,NomUrgence,LienParenteUrgence,TelephoneUrgence")] Demande demande, List<JumelageViewModel> jumelage)
+        public async Task<IActionResult> Creer([Bind("SemestreId,EtudiantId,PreferencesGenreId,PrefDureeBail,AccepteReglements,AccepteTraitementDonnees,ConfirmeSoumission,NomGarant,PrenomGarant,DateNaissanceGarant,CourrielGarant,TelephoneGarant,NomParent,CourrielParent,NomUrgence,LienParenteUrgence,TelephoneUrgence")] Demande demande, List<JumelageViewModel> jumelage)
         {
             ModelState.Remove("Etudiant");
             ModelState.Remove("Semestre");
@@ -230,9 +246,12 @@ namespace S14_ProjetSession.Controllers
             if (ModelState.IsValid)
             {
                 Semestre? semestre= _semestreRepository.GetSemestreParId(demande.SemestreId);
-                // par défaut en attendant Login
+                
 
-                Etudiant? etudiant = _etudiantRepository.GetEtudiant(1);
+                // avec le login 
+                string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                Etudiant? etudiantConnecte = await _etudiantRepository.GetByUserIdAsync(userId);
+                Etudiant? etudiant = _etudiantRepository.GetEtudiant(etudiantConnecte.Id);
                 
                 Genre? genre = _genreRepository.GetGenre(demande.PreferencesGenreId.Value);
                 Demande? demandeDoubleExiste = _demandeRepository.Demandes.FirstOrDefault(d => d.EtudiantId == 1 && d.SemestreId == semestre.Id);
