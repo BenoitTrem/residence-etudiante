@@ -140,10 +140,18 @@ dialog {
     border-radius: 5px;
     background: white;
     color: black;
+    transition: all 0.2s ease;
 }
+    dialog.info-modal:focus {
+        outline: none; 
+    }
 
     dialog.danger {
         box-shadow: 0 25px 50px rgba(220, 38, 38, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    }
+
+    .info-modal {
+        box-shadow: 0 25px 50px rgba(37, 99, 235, 0.25), 0 5px 15px rgba(37, 99, 235, 0.15);
     }
 
     dialog::backdrop {
@@ -355,6 +363,51 @@ dialog {
     transform: translateX(-50%) translateY(8px);
 }
 
+.info-bulle-2 {
+    position: relative;
+    top: -5px;
+    margin-left: 5px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    background-color: #2563eb;
+    border-radius: 50%;
+    cursor: pointer;
+}
+.info-texte-2 {
+    position: absolute;
+    bottom: 150%;
+    left: 50%;
+    transform: translateX(-40%);
+    width: 460px;
+    background-color: rgba(37, 99, 235, 1);
+    color: #e5e7eb;
+    padding: 12px;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-align: left;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+    z-index: 10;
+}
+    .info-bulle-2:hover .info-texte-2 {
+        opacity: 1;
+        transform: translateX(-30%) translateY(-5px);
+    }
+
+    .info-bulle-2:hover {
+        color: rgba(37, 99, 235, 1);
+        background-color: rgba(37, 99, 235, 1);
+    }
+
 .utilisateur-container {
     background: #ffffff;
     padding: 2rem;
@@ -448,12 +501,14 @@ dialog {
 }
 
 .commodite-item {
+    border-radius: 5px;
     transition: background-color 0.2s, transform 0.2s;
 }
 
     .commodite-item:hover {
-        background-color: #f8f9fa; 
-        transform: translateY(-2px);
+        border-left: 2px solid #0d6efd;
+        background-color: #f8f9fa;
+        transform: translateY(-1px) scaleX(1.01);
         cursor: pointer;
     }
 
