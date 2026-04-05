@@ -29,7 +29,7 @@ namespace S14_ProjetSession.Data
         Telephone = "8191234567",
         CourrielInstitutionnel = "alex.tremblay@cegepoutaouais.qc.ca",
         CourrielPersonnel = "alex.tremblay@gmail.com",
-        ApplicationUserId = "user-1"
+        ApplicationUserId = "468a4852-42ee-4f45-9be5-41422b589904"
     },
     new Etudiant
     {
@@ -46,7 +46,7 @@ namespace S14_ProjetSession.Data
         Telephone = "8199876543",
         CourrielInstitutionnel = "marie.gagnon@cegepoutaouais.qc.ca",
         CourrielPersonnel = "marie.gagnon@gmail.com",
-        ApplicationUserId = "user-2"
+        ApplicationUserId = "468a4852-42ee-4f45-9be5-41422b589902"
     }
 };
         }
