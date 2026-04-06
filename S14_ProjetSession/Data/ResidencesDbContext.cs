@@ -61,13 +61,15 @@ namespace S14_ProjetSession.Data;
             modelBuilder.Entity<Commodite>()
                .HasIndex(c => c.Nom)
                .IsUnique();
-            }
             modelBuilder.Entity<Demande>()
-                    .HasIndex(d => new { d.EtudiantId, d.SemestreId
+                .HasIndex(d => new {
+                    d.EtudiantId,
+                    d.SemestreId
                 })
-                    .IsUnique();
-        
-                }
+                .IsUnique();
+
+
+    }
             
     }
 

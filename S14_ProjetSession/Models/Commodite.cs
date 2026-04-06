@@ -13,3 +13,4 @@ namespace S14_ProjetSession.Models
         public List<ResidenceCommodite> ResidenceCommodites { get; set; } = new();
     }
 }
+ 
