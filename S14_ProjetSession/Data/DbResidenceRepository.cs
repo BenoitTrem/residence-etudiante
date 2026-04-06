@@ -26,6 +26,9 @@ namespace S14_ProjetSession.Data
         {
             return _context.Residences
                 .Include(r => r.Campus)
+                .Include(r => r.ResidenceCommodites)
+                    .ThenInclude(rc => rc.Commodite)
+                .Include(r => r.Unites)
                 .FirstOrDefault(r => r.Id == id);
         }
 

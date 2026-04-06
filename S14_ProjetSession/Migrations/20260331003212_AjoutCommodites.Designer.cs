@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using S14_ProjetSession.Data;
 
@@ -11,9 +12,11 @@ using S14_ProjetSession.Data;
 namespace S14_ProjetSession.Migrations
 {
     [DbContext(typeof(ResidencesDbContext))]
-    partial class ResidencesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260331003212_AjoutCommodites")]
+    partial class AjoutCommodites
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -266,9 +269,6 @@ namespace S14_ProjetSession.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Nom")
-                        .IsUnique();
-
                     b.ToTable("Commodites");
                 });
 
@@ -452,16 +452,14 @@ namespace S14_ProjetSession.Migrations
 
                     b.Property<string>("Courriel")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("DemandeId")
                         .HasColumnType("int");
 
                     b.Property<string>("Nom")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -531,8 +529,7 @@ namespace S14_ProjetSession.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ResidenceId", "CommoditeId");
 
