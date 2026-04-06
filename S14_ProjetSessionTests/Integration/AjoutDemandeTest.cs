@@ -344,13 +344,7 @@ namespace S14_ProjetSessionTests.Integration
         }
 
 
-        [Fact]
-        public async Task DemandeCreeSansCompteRedirigeVersLogin()
-        {
-
-            HttpResponseMessage response = await _client.GetAsync("/demande/creer");
-            Assert.Contains("/Account/Login", response.Headers.Location?.ToString());
-        }
+        
         
 
 

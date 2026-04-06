@@ -34,7 +34,7 @@ namespace S14_ProjetSession.Controllers
             Genre genre = _genreRepository.GetGenre(1);
         }
 
-        
+        [Authorize(Policy = "EstEtudiant")]
         public async Task<IActionResult> Index()
         {
             // id du User avec le login je sais pas comment faire donc default a 1 
@@ -76,6 +76,7 @@ namespace S14_ProjetSession.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "AdminOuGestionnaire")]
         public IActionResult Supprimer(int Id) 
         {
             Demande demande = _demandeRepository.GetDemande(Id);
@@ -92,6 +93,7 @@ namespace S14_ProjetSession.Controllers
         }
 
         // la personne qui possède ou Admin
+
         public ViewResult Modifier(int Id) 
         {
             Demande demande = _demandeRepository.GetDemande(Id);
@@ -108,8 +110,10 @@ namespace S14_ProjetSession.Controllers
             return View("demandes");
         }
 
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "EstEtudiant")]
         public async Task<IActionResult> Modifier(Demande demande, List<JumelageViewModel> jumelageNouveau)
         {
             ModelState.Remove("Etudiant");
@@ -225,6 +229,7 @@ namespace S14_ProjetSession.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "EstEtudiant")]
         public async Task<IActionResult> Creer([Bind("SemestreId,EtudiantId,PreferencesGenreId,PrefDureeBail,AccepteReglements,AccepteTraitementDonnees,ConfirmeSoumission,NomGarant,PrenomGarant,DateNaissanceGarant,CourrielGarant,TelephoneGarant,NomParent,CourrielParent,NomUrgence,LienParenteUrgence,TelephoneUrgence")] Demande demande, List<JumelageViewModel> jumelage)
         {
             ModelState.Remove("Etudiant");
