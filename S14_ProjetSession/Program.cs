@@ -42,16 +42,21 @@ builder.Services.AddAuthorization(options =>
         policy.RequireRole("Admin", "Gestionnaire"));
 
     options.AddPolicy("GestionnaireUniquement", policy =>
-       policy.RequireRole("Gestionnaire"));
+        policy.RequireRole("Gestionnaire"));
 
     options.AddPolicy("UtilisateurSeulement", policy =>
         policy.RequireRole("Utilisateur"));
 
     options.AddPolicy("EstEtudiant", policy =>
-       policy.RequireAuthenticatedUser()
-             .AddRequirements(new EtudiantRequirement()));
+        policy.RequireAuthenticatedUser()
+              .AddRequirements(new EtudiantRequirement()));
+
+    options.AddPolicy("EstProprietaireDemande", policy =>
+        policy.RequireAuthenticatedUser()
+              .AddRequirements(new EstProprietaireDemandeRequirement()));
 });
 
+builder.Services.AddScoped<IAuthorizationHandler, ProprietaireDemandeHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, EtudiantHandler>();
 
 WebApplication app = builder.Build();
