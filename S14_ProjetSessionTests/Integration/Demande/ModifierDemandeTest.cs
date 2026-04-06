@@ -22,7 +22,7 @@ namespace S14_ProjetSessionTests.Integration.DemandeTests
         private IEtudiantRepository _etudiantRepository = new MockEtudiantRepository();
         private IGenresRepository _genresRepository = new MockGenreRepository();
         private ClaimsPrincipal? _currentUser;
-        private ClaimsPrincipal _utilisateur = AuthUtilities.CreerGestionnaire();
+        private ClaimsPrincipal _utilisateur = AuthUtilities.CreerEtudiant();
 
         public ModifierDemandeTest(WebApplicationFactory<Program> factory)
         {
