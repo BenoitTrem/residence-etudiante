@@ -14,21 +14,21 @@ namespace S14_ProjetSession.Authorization
             _etudiantRepository = etudiantRepository;
         }
 
-        protected override async Task HandleRequirementAsync(
-            AuthorizationHandlerContext context,
-            EtudiantRequirement requirement)
+        protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, EtudiantRequirement requirement)
         {
             string? userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (userId == null)
+            {
                 return;
+            }
 
             Etudiant? etudiant = await _etudiantRepository.GetByUserIdAsync(userId);
 
             if (etudiant != null)
+            {
                 context.Succeed(requirement);
-            else
-                context.Fail(new AuthorizationFailureReason(this, "PasEtudiant"));
+            }
         }
     }
 }

@@ -1,5 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+/*
+ * @author Benoit
+ * 
+ * Description: 
+ * Modèle adresse associée à une résidence.
+ */
 namespace S14_ProjetSession.Models
 {
     public class Adresse

@@ -2,8 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using S14_ProjetSession.Data;
 using S14_ProjetSession.Models;
-using System.Security.Policy;
 
+/*
+ * @author Benoit
+ * 
+ * Description: Controller responsable pour la gestion des unités.
+ */
 namespace S14_ProjetSession.Controllers
 {
 

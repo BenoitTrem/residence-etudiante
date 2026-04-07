@@ -1,5 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+/*
+ * @author Benoit
+ * 
+ * Description: 
+ * Modèle unité.
+ * Contient les informations sur le numéro, la capacité, les places occupées,
+ * l'accessibilité pour mobilité réduite et la liste des étudiants assignés.
+ */
 namespace S14_ProjetSession.Models
 {
     public class Unite
@@ -18,6 +26,7 @@ namespace S14_ProjetSession.Models
 
         public int PlacesOccupees { get; set; }
 
+        /// Calcul du nombre de places disponibles dans l'unité
         public int PlacesDisponibles => Capacite - PlacesOccupees;
 
         [Required(ErrorMessage = "Veuillez indiquer si l'unité est adaptée.")]
