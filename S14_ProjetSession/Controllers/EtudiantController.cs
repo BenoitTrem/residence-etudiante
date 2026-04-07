@@ -207,10 +207,12 @@ namespace S14_ProjetSession.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Modifier(
-            [Bind("Id,Nom,Prenom,DateNaissance,GenreId,ProgrammeId,CampusId,noEtudiant,noAdmission,MobiliteReduite,AdressePermanente,Telephone,CourrielInstitutionnel,CourrielPersonnel,ApplicationUserId")] Etudiant etudiant)
+            [Bind("Id,ApplicationUserId,Nom,Prenom,DateNaissance,GenreId,ProgrammeId,CampusId,noEtudiant,noAdmission,MobiliteReduite,AdressePermanente,Telephone,CourrielInstitutionnel,CourrielPersonnel,ApplicationUserId")] Etudiant etudiant)
         {
             try
             {
+
+               
                 var user = await _userManager.GetUserAsync(User);
                 if (user == null)
                     return Challenge();
