@@ -204,7 +204,24 @@ namespace S14_ProjetSession.Data
             Telephone = "6137778888",
             CourrielInstitutionnel = "sophie.bouchard@college.ca",
             CourrielPersonnel = "sophie.bouchard@gmail.com"
-        }
+        },
+        new Etudiant
+{
+    Nom = "Lefevre",
+    Prenom = "Julien",
+    DateNaissance = new DateTime(2003, 3, 18),
+    GenreId = genreDb[0].Id,
+    ProgrammeId = programmeDb[1].Id,
+    CampusId = campusDb[0].Id,
+    noEtudiant = "20230005",
+    noAdmission = "ADM005",
+    MobiliteReduite = false,
+    AdressePermanente = "150 Rue Laval",
+    Telephone = "6139990000",
+    CourrielInstitutionnel = "julien.lefevre@college.ca",
+    CourrielPersonnel = "julien.lefevre@gmail.com"
+}
+
             };
 
             foreach (var etudiant in etudiants)
