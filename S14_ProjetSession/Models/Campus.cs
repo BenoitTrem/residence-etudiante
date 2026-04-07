@@ -17,7 +17,7 @@ namespace S14_ProjetSession.Models
         [StringLength(10, ErrorMessage = "Max 10 caractères")]
         public string Abreviation { get; set; }
 
-
+        public List<Etudiant> Etudiants { get; set; } = new List<Etudiant>();
         public List<Residence> Residences { get; set; } = new List<Residence>();
         public List<Programme> programmes { get; set; } = new List<Programme>();
     }

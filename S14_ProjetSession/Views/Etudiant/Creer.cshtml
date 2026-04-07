@@ -98,6 +98,14 @@
             </select>
         </div>
 
+
+        <div class="col-md-6 mt-3">
+            <label>Campus</label>
+            <select asp-for="CampusId" class="form-control"
+                    asp-items="@(new SelectList(ViewBag.Campus, "Id", "Nom"))">
+            </select>
+        </div>
+
     </div>
 
     <div class="mt-4">

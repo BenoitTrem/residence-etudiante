@@ -12,8 +12,8 @@ using S14_ProjetSession.Data;
 namespace S14_ProjetSession.Migrations
 {
     [DbContext(typeof(ResidencesDbContext))]
-    [Migration("20260401004551_felix")]
-    partial class felix
+    [Migration("20260407172925_Migration1")]
+    partial class Migration1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -243,11 +243,13 @@ namespace S14_ProjetSession.Migrations
 
                     b.Property<string>("Abreviation")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("Nom")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -305,9 +307,6 @@ namespace S14_ProjetSession.Migrations
                     b.Property<int>("PrefDureeBail")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PreferencesGenreId")
-                        .HasColumnType("int");
-
                     b.Property<string>("PrenomGarant")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -327,11 +326,24 @@ namespace S14_ProjetSession.Migrations
 
                     b.HasIndex("EtudiantId");
 
-                    b.HasIndex("PreferencesGenreId");
-
                     b.HasIndex("SemestreId");
 
                     b.ToTable("Demandes");
+                });
+
+            modelBuilder.Entity("S14_ProjetSession.Models.DemandeGenre", b =>
+                {
+                    b.Property<int>("DemandeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GenreId")
+                        .HasColumnType("int");
+
+                    b.HasKey("DemandeId", "GenreId");
+
+                    b.HasIndex("GenreId");
+
+                    b.ToTable("DemandeGenre");
                 });
 
             modelBuilder.Entity("S14_ProjetSession.Models.Etudiant", b =>
@@ -348,6 +360,9 @@ namespace S14_ProjetSession.Migrations
 
                     b.Property<string>("ApplicationUserId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("CampusId")
+                        .HasColumnType("int");
 
                     b.Property<string>("CourrielInstitutionnel")
                         .IsRequired()
@@ -398,6 +413,8 @@ namespace S14_ProjetSession.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
+                    b.HasIndex("CampusId");
+
                     b.HasIndex("GenreId");
 
                     b.HasIndex("ProgrammeId");
@@ -417,7 +434,8 @@ namespace S14_ProjetSession.Migrations
 
                     b.Property<string>("Nom")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -465,11 +483,13 @@ namespace S14_ProjetSession.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("Nom")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -613,10 +633,6 @@ namespace S14_ProjetSession.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("S14_ProjetSession.Models.Genre", "PreferencesGenre")
-                        .WithMany()
-                        .HasForeignKey("PreferencesGenreId");
-
                     b.HasOne("S14_ProjetSession.Models.Semestre", "Semestre")
                         .WithMany()
                         .HasForeignKey("SemestreId")
@@ -625,9 +641,26 @@ namespace S14_ProjetSession.Migrations
 
                     b.Navigation("Etudiant");
 
-                    b.Navigation("PreferencesGenre");
-
                     b.Navigation("Semestre");
+                });
+
+            modelBuilder.Entity("S14_ProjetSession.Models.DemandeGenre", b =>
+                {
+                    b.HasOne("S14_ProjetSession.Models.Demande", "Demande")
+                        .WithMany("DemandeGenres")
+                        .HasForeignKey("DemandeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("S14_ProjetSession.Models.Genre", "Genre")
+                        .WithMany("DemandeGenres")
+                        .HasForeignKey("GenreId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Demande");
+
+                    b.Navigation("Genre");
                 });
 
             modelBuilder.Entity("S14_ProjetSession.Models.Etudiant", b =>
@@ -636,21 +669,30 @@ namespace S14_ProjetSession.Migrations
                         .WithMany()
                         .HasForeignKey("ApplicationUserId");
 
+                    b.HasOne("S14_ProjetSession.Models.Campus", "Campus")
+                        .WithMany("Etudiants")
+                        .HasForeignKey("CampusId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("S14_ProjetSession.Models.Genre", "Genre")
-                        .WithMany("etudiants")
+                        .WithMany("Etudiants")
                         .HasForeignKey("GenreId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("S14_ProjetSession.Models.Programme", "Programme")
                         .WithMany("Etudiants")
                         .HasForeignKey("ProgrammeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("S14_ProjetSession.Models.Unite", "Unite")
                         .WithMany("Etudiants")
-                        .HasForeignKey("UniteId");
+                        .HasForeignKey("UniteId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Campus");
 
                     b.Navigation("Genre");
 
@@ -730,7 +772,7 @@ namespace S14_ProjetSession.Migrations
                     b.HasOne("S14_ProjetSession.Models.Residence", "Residence")
                         .WithMany("Unites")
                         .HasForeignKey("ResidenceId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Residence");
@@ -738,6 +780,8 @@ namespace S14_ProjetSession.Migrations
 
             modelBuilder.Entity("S14_ProjetSession.Models.Campus", b =>
                 {
+                    b.Navigation("Etudiants");
+
                     b.Navigation("Residences");
 
                     b.Navigation("programmes");
@@ -745,6 +789,8 @@ namespace S14_ProjetSession.Migrations
 
             modelBuilder.Entity("S14_ProjetSession.Models.Demande", b =>
                 {
+                    b.Navigation("DemandeGenres");
+
                     b.Navigation("Jumelages");
                 });
 
@@ -755,7 +801,9 @@ namespace S14_ProjetSession.Migrations
 
             modelBuilder.Entity("S14_ProjetSession.Models.Genre", b =>
                 {
-                    b.Navigation("etudiants");
+                    b.Navigation("DemandeGenres");
+
+                    b.Navigation("Etudiants");
                 });
 
             modelBuilder.Entity("S14_ProjetSession.Models.Programme", b =>

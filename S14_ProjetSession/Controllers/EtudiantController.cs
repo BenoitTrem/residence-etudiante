@@ -20,6 +20,7 @@ namespace S14_ProjetSession.Controllers
         private readonly IEtudiantRepository _etudiantRepository;
         private readonly IGenresRepository _genresRepository;
         private readonly IProgrammesRepository _programmesRepository;
+        private readonly ICampusRepository _campusRepository;
         private readonly UserManager<ApplicationUser> _userManager;
 
         /// <summary>
@@ -34,11 +35,13 @@ namespace S14_ProjetSession.Controllers
             IEtudiantRepository etudiantRepository,
             IGenresRepository genresRepository,
             IProgrammesRepository programmesRepository,
+            ICampusRepository campusRepository,
             UserManager<ApplicationUser> userManager)
         {
             _etudiantRepository = etudiantRepository;
             _genresRepository = genresRepository;
             _programmesRepository = programmesRepository;
+            _campusRepository = campusRepository;
             _userManager = userManager;
         }
 
@@ -90,6 +93,7 @@ namespace S14_ProjetSession.Controllers
 
                 ViewBag.Genres = _genresRepository.Genres;
                 ViewBag.Programmes = _programmesRepository.Programmes;
+                ViewBag.Campus = _campusRepository.Campus;
                 ViewBag.EmailPerso = user.Email;
 
                 return View();
@@ -110,7 +114,7 @@ namespace S14_ProjetSession.Controllers
         [Authorize(Policy = "AdminOuUtilisateur")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Creer(
-            [Bind("Nom,Prenom,DateNaissance,GenreId,ProgrammeId,noEtudiant,noAdmission,MobiliteReduite,AdressePermanente,Telephone,CourrielInstitutionnel,CourrielPersonnel")] Etudiant etudiant)
+            [Bind("Nom,Prenom,DateNaissance,GenreId,ProgrammeId,CampusId,noEtudiant,noAdmission,MobiliteReduite,AdressePermanente,Telephone,CourrielInstitutionnel,CourrielPersonnel")] Etudiant etudiant)
         {
             try
             {
@@ -118,6 +122,7 @@ namespace S14_ProjetSession.Controllers
                 {
                     ViewBag.Genres = _genresRepository.Genres;
                     ViewBag.Programmes = _programmesRepository.Programmes;
+                    ViewBag.Campus = _campusRepository.Campus;
                     return View(etudiant);
                 }
 
@@ -134,6 +139,7 @@ namespace S14_ProjetSession.Controllers
 
                 etudiant.Genre = _genresRepository.GetGenre(etudiant.GenreId);
                 etudiant.Programme = _programmesRepository.GetProgramme(etudiant.ProgrammeId);
+                etudiant.Campus = _campusRepository.GetById(etudiant.CampusId);
                 etudiant.ApplicationUserId = user.Id;
                 etudiant.User = user;
 
@@ -141,7 +147,14 @@ namespace S14_ProjetSession.Controllers
 
                 TempData["Succes"] = $"L'étudiant {etudiant.Nom} a été créé";
 
-                return RedirectToAction("Index");
+                if (User.IsInRole("Admin") || User.IsInRole("Gestionnaire"))
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    return RedirectToAction("Profil");
+                }
             }
             catch (Exception)
             {
@@ -174,6 +187,8 @@ namespace S14_ProjetSession.Controllers
 
                 ViewBag.Genres = _genresRepository.Genres;
                 ViewBag.Programmes = _programmesRepository.Programmes;
+                ViewBag.Campus = _campusRepository.Campus;
+
 
                 return View(etudiant);
             }
@@ -192,7 +207,7 @@ namespace S14_ProjetSession.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Modifier(
-            [Bind("Id,Nom,Prenom,DateNaissance,GenreId,ProgrammeId,noEtudiant,noAdmission,MobiliteReduite,AdressePermanente,Telephone,CourrielInstitutionnel,CourrielPersonnel,ApplicationUserId")] Etudiant etudiant)
+            [Bind("Id,Nom,Prenom,DateNaissance,GenreId,ProgrammeId,CampusId,noEtudiant,noAdmission,MobiliteReduite,AdressePermanente,Telephone,CourrielInstitutionnel,CourrielPersonnel,ApplicationUserId")] Etudiant etudiant)
         {
             try
             {
@@ -209,15 +224,24 @@ namespace S14_ProjetSession.Controllers
                 {
                     etudiant.Genre = _genresRepository.GetGenre(etudiant.GenreId);
                     etudiant.Programme = _programmesRepository.GetProgramme(etudiant.ProgrammeId);
+                    etudiant.Campus = _campusRepository.GetById(etudiant.CampusId);
 
                     _etudiantRepository.Modifier(etudiant);
 
                     TempData["Succes"] = $"L'étudiant {etudiant.Nom} a été modifié";
-                    return RedirectToAction("Index");
+                    if(User.IsInRole("Admin") || User.IsInRole("Gestionnaire")){
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        return RedirectToAction("Profil");
+                    }
+                    
                 }
 
                 ViewBag.Genres = _genresRepository.Genres;
                 ViewBag.Programmes = _programmesRepository.Programmes;
+                ViewBag.Campus = _campusRepository.Campus;
 
                 return View(etudiant);
             }
@@ -249,6 +273,7 @@ namespace S14_ProjetSession.Controllers
 
                 TempData["Succes"] = $"L'étudiant {etudiant.Prenom} {etudiant.Nom} a été supprimé";
 
+          
                 return RedirectToAction("Index");
             }
             catch (Exception)
@@ -262,7 +287,6 @@ namespace S14_ProjetSession.Controllers
         /// </summary>
         /// <returns>Vue du profil</returns>
         /// <author>Benoit Tremblay</author>
-        [Authorize(Policy = "EstEtudiant")]
         public async Task<IActionResult> Profil()
         {
             try
@@ -272,8 +296,7 @@ namespace S14_ProjetSession.Controllers
                     return Challenge();
 
                 var etudiant = await _etudiantRepository.GetByUserIdAsync(user.Id);
-                if (etudiant == null)
-                    return Erreur(404, "Profil introuvable");
+           
 
                 return View(etudiant);
             }

@@ -57,6 +57,15 @@
             </div>
 
             <div class="col-md-6 mt-3">
+                <label>Campus</label>
+                <select asp-for="CampusId"
+                        class="form-control"
+                        asp-items="@(new SelectList(ViewBag.Campus, "Id", "Nom"))">
+                </select>
+                <span asp-validation-for="CampusId" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 mt-3">
                 <label asp-for="noEtudiant"></label>
                 <input asp-for="noEtudiant" class="form-control" />
                 <span asp-validation-for="noEtudiant" class="text-danger"></span>

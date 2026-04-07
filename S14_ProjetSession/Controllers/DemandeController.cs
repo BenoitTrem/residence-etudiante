@@ -1,11 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using Microsoft.AspNetCore.Mvc;
 using S14_ProjetSession.Data;
 using S14_ProjetSession.Models;
 using S14_ProjetSession.NewFolder;
-using System.Linq;
-using System.Net.Http.Headers;
 
 namespace S14_ProjetSession.Controllers
 {
@@ -15,19 +11,19 @@ namespace S14_ProjetSession.Controllers
         private readonly IGenresRepository _genreRepository;
         private readonly IEtudiantRepository _etudiantRepository;
         private readonly IDemandeRepository _demandeRepository;
+
         public int GenreParDefaut = 1;
 
-        public DemandeController(ISemestreRepository semestreRepository, IGenresRepository genreRepository, IEtudiantRepository etudiantRepository, IDemandeRepository demandeRepository)
+        public DemandeController(
+            ISemestreRepository semestreRepository,
+            IGenresRepository genreRepository,
+            IEtudiantRepository etudiantRepository,
+            IDemandeRepository demandeRepository)
         {
             _semestreRepository = semestreRepository;
             _genreRepository = genreRepository;
             _etudiantRepository = etudiantRepository;
             _demandeRepository = demandeRepository;
-        }
-
-        public void AjoutGenreChoisis(Demande demande)
-        {
-            Genre genre = _genreRepository.GetGenre(1);
         }
 
         public IActionResult Index()
@@ -54,6 +50,7 @@ namespace S14_ProjetSession.Controllers
         public IActionResult Supprimer(int Id)
         {
             Demande demande = _demandeRepository.GetDemande(Id);
+
             if (demande != null)
             {
                 _demandeRepository.Supprimer(demande);
@@ -61,7 +58,7 @@ namespace S14_ProjetSession.Controllers
             }
 
             ViewBag.Demandes = _demandeRepository.Demandes;
-            return View("demandes");
+            return View("Demandes");
         }
 
         public ViewResult Modifier(int Id)
@@ -77,7 +74,7 @@ namespace S14_ProjetSession.Controllers
             }
 
             ViewBag.Demandes = _demandeRepository.Demandes;
-            return View("demandes");
+            return View("Demandes");
         }
 
         [HttpPost]
@@ -85,11 +82,13 @@ namespace S14_ProjetSession.Controllers
         public IActionResult Modifier(Demande demande, List<int> PreferencesGenreIds)
         {
             Demande demandeDb = _demandeRepository.GetDemande(demande.Id);
+
             if (demandeDb == null)
             {
                 return NotFound();
             }
 
+           
             demandeDb.SemestreId = demande.SemestreId;
             demandeDb.PrefDureeBail = demande.PrefDureeBail;
             demandeDb.AccepteReglements = demande.AccepteReglements;
@@ -97,18 +96,18 @@ namespace S14_ProjetSession.Controllers
             demandeDb.ConfirmeSoumission = demande.ConfirmeSoumission;
             demandeDb.DateDemande = demande.DateDemande;
 
-        
-            demandeDb.PreferencesGenre.Clear();
+         
+            demandeDb.DemandeGenres.Clear();
 
             if (PreferencesGenreIds != null)
             {
                 foreach (int genreId in PreferencesGenreIds)
                 {
-                    Genre? genre = _genreRepository.GetGenre(genreId);
-                    if (genre != null)
+                    demandeDb.DemandeGenres.Add(new DemandeGenre
                     {
-                        demandeDb.PreferencesGenre.Add(genre);
-                    }
+                        DemandeId = demandeDb.Id,
+                        GenreId = genreId
+                    });
                 }
             }
 
@@ -129,12 +128,13 @@ namespace S14_ProjetSession.Controllers
 
             foreach (JumelageViewModel jumelage in jumelages)
             {
-                if (jumelage.Nom != "" && jumelage.Courriel != "")
+                if (!string.IsNullOrEmpty(jumelage.Nom) && !string.IsNullOrEmpty(jumelage.Courriel))
                 {
-                    Jumelage nouveaJumelage = new Jumelage();
-                    nouveaJumelage.Courriel = jumelage.Courriel;
-                    nouveaJumelage.Nom = jumelage.Nom;
-                    demande.Jumelages.Add(nouveaJumelage);
+                    demande.Jumelages.Add(new Jumelage
+                    {
+                        Nom = jumelage.Nom,
+                        Courriel = jumelage.Courriel
+                    });
                 }
             }
         }
@@ -149,8 +149,7 @@ namespace S14_ProjetSession.Controllers
         {
             ModelState.Remove("Etudiant");
             ModelState.Remove("Semestre");
-            ModelState.Remove("PreferencesGenre");
-            ModelState.Remove("jumelages");
+            ModelState.Remove("DemandeGenres");
 
             ModelState.Keys
                 .Where(k => k.StartsWith("jumelage"))
@@ -170,18 +169,17 @@ namespace S14_ProjetSession.Controllers
                     demande.Semestre = semestre;
                     demande.Etudiant = etudiant;
 
-                 
-                    demande.PreferencesGenre.Clear();
+               
+                    demande.DemandeGenres = new List<DemandeGenre>();
 
                     if (PreferencesGenreIds != null)
                     {
                         foreach (int genreId in PreferencesGenreIds)
                         {
-                            Genre? genre = _genreRepository.GetGenre(genreId);
-                            if (genre != null)
+                            demande.DemandeGenres.Add(new DemandeGenre
                             {
-                                demande.PreferencesGenre.Add(genre);
-                            }
+                                GenreId = genreId
+                            });
                         }
                     }
 
@@ -192,40 +190,26 @@ namespace S14_ProjetSession.Controllers
                         _demandeRepository.Creer(demande);
                         return RedirectToAction("Index");
                     }
-                    else
-                    {
-                        ViewBag.Genres = _genreRepository.Genres;
-                        ViewBag.Semestre = _semestreRepository.Semestres;
-                        return View(demande);
-                    }
-                }
-                else
-                {
-                    ViewBag.Genres = _genreRepository.Genres;
-                    ViewBag.Semestre = _semestreRepository.Semestres;
-                    return View(demande);
                 }
             }
-            else
-            {
-                ViewBag.Genres = _genreRepository.Genres;
-                ViewBag.Semestre = _semestreRepository.Semestres;
-                return View(demande);
-            }
+
+            ViewBag.Genres = _genreRepository.Genres;
+            ViewBag.Semestres = _semestreRepository.Semestres;
+            return View(demande);
         }
 
         public ViewResult EtapeDemande()
         {
             ViewBag.Genres = _genreRepository.Genres;
-            ViewBag.Semestre = _semestreRepository.Semestres;
+            ViewBag.Semestres = _semestreRepository.Semestres;
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult EtapeDemande(Demande demande, string[] nom, string[] email)
+        public IActionResult EtapeDemande(Demande demande)
         {
-            ModelState.Remove("PreferencesGenre");
+            ModelState.Remove("DemandeGenres");
             ModelState.Remove("Etudiant");
             ModelState.Remove("Semestre");
 
@@ -233,18 +217,14 @@ namespace S14_ProjetSession.Controllers
             {
                 return View();
             }
-            else
-            {
-                ViewBag.Genres = _genreRepository.Genres;
-                ViewBag.Semestre = _semestreRepository.Semestres;
-                return View(demande);
-            }
+
+            ViewBag.Genres = _genreRepository.Genres;
+            ViewBag.Semestres = _semestreRepository.Semestres;
+            return View(demande);
         }
 
         public ViewResult EtapeInformation()
         {
-            ViewBag.Genres = _genreRepository.Genres;
-            ViewBag.Semestre = _semestreRepository.Semestres;
             return View();
         }
 
@@ -256,16 +236,12 @@ namespace S14_ProjetSession.Controllers
             {
                 return View();
             }
-            else
-            {
-                return View(demande);
-            }
+
+            return View(demande);
         }
 
         public ViewResult EtapeConfirmation()
         {
-            ViewBag.Genres = _genreRepository.Genres;
-            ViewBag.Semestre = _semestreRepository.Semestres;
             return View();
         }
 
@@ -277,10 +253,9 @@ namespace S14_ProjetSession.Controllers
             {
                 return View();
             }
-            else
-            {
-                return View(demande);
-            }
+
+            return View(demande);
         }
     }
 }
+

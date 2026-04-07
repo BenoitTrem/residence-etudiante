@@ -13,9 +13,9 @@ namespace S14_ProjetSession.Models
         public string Nom { get; set; }
 
 
-        public List<Etudiant> etudiants { get; set; } = new List<Etudiant>();
+        public List<Etudiant> Etudiants { get; set; } = new List<Etudiant>();
 
-        public List<Demande> demandes { get; set;} = new List<Demande>();
+        public List<DemandeGenre> DemandeGenres { get; set; } = new();
 
 
     }

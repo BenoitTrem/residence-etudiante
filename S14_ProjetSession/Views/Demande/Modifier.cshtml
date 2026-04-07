@@ -3,6 +3,8 @@
 
 <form asp-action="Modifier" method="post">
 
+    <input type="hidden" asp-for="Id" />
+
     <div class="mb-3">
         <label for="SemestreId" class="form-label">Semestre *</label>
         <select id="SemestreId" name="SemestreId" class="form-control" required>
@@ -23,8 +25,8 @@
         <div class="border p-2 rounded">
             @foreach (Genre genre in ViewBag.Genres)
             {
-                bool estCoche = Model.PreferencesGenre != null
-                && Model.PreferencesGenre.Any(g => g.Id == genre.Id);
+                bool estCoche = Model.DemandeGenres != null
+                && Model.DemandeGenres.Any(dg => dg.GenreId == genre.Id);
 
                 <div class="form-check">
                     <input class="form-check-input"
@@ -40,7 +42,7 @@
             }
         </div>
     </div>
-
+ 
     <div class="mb-3">
         <label for="PrefDureeBail" class="form-label">Durée du bail *</label>
         <input asp-for="PrefDureeBail" id="PrefDureeBail" type="number" class="form-control" min="1" required />
