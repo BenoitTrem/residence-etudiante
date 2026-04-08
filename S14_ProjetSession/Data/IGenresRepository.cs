@@ -1,6 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using S14_ProjetSession.Models;
 
+
+
+/// <summary>
+/// Interface responsable de la gestion des genres
+/// </summary>
+/// <author>John Zuleta</author>
 namespace S14_ProjetSession.Data
 {
     public interface IGenresRepository

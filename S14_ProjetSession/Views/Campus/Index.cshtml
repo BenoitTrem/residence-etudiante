@@ -1,39 +1,138 @@
 ﻿@model IEnumerable<Campus>
 
+
 @*
-    Vue : Index Campus
-    Auteur : John Zuleta
+    Vue : Index.cshtml
+    Description : Affiche la liste des campus
+    @Author : John Zuleta
 *@
 
-<partial name="_MessagePartial" />
+@{
+    var isAdmin = (await AuthorizationService
+        .AuthorizeAsync(User, "AdminUniquement")).Succeeded;
 
-<h1>Liste des campus</h1>
+    var isAdminOrGestionnaire = (await AuthorizationService
+        .AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded;
+}
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Nom</th>
-            <th>Abreviation</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
+<div class="container mt-4">
+
+    <h1 class="mb-4">Liste des campus</h1>
+
+    <div class="row">
+
         @foreach (var c in Model)
         {
-            <tr>
-                <td>@c.Nom</td>
-                <td>@c.Abreviation</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@c.Id" class="btn btn-primary btn-sm">Modifier</a>
+            <div class="col-md-6 mb-3">
 
-                    <form asp-action="Delete" method="post" style="display:inline;">
-                        <input type="hidden" name="id" value="@c.Id" />
-                        <button class="btn btn-danger btn-sm">Supprimer</button>
-                    </form>
-                </td>
-            </tr>
+                <div class="card shadow-sm">
+
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            @c.Nom
+                        </h5>
+
+                        <p class="text-muted mb-0">
+                            Abréviation : @c.Abreviation
+                        </p>
+                    </div>
+
+                    @if (isAdminOrGestionnaire)
+                    {
+                        <div class="card-footer d-flex justify-content-between">
+
+                            <a asp-controller="Campus"
+                               asp-action="Modifier"
+                               asp-route-id="@c.Id"
+                               class="btn btn-primary btn-sm">
+                                Modifier
+                            </a>
+
+                            @if (isAdmin)
+                            {
+                                <button type="button"
+                                        class="btn btn-danger btn-sm"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#supprimerModal-@c.Id">
+                                    Supprimer
+                                </button>
+                            }
+
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+
+            @* Modal seulement pour Admin *@
+            @if (isAdmin)
+            {
+                <div class="modal fade"
+                     id="supprimerModal-@c.Id"
+                     tabindex="-1">
+
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    Supprimer campus
+                                </h5>
+
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal">
+                                </button>
+                            </div>
+
+                            <div class="modal-body">
+                                Voulez-vous supprimer
+                                <strong>@c.Nom</strong> ?
+                            </div>
+
+                            <div class="modal-footer">
+
+                                <button type="button"
+                                        class="btn btn-secondary"
+                                        data-bs-dismiss="modal">
+                                    Annuler
+                                </button>
+
+                                <form asp-controller="Campus"
+                                      asp-action="Supprimer"
+                                      method="post">
+
+                                    <input type="hidden"
+                                           name="id"
+                                           value="@c.Id" />
+
+                                    <button type="submit"
+                                            class="btn btn-danger">
+                                        Supprimer
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
         }
-    </tbody>
-</table>
 
-<a asp-action="Create" class="btn btn-success">Ajouter</a>
+    </div>
+
+    
+    @if (isAdminOrGestionnaire)
+    {
+        <div class="mt-4">
+            <a asp-controller="Campus" asp-action="Creer"
+               class="btn btn-success">
+                Ajouter un campus
+            </a>
+        </div>
+    }
+
+</div>

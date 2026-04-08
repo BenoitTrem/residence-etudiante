@@ -1,26 +1,34 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using S14_ProjetSession.Areas.Identity.Data;
 using S14_ProjetSession.Data;
 using S14_ProjetSession.Models;
 
+
+
+/// J'ai utiliser l'AI pour documenter mes méthodes (chatgpt)
 /// <author>John Zuleta</author>
 
 namespace S14_ProjetSession.Controllers
 {
     /// <summary>
-    /// Gestion des campus (CRUD complet avec rôles).
+    /// Gestion des campus 
     /// </summary>
     [Authorize]
     public class CampusController : Controller
     {
         private readonly ICampusRepository _repo;
+        private readonly UserManager<ApplicationUser> _userManager; 
 
-        public CampusController(ICampusRepository repo)
+        public CampusController(ICampusRepository repo, UserManager<ApplicationUser> userManager)
         {
+            _userManager = userManager;
             _repo = repo;
         }
 
-        [Authorize(Policy = "AdminOuUtilisateur")]
+
+        [AllowAnonymous]
         public IActionResult Index()
         {
             try
@@ -35,7 +43,7 @@ namespace S14_ProjetSession.Controllers
         }
 
         [Authorize(Policy = "AdminOuGestionnaire")]
-        public IActionResult Create()
+        public IActionResult Creer()
         {
             return View();
         }
@@ -43,7 +51,7 @@ namespace S14_ProjetSession.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = "AdminOuGestionnaire")]
-        public IActionResult Create([Bind("Nom,Abreviation")] Campus campus)
+        public IActionResult Creer([Bind("Nom,Abreviation")] Campus campus)
         {
             try
             {
@@ -51,9 +59,9 @@ namespace S14_ProjetSession.Controllers
                     return View(campus);
 
                 _repo.Creer(campus);
-                TempData["Succes"] = "Campus créé ✔️";
+                TempData["Succes"] = "Campus créé";
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index");
             }
             catch
             {
@@ -62,7 +70,7 @@ namespace S14_ProjetSession.Controllers
         }
 
         [Authorize(Policy = "AdminOuGestionnaire")]
-        public IActionResult Edit(int id)
+        public IActionResult Modifier(int id)
         {
             try
             {
@@ -82,7 +90,7 @@ namespace S14_ProjetSession.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = "AdminOuGestionnaire")]
-        public IActionResult Edit([Bind("Id,Nom,Abreviation")] Campus campus)
+        public IActionResult Modifier([Bind("Id,Nom,Abreviation")] Campus campus)
         {
             try
             {
@@ -90,9 +98,9 @@ namespace S14_ProjetSession.Controllers
                     return View(campus);
 
                 _repo.Modifier(campus);
-                TempData["Succes"] = "Campus modifié ✔️";
+                TempData["Succes"] = "Campus modifié";
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index");
             }
             catch
             {
@@ -103,7 +111,7 @@ namespace S14_ProjetSession.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = "AdminUniquement")]
-        public IActionResult Delete(int id)
+        public IActionResult Supprimer(int id)
         {
             try
             {
@@ -112,13 +120,13 @@ namespace S14_ProjetSession.Controllers
                 if (campus == null)
                 {
                     TempData["Erreur"] = "Campus introuvable";
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction("Index");
                 }
 
                 _repo.Supprimer(campus);
-                TempData["Succes"] = "Campus supprimé ✔️";
+                TempData["Succes"] = "Campus supprimé";
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index");
             }
             catch
             {
@@ -128,7 +136,7 @@ namespace S14_ProjetSession.Controllers
 
         private IActionResult Erreur(int code, string message)
         {
-            return View("Error", new ErreurViewModel
+            return View("Erreur", new ErreurViewModel
             {
                 StatusCode = code,
                 Message = message,

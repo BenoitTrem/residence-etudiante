@@ -1,6 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using S14_ProjetSession.Models;
 
+
+/// <summary>
+/// Repository responsable de la gestion des campus
+/// </summary>
+/// <author>John Zuleta</author>
 namespace S14_ProjetSession.Data
 {
     public class DbCampusRepository : ICampusRepository
