@@ -82,8 +82,27 @@ namespace S14_ProjetSessionTests.Integration
             return new FormUrlEncodedContent(formData);
         }
 
-
+        // test que le Mock ajout fonctionne bien
         [Fact]
+        public void AjouterDemandeAjouteCorrectement()
+        {
+            MockDemandeRepository repo = new MockDemandeRepository();
+            int avant = repo.Demandes.Count;
+            Demande demande = new Demande
+            {
+                Id = 999,
+                EtudiantId = 1,
+                SemestreId = 1
+            };
+
+            repo.Creer(demande);
+
+            Assert.Equal(avant + 1, repo.Demandes.Count);
+
+        }
+
+
+            [Fact]
         public async Task RequeteIndexFonctionne()
         {
             var response = await _client.GetAsync("/Demande");
@@ -237,6 +256,8 @@ namespace S14_ProjetSessionTests.Integration
         //- Deux tests pour vérifier qu’une route n’est pas accessible aux utilisateurs qui ne sont pas connectés
         //(un test qui vérifie que la route est accessible à l’utilisateur connecté, un test qui vérifie que la même
         //route n’est pas accessible à l’utilisateur qui n’est pas connecté)
+
+
         [Fact]
         public async Task LaRouteDemandesPasPourEtudiant()
         {
@@ -248,8 +269,19 @@ namespace S14_ProjetSessionTests.Integration
         }
 
 
-        
-        
+        [Fact]
+        public async Task IndexAfficherLesDemandes()
+        {
+
+            HttpResponseMessage response = await _client.GetAsync("/demande");
+            string htmlContent= await response.Content.ReadAsStringAsync();
+            Assert.Contains("Alex Tremblay", htmlContent);
+            Assert.Contains("8191112222", htmlContent);
+            Assert.Contains("Martin Jean", htmlContent);
+
+        }
+
+
 
 
 
