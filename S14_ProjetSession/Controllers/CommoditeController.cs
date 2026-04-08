@@ -23,7 +23,7 @@ namespace S14_ProjetSession.Controllers
         /// <summary>
         /// Affiche la liste de toutes les commodités.
         /// </summary>
-        /// <returns>Vue "Commodites" avec la liste complète des commodités</returns>
+        /// <returns>Vue Commodites avec la liste complète des commodités</returns>
         public IActionResult Index()
         {
             ViewData["Title"] = "Commodités";
@@ -52,7 +52,7 @@ namespace S14_ProjetSession.Controllers
                 }
                 else
                 {
-                    // Sinon, ajoute la nouvelle commodité au repo
+                    // Sinon, ajoute la nouvelle commodité a la DB
                     _commoditeRepository.Ajouter(commodite);
                     TempData["Succes"] = $"La commodité {commodite.Nom} a été ajoutée avec succès.";
                 }
@@ -111,7 +111,7 @@ namespace S14_ProjetSession.Controllers
             }
             else
             {
-                // Sinon, supprime la commodité du repo
+                // Sinon, supprime la commodité de la DB
                 _commoditeRepository.Supprimer(commodite);
                 TempData["Succes"] = $"La commodité {commodite.Nom} a été supprimée avec succès.";
             }

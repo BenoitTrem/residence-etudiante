@@ -1,9 +1,10 @@
-﻿using System;
-using System.Linq;
-using Microsoft.AspNetCore.Identity;
-using S14_ProjetSession.Areas.Identity.Data;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using S14_ProjetSession.Areas.Identity.Data;
 using S14_ProjetSession.Models;
+using System;
+using System.Linq;
+using System.Net;
 
 namespace S14_ProjetSession.Data
 {
@@ -196,18 +197,24 @@ namespace S14_ProjetSession.Data
             context.Etudiants.AddRange(etudiants);
             context.SaveChanges();
 
+            // Parcourt une liste d'étudiants et crée un compte utilisateur pour chacun
+            // dans ASP.NET Identity si aucun compte n'existe déjà.
+            // Associe ensuite l'utilisateur au rôle "Utilisateur".
             foreach (Etudiant etudiant in etudiants)
             {
+                // Récupère l'email institutionnel de l'étudiant
                 string email = etudiant.CourrielInstitutionnel;
 
+                // Vérifie si un utilisateur avec cet email existe déjà
                 ApplicationUser? utiliateurExistant = await userManager.FindByEmailAsync(email);
 
                 if (utiliateurExistant == null)
                 {
+                    // Si aucun utilisateur n'existe, crée un nouveau compte
                     ApplicationUser user = new ApplicationUser
                     {
-                        UserName = email,
-                        Email = email,
+                        UserName = email, // Nom d'utilisateur = email
+                        Email = email, // Email de l'utilisateur
                         EmailConfirmed = true
                     };
 
@@ -215,8 +222,10 @@ namespace S14_ProjetSession.Data
 
                     if (result.Succeeded)
                     {
+                        // Ajoute l'utilisateur au rôle "Utilisateur"
                         await userManager.AddToRoleAsync(user, "Utilisateur");
 
+                        // Lie l'utilisateur à l'entité Etudiant
                         etudiant.ApplicationUserId = user.Id;
                     }
                 }
@@ -254,15 +263,24 @@ namespace S14_ProjetSession.Data
             context.SaveChanges();
         }
 
-
+        /// <summary>
+        /// @author Benoit, Felix, John
+        /// Initialise les rôles par défaut dans l'application Identity.
+        /// Crée les rôles "Admin", "Utilisateur" et "Gestionnaire" si ils n'existent pas.
+        /// </summary>
+        /// <param name="roleManager">RoleManager pour gérer les rôles</param>
+        /// <returns>Une tâche asynchrone</returns>
         private static async Task InitialiserRole(RoleManager<IdentityRole> roleManager)
         {
+            // Tableau des rôles à créer
             string[] roles = { "Admin", "Utilisateur", "Gestionnaire" };
 
             foreach (string role in roles)
             {
+                // Vérifie si le rôle existe déjà
                 if (!await roleManager.RoleExistsAsync(role))
                 {
+                    // Définit un identifiant personnalisé pour les rôles
                     string roleId = role switch
                     {
                         "Admin" => "ADMIN",
@@ -271,6 +289,7 @@ namespace S14_ProjetSession.Data
                         _ => role.ToUpper()
                     };
 
+                    // Création du rôle dans la base
                     await roleManager.CreateAsync(new IdentityRole
                     {
                         Id = roleId,
@@ -281,16 +300,25 @@ namespace S14_ProjetSession.Data
             }
         }
 
+        /// <summary>
+        /// @author Benoit
+        /// Initialise les utilisateurs par défaut dans l'application Identity.
+        /// Crée un utilisateur Admin et un utilisateur Gestionnaire si ils n'existent pas.
+        /// </summary>
+        /// <param name="userManager">UserManager pour gérer les utilisateurs</param>
+        /// <returns>Une tâche asynchrone</returns>
         private static async Task InitialiserUsers(UserManager<ApplicationUser> userManager)
         {
 
             // L'utilisateur Admin
             string emailAdmin = "admin@gmail.com";
 
+            // Vérifie si l'utilisateur existe déjà
             ApplicationUser? admin = await userManager.FindByEmailAsync(emailAdmin);
 
             if (admin == null)
             {
+                // Si l'utilisateur n'existe pas, il est crée
                 admin = new ApplicationUser
                 {
                     UserName = emailAdmin,
@@ -298,6 +326,7 @@ namespace S14_ProjetSession.Data
                     EmailConfirmed = true
                 };
 
+                // Création de l'utilisateur avec un mot de passe par défaut
                 IdentityResult result = await userManager.CreateAsync(admin, "Password-123");
 
                 if (result.Succeeded)

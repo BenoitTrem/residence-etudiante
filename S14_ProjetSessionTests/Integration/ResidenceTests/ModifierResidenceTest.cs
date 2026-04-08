@@ -6,12 +6,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using S14_ProjetSession.Data;
 using S14_ProjetSession.Models;
-using System.Net;
 using System.Security.Claims;
 
-namespace S14_ProjetSessionTests.Integration
+namespace S14_ProjetSessionTests.Integration.ResidenceTests
 {
-    public class ResidenceIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
+    public class ModifierResidenceTest : IClassFixture<WebApplicationFactory<Program>>
     {
         private readonly WebApplicationFactory<Program> _factory;
         private readonly HttpClient _client;
@@ -20,7 +19,7 @@ namespace S14_ProjetSessionTests.Integration
         private Mock<ICampusRepository> _campusRepo = new Mock<ICampusRepository>();
         private Mock<ICommoditeRepository> _commoditeRepo = new Mock<ICommoditeRepository>();
 
-        private ClaimsPrincipal? _currentUser;
+        private ClaimsPrincipal? _utilisateurActuel;
         private ClaimsPrincipal _admin = AuthUtilities.CreerAdmin();
 
         private async Task<string> ObtenirToken()
@@ -37,7 +36,7 @@ namespace S14_ProjetSessionTests.Integration
             return form;
         }
 
-        public ResidenceIntegrationTests(WebApplicationFactory<Program> factory)
+        public ModifierResidenceTest(WebApplicationFactory<Program> factory)
         {
             _campusRepo.Setup(c => c.GetAll()).Returns(new List<Campus>
             {
@@ -61,7 +60,7 @@ namespace S14_ProjetSessionTests.Integration
                     services.AddSingleton<ICampusRepository>(_campusRepo.Object);
                     services.AddSingleton<ICommoditeRepository>(_commoditeRepo.Object);
 
-                    services.AddSingleton<Func<ClaimsPrincipal?>>(() => _currentUser);
+                    services.AddSingleton<Func<ClaimsPrincipal?>>(() => _utilisateurActuel);
 
                     services.AddAuthentication("TestAuth")
                         .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("TestAuth", o => { });
@@ -70,76 +69,14 @@ namespace S14_ProjetSessionTests.Integration
                 builder.UseSetting("environment", "Test");
             });
             _client = _factory.CreateClient();
-            _currentUser = _admin;
-        }
-
-
-        [Fact(DisplayName = "AjouterResidence refuse utilisateur non connecté")]
-        public async Task AjouterRefuseNonConnecte()
-        {
-            _currentUser = null;
-
-            HttpResponseMessage response = await _client.GetAsync("/Residence/AjouterResidence");
-
-            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
-        }
-
-
-        [Fact(DisplayName = "AjouterResidence accessible admin")]
-        public async Task AjouterAccessibleAdmin()
-        {
-            _currentUser = _admin;
-
-            HttpResponseMessage response = await _client.GetAsync("/Residence/AjouterResidence");
-
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        }
-
-
-        [Fact(DisplayName = "Création valide redirige")]
-        public async Task CreerValide()
-        {
-            int initial = _residenceRepository.GetAll().Count;
-
-            Dictionary<string, string> data = new Dictionary<string, string>
-            {
-                { "Nom", "Nouvelle" },
-                { "CampusId", "1" },
-                { "Adresse.AdresseString", "123 rue" },
-                { "Adresse.CodePostal", "J1J1J1" }
-            };
-
-            HttpContent form = await GetForm(data);
-
-            await _client.PostAsync("/Residence/Creer", form);
-
-            Assert.Equal(initial + 1, _residenceRepository.GetAll().Count);
-        }
-
-
-        [Fact(DisplayName = "Création invalide ne fonctionne pas")]
-        public async Task CreerInvalide()
-        {
-            int initial = _residenceRepository.GetAll().Count;
-
-            Dictionary<string, string> data = new Dictionary<string, string>
-            {
-                { "Nom", "" }, 
-                { "CampusId", "1" }
-            };
-
-            HttpContent form = await GetForm(data);
-
-            await _client.PostAsync("/Residence/Creer", form);
-
-            Assert.Equal(initial, _residenceRepository.GetAll().Count);
+            _utilisateurActuel = _admin;
         }
 
 
         [Fact(DisplayName = "Modification valide redirige")]
         public async Task ModifierValide()
         {
-            _currentUser = _admin;
+            _utilisateurActuel = _admin;
 
             Residence residence = _residenceRepository.GetById(1);
             Assert.NotNull(residence);
@@ -166,7 +103,7 @@ namespace S14_ProjetSessionTests.Integration
         [Fact(DisplayName = "ModifierResidence avec ajout de commodité met à jour la résidence")]
         public async Task ModifierResidenceAvecCommodite()
         {
-            _currentUser = _admin;
+            _utilisateurActuel = _admin;
 
             Residence residence = _residenceRepository.GetById(1);
             Assert.NotNull(residence);
@@ -208,7 +145,7 @@ namespace S14_ProjetSessionTests.Integration
         [Fact(DisplayName = "Modification invalide est refusée")]
         public async Task ModifierInvalide()
         {
-            _currentUser = _admin;
+            _utilisateurActuel = _admin;
 
             Residence residence = _residenceRepository.GetById(1);
             Assert.NotNull(residence);
@@ -216,7 +153,7 @@ namespace S14_ProjetSessionTests.Integration
             Dictionary<string, string> data = new Dictionary<string, string>
             {
                 { "Id", residence.Id.ToString() },
-                { "Nom", "" }, 
+                { "Nom", "" },
                 { "CampusId", residence.CampusId.ToString() },
                 { "Adresse.AdresseString", "123 Rue" },
                 { "Adresse.CodePostal", "J1J1J1" }
@@ -228,23 +165,6 @@ namespace S14_ProjetSessionTests.Integration
 
             Residence updatedResidence = _residenceRepository.GetById(1);
             Assert.NotEqual("", updatedResidence.Nom);
-        }
-
-        [Fact(DisplayName = "Suppression fonctionne")]
-        public async Task SupprimerFonctionne()
-        {
-            int initial = _residenceRepository.GetAll().Count;
-
-            Dictionary<string, string> data = new Dictionary<string, string>
-            {
-                { "id", "1" }
-            };
-
-            HttpContent form = await GetForm(data);
-
-            await _client.PostAsync("/Residence/Supprimer", form);
-
-            Assert.Equal(initial - 1, _residenceRepository.GetAll().Count);
         }
     }
 }

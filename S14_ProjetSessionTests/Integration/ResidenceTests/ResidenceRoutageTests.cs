@@ -7,7 +7,7 @@ using S14_ProjetSession.Data;
 using System.Net;
 using Xunit;
 
-namespace S14_ProjetSessionTests.Integration;
+namespace S14_ProjetSessionTests.Integration.ResidenceTests;
 
 public class ResidenceRoutageTests : IClassFixture<WebApplicationFactory<Program>>
 {
