@@ -34,6 +34,8 @@ namespace S14_ProjetSessionTests.Integration
                 AllowAutoRedirect = false
             });
         }
+
+        // felix
         [Fact]
         public async Task DemandeCreeSansCompteRedirigeVersLogin()
         {
