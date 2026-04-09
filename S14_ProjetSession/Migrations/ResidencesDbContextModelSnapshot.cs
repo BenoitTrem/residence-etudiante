@@ -253,6 +253,27 @@ namespace S14_ProjetSession.Migrations
                     b.ToTable("Campus");
                 });
 
+            modelBuilder.Entity("S14_ProjetSession.Models.Commodite", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Nom")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Nom")
+                        .IsUnique();
+
+                    b.ToTable("Commodites");
+                });
+
             modelBuilder.Entity("S14_ProjetSession.Models.Demande", b =>
                 {
                     b.Property<int>("Id")
@@ -521,6 +542,25 @@ namespace S14_ProjetSession.Migrations
                     b.ToTable("Residences");
                 });
 
+            modelBuilder.Entity("S14_ProjetSession.Models.ResidenceCommodite", b =>
+                {
+                    b.Property<int>("ResidenceId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CommoditeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.HasKey("ResidenceId", "CommoditeId");
+
+                    b.HasIndex("CommoditeId");
+
+                    b.ToTable("ResidenceCommodites");
+                });
+
             modelBuilder.Entity("S14_ProjetSession.Models.Semestre", b =>
                 {
                     b.Property<int>("Id")
@@ -764,6 +804,25 @@ namespace S14_ProjetSession.Migrations
                     b.Navigation("Campus");
                 });
 
+            modelBuilder.Entity("S14_ProjetSession.Models.ResidenceCommodite", b =>
+                {
+                    b.HasOne("S14_ProjetSession.Models.Commodite", "Commodite")
+                        .WithMany("ResidenceCommodites")
+                        .HasForeignKey("CommoditeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("S14_ProjetSession.Models.Residence", "Residence")
+                        .WithMany("ResidenceCommodites")
+                        .HasForeignKey("ResidenceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Commodite");
+
+                    b.Navigation("Residence");
+                });
+
             modelBuilder.Entity("S14_ProjetSession.Models.Unite", b =>
                 {
                     b.HasOne("S14_ProjetSession.Models.Residence", "Residence")
@@ -782,6 +841,11 @@ namespace S14_ProjetSession.Migrations
                     b.Navigation("Residences");
 
                     b.Navigation("programmes");
+                });
+
+            modelBuilder.Entity("S14_ProjetSession.Models.Commodite", b =>
+                {
+                    b.Navigation("ResidenceCommodites");
                 });
 
             modelBuilder.Entity("S14_ProjetSession.Models.Demande", b =>
@@ -810,6 +874,8 @@ namespace S14_ProjetSession.Migrations
 
             modelBuilder.Entity("S14_ProjetSession.Models.Residence", b =>
                 {
+                    b.Navigation("ResidenceCommodites");
+
                     b.Navigation("Unites");
                 });
 

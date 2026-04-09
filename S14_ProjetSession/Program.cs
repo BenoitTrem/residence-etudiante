@@ -32,6 +32,7 @@ builder.Services.AddScoped<ISemestreRepository, DbSemestreRepository>();
 builder.Services.AddScoped<IProgrammesRepository, DbProgrammesRepository>();
 builder.Services.AddScoped<IGenresRepository, DbGenresRepository>();
 builder.Services.AddScoped<ICampusRepository, DbCampusRepository>();
+builder.Services.AddScoped<ICommoditeRepository, DbCommoditeRepository>();
 
 
 
@@ -45,7 +46,7 @@ builder.Services.AddAuthorization(options =>
         policy.RequireRole("Admin", "Gestionnaire"));
 
     options.AddPolicy("GestionnaireUniquement", policy =>
-       policy.RequireRole("Gestionnaire"));
+        policy.RequireRole("Gestionnaire"));
 
     options.AddPolicy("AdminOuUtilisateur", policy =>
       policy.RequireRole("Admin", "Utilisateur"));
@@ -54,10 +55,15 @@ builder.Services.AddAuthorization(options =>
         policy.RequireRole("Utilisateur"));
 
     options.AddPolicy("EstEtudiant", policy =>
-       policy.RequireAuthenticatedUser()
-             .AddRequirements(new EtudiantRequirement()));
+        policy.RequireAuthenticatedUser()
+              .AddRequirements(new EtudiantRequirement()));
+
+    options.AddPolicy("EstProprietaireDemande", policy =>
+        policy.RequireAuthenticatedUser()
+              .AddRequirements(new EstProprietaireDemandeRequirement()));
 });
 
+builder.Services.AddScoped<IAuthorizationHandler, ProprietaireDemandeHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, EtudiantHandler>();
 
 WebApplication app = builder.Build();

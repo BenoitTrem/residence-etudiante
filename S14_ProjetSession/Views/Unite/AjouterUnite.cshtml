@@ -1,7 +1,7 @@
 ﻿@model S14_ProjetSession.Models.Unite
 
 <div class="container mt-5">
-    <h1 class="mb-4">@ViewData["Title"]</h1>
+    <h1 class="mb-4 text-truncate">@ViewData["Title"]</h1>
 
     <form asp-controller="Unite" asp-action="Creer" method="post">
 
@@ -32,7 +32,7 @@
             </div>
 
             <div class="text-center mt-5">
-                <button type="submit" class="btn btn-outline-primary w-25">Créer</button>
+                <button type="submit" class="btn btn-outline-primary w-25">Ajouter</button>
                 <a asp-controller="Unite"asp-action="Index"asp-route-id="@Model.ResidenceId" class="btn btn-outline-dark ms-2 w-25">
                     Annuler
                 </a>

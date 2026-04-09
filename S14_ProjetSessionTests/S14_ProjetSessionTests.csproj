@@ -23,12 +23,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="Xunit" />
+    <ProjectReference Include="..\S14_ProjetSession\S14_ProjetSession.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\" />
-    <Folder Include="Unit\" />
+    <Using Include="Xunit" />
   </ItemGroup>
 
   <ItemGroup>

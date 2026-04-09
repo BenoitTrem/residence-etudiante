@@ -21,6 +21,16 @@ namespace S14_ProjetSession.Data
                 {
                     Nom = "HOMME",
                     Id = 1
+                },
+                new Genre
+                {
+                    Nom = "Femme",
+                    Id = 2
+                },
+                new Genre
+                {
+                    Nom = "Autre",
+                    Id = 3
                 }
             };
         }

@@ -1,139 +1,145 @@
-﻿@model Demande
-@using S14_ProjetSession.Models
+﻿@model S14_ProjetSession.ViewModels.DemandeCreateViewModel
 
+@{
+    ViewData["Title"] = "Créer une demande";
+}
 
+<h2>Créer une demande</h2>
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
 <form asp-action="Creer" method="post">
     @Html.AntiForgeryToken()
+
+    <!-- SEMESTRE -->
     <div class="mb-3">
-        <label for="SemestreId" class="form-label">Semestre *</label>
-        <select id="SemestreId" name="SemestreId" class="form-control" required>
-            <option value="">-- Choisir un semestre --</option>
-            @foreach (Semestre semestre in ViewBag.Semestres)
-            {
-                <option value="@semestre.Id">@semestre.NomSemestre</option>
-            }
+        <label class="form-label">Semestre *</label>
+        <select asp-for="SelectedSemestreId" class="form-control"
+                asp-items="@(new SelectList(Model.Semestres, "Id", "NomSemestre"))">
+            <option value="">-- Choisir --</option>
         </select>
+        <span asp-validation-for="SelectedSemestreId" class="text-danger"></span>
     </div>
 
+    <!-- GENRE -->
     <div class="mb-3">
-        <label class="form-label">Préférences de genre</label>
-
-        @foreach (Genre genre in ViewBag.Genres)
-        {
-            <div class="form-check">
-                <input class="form-check-input"
-                       type="checkbox"
-                       name="PreferencesGenreIds"
-                       value="@genre.Id" />
-
-                <label class="form-check-label">
-                    @genre.Nom
-                </label>
-            </div>
-        }
+        <label class="form-label">Préférence de genre</label>
+        <select asp-for="SelectedGenreId" class="form-control"
+                asp-items="@(new SelectList(Model.Genres, "Id", "Nom"))">
+            <option value="">-- Choisir --</option>
+        </select>
+        <span asp-validation-for="SelectedGenreId" class="text-danger"></span>
     </div>
 
+    <!-- DEMANDE -->
     <div class="mb-3">
-        <label for="PrefDureeBail" class="form-label">Durée du bail *</label>
-        <input asp-for="PrefDureeBail" id="PrefDureeBail" type="number" class="form-control" min="1" required />
+        <label class="form-label">Durée du bail *</label>
+        <input asp-for="Demande.PrefDureeBail" class="form-control" />
+        <span asp-validation-for="Demande.PrefDureeBail" class="text-danger"></span>
     </div>
 
-    <div class="form-check mb-2">
-        <input asp-for="AccepteReglements" class="form-check-input" required />
-        <label asp-for="AccepteReglements" class="form-check-label">AccepteReglements *</label>
+    <div class="form-check">
+        <input asp-for="Demande.AccepteReglements" class="form-check-input" />
+        <label class="form-check-label">Accepter les règlements *</label>
+        <span asp-validation-for="Demande.AccepteReglements" class="text-danger"></span>
     </div>
 
-    <div class="form-check mb-2">
-        <input asp-for="AccepteTraitementDonnees" class="form-check-input" required />
-        <label asp-for="AccepteTraitementDonnees" class="form-check-label">AccepteTraitementDonnees *</label>
+    <div class="form-check">
+        <input asp-for="Demande.AccepteTraitementDonnees" class="form-check-input" />
+        <label class="form-check-label">Accepter le traitement des données *</label>
+        <span asp-validation-for="Demande.AccepteTraitementDonnees" class="text-danger"></span>
     </div>
 
-    <div class="form-check mb-3">
-        <input asp-for="ConfirmeSoumission" class="form-check-input" required />
-        <label asp-for="ConfirmeSoumission" class="form-check-label">ConfirmeSoumission *</label>
+    <div class="form-check">
+        <input asp-for="Demande.ConfirmeSoumission" class="form-check-input" />
+        <label class="form-check-label">Confirmer la soumission *</label>
+        <span asp-validation-for="Demande.ConfirmeSoumission" class="text-danger"></span>
     </div>
 
+    <!-- JUMELAGES -->
     <h5>Jumelage</h5>
+    @for (int i = 0; i < Model.Jumelages.Count; i++)
+    {
+        <div class="mb-3">
+            <label class="form-label">Nom du jumelage @(i + 1)</label>
+            <input asp-for="Jumelages[i].Nom" class="form-control" />
+            <span asp-validation-for="Jumelages[i].Nom" class="text-danger"></span>
 
-    <div class="mb-3">
-        <id="Jumelage nom0" class="form-label">Jumelage 1 Nom </label>
-        <input id="Jumelage nom0" name="Jumelage[0].Nom" class="form-control"  />
-        <for="Jumelage email0" class="form-label">Jumelage 1 Email</label>
-                <input id="Jumelage email0" name="Jumelage[0].Courriel" class="form-control" />
-    </div>
-    
-    
-    <div class="mb-3">
-        <id="Jumelage nom1" class="form-label">Jumelage 2 Nom </label>
-        <input id="Jumelage nom1" name="Jumelage[1].Nom" class="form-control"  />
-        <for="Jumelage email1" class="form-label">Jumelage 2 Email</label>
-                <input id="Jumelage email1" name="Jumelage[1].Courriel" class="form-control" />
-    </div>
+            <label class="form-label">Courriel du jumelage @(i + 1)</label>
+            <input asp-for="Jumelages[i].Courriel" class="form-control" />
+            <span asp-validation-for="Jumelages[i].Courriel" class="text-danger"></span>
+        </div>
+    }
 
-    <div class="mb-3">
-        <id="Jumelage nom2" class="form-label">Jumelage 3 Nom </label>
-        <input id="Jumelage nom1" name="Jumelage[2].Nom" class="form-control"  />
-        <for="Jumelage email2" class="form-label">Jumelage 3 Email</label>
-                <input id="Jumelage email2" name="Jumelage[2].Courriel" class="form-control" />
-    </div>
-
-
+    <!-- GARANT -->
     <h5>Garant</h5>
-
     <div class="mb-3">
-        <label asp-for="NomGarant" class="form-label">NomGarant *</label>
-        <input asp-for="NomGarant" class="form-control" required />
+        <label class="form-label">Nom du garant *</label>
+        <input asp-for="Demande.NomGarant" class="form-control" />
+        <span asp-validation-for="Demande.NomGarant" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="PrenomGarant" class="form-label">PrenomGarant *</label>
-        <input asp-for="PrenomGarant" class="form-control" required />
+        <label class="form-label">Prénom du garant *</label>
+        <input asp-for="Demande.PrenomGarant" class="form-control" />
+        <span asp-validation-for="Demande.PrenomGarant" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="DateNaissanceGarant" class="form-label">DateNaissanceGarant *</label>
-        <input asp-for="DateNaissanceGarant" type="date" class="form-control" required />
+        <label class="form-label">Date de naissance *</label>
+        <input asp-for="Demande.DateNaissanceGarant" type="date" class="form-control" />
+        <span asp-validation-for="Demande.DateNaissanceGarant" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="CourrielGarant" class="form-label">CourrielGarant *</label>
-        <input asp-for="CourrielGarant" type="email" class="form-control" required />
+        <label class="form-label">Courriel du garant *</label>
+        <input asp-for="Demande.CourrielGarant" class="form-control" />
+        <span asp-validation-for="Demande.CourrielGarant" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="TelephoneGarant" class="form-label">TelephoneGarant *</label>
-        <input asp-for="TelephoneGarant" type="tel" class="form-control" required />
+        <label class="form-label">Téléphone du garant *</label>
+        <input asp-for="Demande.TelephoneGarant" class="form-control" />
+        <span asp-validation-for="Demande.TelephoneGarant" class="text-danger"></span>
     </div>
 
-    <h5>Parent (optionnel)</h5>
+    <!-- PARENT -->
+    <h5>Parent</h5>
+    <div class="mb-3">
+        <label class="form-label">Nom du parent</label>
+        <input asp-for="Demande.NomParent" class="form-control" />
+        <span asp-validation-for="Demande.NomParent" class="text-danger"></span>
+    </div>
 
     <div class="mb-3">
-        <label asp-for="NomParent" class="form-label"></label>
-        <input asp-for="NomParent" class="form-control" />
+        <label class="form-label">Courriel du parent</label>
+        <input asp-for="Demande.CourrielParent" class="form-control" />
+        <span asp-validation-for="Demande.CourrielParent" class="text-danger"></span>
     </div>
 
-    <div class="mb-3">
-        <label asp-for="CourrielParent" class="form-label"></label>
-        <input asp-for="CourrielParent" type="email" class="form-control" />
-    </div>
-
+    <!-- URGENCE -->
     <h5>Contact d'urgence</h5>
-
     <div class="mb-3">
-        <label asp-for="NomUrgence" class="form-label">NomUrgence *</label>
-        <input asp-for="NomUrgence" class="form-control" required />
+        <label class="form-label">Nom *</label>
+        <input asp-for="Demande.NomUrgence" class="form-control" />
+        <span asp-validation-for="Demande.NomUrgence" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="LienParenteUrgence" class="form-label">LienParenteUrgence *</label>
-        <input asp-for="LienParenteUrgence" class="form-control" required />
+        <label class="form-label">Lien de parenté *</label>
+        <input asp-for="Demande.LienParenteUrgence" class="form-control" />
+        <span asp-validation-for="Demande.LienParenteUrgence" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="TelephoneUrgence" class="form-label">TelephoneUrgence *</label>
-        <input asp-for="TelephoneUrgence" type="tel" class="form-control" required />
+        <label class="form-label">Téléphone *</label>
+        <input asp-for="Demande.TelephoneUrgence" class="form-control" />
+        <span asp-validation-for="Demande.TelephoneUrgence" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary mt-3">Créer la demande</button>
 </form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

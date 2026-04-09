@@ -1,0 +1,31 @@
+﻿@page
+@model ResetAuthenticatorModel
+@{
+    ViewData["Title"] = "Réinitialiser la clé Authenticator";
+    ViewData["ActivePage"] = ManageNavPages.TwoFactorAuthentication;
+}
+
+<partial name="_StatusMessage" for="StatusMessage" />
+
+<h3 class="text-center mb-4">@ViewData["Title"]</h3>
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="p-4 rounded utilisateur-container">
+            <div class="alert alert-warning text-center" role="alert">
+                <p>
+                    <strong>Si vous réinitialisez votre clé Authenticator, votre application Authenticator ne fonctionnera pas tant que vous ne l’aurez pas reconfigurée.</strong>
+                </p>
+                <p>
+                    Ce processus désactive l’authentification à deux facteurs (2FA) jusqu’à ce que vous vérifiiez votre application Authenticator.
+                    Si vous ne complétez pas la configuration de votre application, vous pourriez perdre l’accès à votre compte.
+                </p>
+            </div>
+
+            <div class="text-center mt-3">
+                <form id="reset-authenticator-form" method="post">
+                    <button id="reset-authenticator-button" class="btn btn-outline-primary btn-lg" type="submit">Réinitialiser la clé Authenticator</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

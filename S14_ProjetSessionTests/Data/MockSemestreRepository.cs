@@ -21,12 +21,14 @@ namespace S14_ProjetSession.Data
                     "automne",
                     "hiver"
                 };
-
+            int Compteur = 0;
             for (int i = 2025; i < 2035; i++)
             {
                 foreach (string saison in saisons)
                 {
-                    _context.Add(new Semestre() { NomSemestre = $"{saison}-{i}" });
+                    Compteur += 1;
+                    _context.Add(new Semestre() {Id = Compteur,  NomSemestre = $"{saison}-{i}" });
+                    
                 }
             }
 

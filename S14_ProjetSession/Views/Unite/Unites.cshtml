@@ -8,14 +8,19 @@
 
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mt-5">
-        <h1>@ViewData["Title"]</h1>
-         <a class="btn btn-outline-dark" asp-controller="Residence" asp-action="Index">Retour</a>
+        <h1 class="text-truncate width">@ViewData["Title"]</h1>
+        <a class="btn btn-outline-dark px-4" asp-controller="Residence" asp-action="Index">Retour</a>
     </div>
     <strong class="mb-2 mt-2">Adresse : </strong>@ViewBag.Adresse
     <br />
     <strong>Campus : </strong>@ViewBag.Campus
     <br />
-    <strong>Unités totales :</strong> @(ViewBag.NombreTotal ?? 0)
+
+    <div class="mt-3">
+        <strong>Unités totales :</strong> @(ViewBag.NombreTotal ?? 0)
+        <br />
+        <strong>@(ViewBag.TotalPlacesDisponibles > 1 ? "Places disponibles :" : "Place disponible :")</strong> @(ViewBag.TotalPlacesDisponibles ?? 0)
+    </div>
 
     <div class="mb-4 mt-3 d-flex align-items-center">
         <strong class="me-2">Unités disponibles :</strong>
@@ -31,18 +36,19 @@
         {
             <span class="badge bg-success fs-6">@ViewBag.NombreUnites unités disponibles</span>
         }
+      
     </div>
 
       @if ((await AuthorizationService.AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded)
          {
-            <a class="btn btn-primary mb-5 w-100 p-2 mt-2" asp-controller="Unite" asp-action="AjouterUnite" asp-route-residenceId="@ViewBag.ResidenceId">
+            <a class="btn btn-primary mb-4 w-100 p-2 mt-2" asp-controller="Unite" asp-action="AjouterUnite" asp-route-residenceId="@ViewBag.ResidenceId">
                 Ajouter une unité
             </a>
          }
 
     <hr />
   
-    <div class="list-group mt-5">
+    <div class="list-group mt-5 mb-5">
 
         @foreach (Unite unite in Model)
         {
@@ -88,7 +94,7 @@
                 <div class="d-flex gap-2 mt-2">
                     @if ((await AuthorizationService.AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded)
                         {
-                        <a class="btn btn-outline-success flex-fill" asp-controller="Unite" asp-action="Modifier" asp-route-id="@unite.Id">
+                        <a class="btn btn-outline-success flex-fill" asp-controller="Unite" asp-action="ModifierUnite" asp-route-id="@unite.Id">
                             Modifier
                         </a>
                         }
@@ -107,27 +113,6 @@
                             </span>
                         </button>
                     }
-                    @if (!User.IsInRole("Admin") && !User.IsInRole("Gestionnaire"))
-                    {
-                        @if (!SignInManager.IsSignedIn(User))
-                        {
-                            <button class="btn btn-outline-primary" type="button" data-dialog-open="modalConnexion">
-                                Faire une demande
-                            </button>
-                        }
-                        else if ((await AuthorizationService.AuthorizeAsync(User, "EstEtudiant")).Succeeded)
-                        {
-                            <a class="btn btn-outline-primary" asp-controller="Demande" asp-action="Creer">
-                                Faire une demande
-                            </a>
-                        }
-                        else
-                        {
-                            <button class="btn btn-outline-primary" type="button" data-dialog-open="modalEtudiant">
-                                Faire une demande
-                            </button>
-                        }
-                    }
                 </div>
 
                 <dialog id="@($"modalSupprimer_{unite.Id}")" class="danger">
@@ -141,8 +126,8 @@
                         <input type="hidden" name="id" value="@unite.Id" />
 
                         <div class="d-flex justify-content-between">
-                            <button type="submit" class="btn btn-outline-danger">Supprimer</button>
-                            <button type="button" class="btn btn-outline-dark" data-dialog-close>Annuler</button>
+                            <button type="submit" class="btn btn-outline-danger px-4">Supprimer</button>
+                            <button type="button" class="btn btn-outline-dark px-4" data-dialog-close>Annuler</button>
                         </div>
                     </form>
                 </dialog>
@@ -151,55 +136,9 @@
                     <h3>Accès refusé</h3>
                     <p>Vous devez être Admin pour effectuer cette action.</p>
                     <div class="d-flex justify-content-end mt-3">
-                        <button class="btn btn-outline-dark" type="button" data-dialog-close>Fermer</button>
+                        <button class="btn btn-outline-dark px-4" type="button" data-dialog-close>Fermer</button>
                     </div>
                     </dialog>
-
-                    <dialog id="modalConnexion" class="info-modal">
-                        <h3>Connexion requise</h3>
-
-                        <p class="mt-3">
-                            Vous devez être connecté pour faire une demande.
-                        </p>
-
-                        <div class="d-flex justify-content-between align-items-center mt-5">
-                            <div>
-                                <a class="btn btn-outline-primary m-0"asp-area="Identity"asp-page="/Account/Login"asp-route-returnUrl="@Context.Request.Path">
-                                    Se connecter
-                                </a>
-                            </div>
-
-                            <div>
-                                <button class="btn btn-outline-dark m-0" type="button" data-dialog-close>
-                                    Fermer
-                                </button>
-                            </div>
-                        </div>
-                    </dialog>
-
-
-                <dialog id="modalEtudiant" class="info-modal">
-                    <h3>Profil étudiant requis</h3>
-
-                    <p class="mt-3">
-                        Vous devez compléter votre profil étudiant avant de faire une demande.
-                    </p>
-
-                    <div class="d-flex justify-content-between align-items-center mt-5">
-                        <div>
-                            <a class="btn btn-outline-primary m-0" asp-controller="Etudiant" asp-action="Creer">
-                                Compléter mon profil
-                            </a>
-                        </div>
-
-                        <div>
-                            <button class="btn btn-outline-dark m-0" type="button" data-dialog-close>
-                                Fermer
-                            </button>
-                        </div>
-                    </div>
-                </dialog>
-
             </div>
         }
         @if (!Model.Any())
@@ -211,10 +150,6 @@
 
                 <p class="text-muted fs-5">
                     Il n’y a actuellement aucune unité disponible dans cette résidence.
-                </p>
-
-                <p class="text-muted">
-                    Revenez plus tard ou consultez une autre résidence.
                 </p>
 
                 <a class="btn btn-outline-primary mt-3"asp-controller="Residence"asp-action="Index">
