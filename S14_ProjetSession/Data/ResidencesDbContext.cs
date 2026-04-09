@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using S14_ProjetSession.Areas.Identity.Data;
 using S14_ProjetSession.Models;
@@ -28,39 +29,56 @@ namespace S14_ProjetSession.Data;
         {
             base.OnModelCreating(modelBuilder);
 
+            // @author Benoit
+            // Configuration de la table de jointure ResidenceCommodite
             modelBuilder.Entity<ResidenceCommodite>()
                 .HasKey(rc => new { rc.ResidenceId, rc.CommoditeId });
 
+            // @author Benoit
+            // Relation plusieurs à plusieurs entre Residence et Commodite via ResidenceCommodite
             modelBuilder.Entity<ResidenceCommodite>()
-                .HasOne(rc => rc.Residence)
-                .WithMany(r => r.ResidenceCommodites)
+                .HasOne(rc => rc.Residence)   // Chaque entrée de ResidenceCommodite est liée à une seule Residence
+                .WithMany(r => r.ResidenceCommodites) // Une Residence peut apparaître dans plusieurs ResidenceCommodites
                 .HasForeignKey(rc => rc.ResidenceId);
 
+            // @author Benoit
+            // Relation plusieurs à plusieurs entre Residence et Commodite via la table de jointure ResidenceCommodite
             modelBuilder.Entity<ResidenceCommodite>()
-                .HasOne(rc => rc.Commodite)
-                .WithMany(c => c.ResidenceCommodites)
+                .HasOne(rc => rc.Commodite)  // Chaque entrée de ResidenceCommodite est liée à une seule Commodite
+                .WithMany(c => c.ResidenceCommodites) // Une Commodite peut apparaître dans plusieurs ResidenceCommodites
                 .HasForeignKey(rc => rc.CommoditeId);
 
-        modelBuilder.Entity<Residence>()
+            // @author Benoit
+            //Permet de regrouper les champs liés à l'adresse dans l'entité Residence.
+            modelBuilder.Entity<Residence>()
                  .OwnsOne(r => r.Adresse);
 
+            // @author Benoit
+            //Relation un à plusieurs entre Residence et Unites
             modelBuilder.Entity<Residence>()
-                    .HasMany(r => r.Unites)
-                    .WithOne(u => u.Residence)
+                    .HasMany(r => r.Unites) // Une résidence possède plusieurs unités
+                    .WithOne(u => u.Residence) // Chaque unité appartient à une seule résidence
                     .HasForeignKey(u => u.ResidenceId)
                     .OnDelete(DeleteBehavior.Cascade);
 
+            // @author Benoit
+            // Nom de la résidence doit être unique
             modelBuilder.Entity<Residence>()
                 .HasIndex(r => r.Nom)
                 .IsUnique();
 
+            // @author Benoit
+            // Numéro d'unité unique par résidence
             modelBuilder.Entity<Unite>()
                 .HasIndex(u => new { u.Numero, u.ResidenceId })
                 .IsUnique();
 
+            // @author Benoit
+            // Nom de la commodité doit être unique
             modelBuilder.Entity<Commodite>()
                .HasIndex(c => c.Nom)
                .IsUnique();
+
             modelBuilder.Entity<Demande>()
                 .HasIndex(d => new {
                     d.EtudiantId,

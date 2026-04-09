@@ -12,7 +12,7 @@ using S14_ProjetSession.Data;
 namespace S14_ProjetSession.Migrations
 {
     [DbContext(typeof(ResidencesDbContext))]
-    [Migration("20260407152717_correction")]
+    [Migration("20260409160238_correction")]
     partial class correction
     {
         /// <inheritdoc />

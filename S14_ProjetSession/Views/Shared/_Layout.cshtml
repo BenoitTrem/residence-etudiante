@@ -58,7 +58,8 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2026 - S14_ProjetSession - <a asp-area="" asp-controller="Home" asp-action="Confidentialite">Confidentialité</a>
+            &copy; @DateTime.Now.ToString("dd MMMM yyyy", CultureInfo.CurrentCulture) - Résidences Étudiantes -
+            <a asp-area="" asp-controller="Home" asp-action="Confidentialite">Confidentialité</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

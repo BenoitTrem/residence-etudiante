@@ -7,6 +7,11 @@ using S14_ProjetSession.Data;
 using S14_ProjetSession.Models;
 using S14_ProjetSession.ViewModels;
 
+/*
+ * @author Benoit
+ * 
+ * Description: Tests Unitaires pour le controller Residence.
+ */
 namespace S14_ProjetSessionTests.Unit
 {
     public class ResidenceControllerTests
@@ -48,7 +53,7 @@ namespace S14_ProjetSessionTests.Unit
             _controller.TempData = new TempDataDictionary(new DefaultHttpContext(), tempDataProvider.Object);
         }
 
-
+        // Vérifie que l'action Index retourne la bonne vue
         [Fact(DisplayName = "Index retourne la vue Residences")]
         public void IndexRetourneVueResidences()
         {
@@ -56,6 +61,7 @@ namespace S14_ProjetSessionTests.Unit
             Assert.Equal("Residences", resultat.ViewName);
         }
 
+        // Vérifie que le titre de la page est correctement défini
         [Fact(DisplayName = "Index met le bon titre")]
         public void IndexMetBonTitre()
         {
@@ -63,6 +69,7 @@ namespace S14_ProjetSessionTests.Unit
             Assert.Equal("Résidences", resultat.ViewData["Title"]);
         }
 
+        // Vérifie que la création redirige vers Index si les données sont valides
         [Fact(DisplayName = "Creer redirige vers Index si valide")]
         public void CreerRedirigeIndex()
         {
@@ -78,6 +85,7 @@ namespace S14_ProjetSessionTests.Unit
             Assert.Equal("Index", resultat.ActionName);
         }
 
+        // Vérifie que le repo est appelé lors d'une création valide
         [Fact(DisplayName = "Creer appelle le repository si valide")]
         public void CreerAppelleRepository()
         {
@@ -93,6 +101,7 @@ namespace S14_ProjetSessionTests.Unit
             _residenceRepoMock.Verify(r => r.Creer(residence), Times.Once);
         }
 
+        // Vérifie que la création échoue si le nom existe déjà
         [Fact(DisplayName = "Creer n'appelle pas repository si nom existe déjà")]
         public void CreerNomExiste()
         {
@@ -103,14 +112,16 @@ namespace S14_ProjetSessionTests.Unit
                 Adresse = new Adresse { AdresseString = "Test", CodePostal = "J1J1J1" }
             };
 
+            // Simule qu'un nom existe déjà
             _residenceRepoMock.Setup(r => r.NomExiste("Test", 0)).Returns(true);
 
             _controller.Creer(residence, new List<CommoditeDescriptionViewModel>());
 
+            // Vérifie que la méthode Creer n'est jamais appelée
             _residenceRepoMock.Verify(r => r.Creer(It.IsAny<Residence>()), Times.Never);
         }
 
-
+        // Vérifie que la modification redirige vers Index si valide
         [Fact(DisplayName = "Modifier redirige vers Index si valide")]
         public void ModifierPostRedirige()
         {
@@ -127,6 +138,7 @@ namespace S14_ProjetSessionTests.Unit
             Assert.Equal("Index", resultat.ActionName);
         }
 
+        // Vérifie que le repo est appelé lors d'une modification
         [Fact(DisplayName = "Modifier appelle repository")]
         public void ModifierAppelleRepository()
         {
@@ -143,7 +155,7 @@ namespace S14_ProjetSessionTests.Unit
             _residenceRepoMock.Verify(r => r.Modifier(It.IsAny<Residence>()), Times.Once);
         }
 
-
+        // Vérifie que la suppression appelle le repository
         [Fact(DisplayName = "Supprimer appelle repository")]
         public void SupprimerAppelleRepository()
         {

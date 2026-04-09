@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using S14_ProjetSession;
 using S14_ProjetSession.Areas.Identity.Data;
-using S14_ProjetSession.Data;
 using S14_ProjetSession.Authorization;
+using S14_ProjetSession.Data;
+using S14_ProjetSession.Resources;
 using System;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,8 +15,35 @@ if (!builder.Environment.IsEnvironment("Test"))
     string connectionString = builder.Configuration.GetConnectionString("ApplicationConnectionBD") ?? throw new InvalidOperationException("Connection string 'ConnectionBD' not found.");
 }
 
-builder.Services.AddControllersWithViews();
-builder.Services.AddRazorPages();
+// Définition des langues supportées
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    string[] supportedCultures = new[] { "fr-CA" };
+    options
+        .AddSupportedCultures(supportedCultures)
+        .AddSupportedUICultures(supportedCultures)
+        .SetDefaultCulture(supportedCultures[0]);
+});
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+builder.Services
+    .AddControllersWithViews()
+    .AddMvcLocalization()
+    .AddDataAnnotationsLocalization(options =>
+    {
+        options.DataAnnotationLocalizerProvider = (type, factory) =>
+            factory.Create(typeof(SharedResources));
+    });
+
+builder.Services
+    .AddRazorPages()
+    .AddViewLocalization()
+    .AddDataAnnotationsLocalization(options =>
+    {
+        options.DataAnnotationLocalizerProvider = (type, factory) =>
+             factory.Create(typeof(SharedResources));
+        
+    }); 
 
 builder.Services.AddDbContext<ResidencesDbContext>(options =>
 {
@@ -23,7 +52,9 @@ builder.Services.AddDbContext<ResidencesDbContext>(options =>
 });
 builder.Services.AddDefaultIdentity<ApplicationUser>()
     .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<ResidencesDbContext>();
+    .AddEntityFrameworkStores<ResidencesDbContext>()
+    .AddErrorDescriber<FRIdentityErrorDescriber>();
+
 builder.Services.AddScoped<IResidenceRepository, DbResidenceRepository>();
 builder.Services.AddScoped<IUniteRepository, DbUniteRepository>();
 builder.Services.AddScoped<IEtudiantRepository, DbEtudiantRepository>();

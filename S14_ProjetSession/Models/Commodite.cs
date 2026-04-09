@@ -1,5 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+/*
+ * @author Benoit
+ * 
+ * Description: 
+ * Modèle représentant une commodité pouvant être associée à une résidence.
+ * Chaque commodité possède un nom et peut être liée à plusieurs résidences.
+ */
 namespace S14_ProjetSession.Models
 {
     public class Commodite

@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Policy;
 
+
+/*
+ * @author Benoit
+ * 
+ * Description: Mock Repository pour Residence.
+ */
 namespace S14_ProjetSession.Data
 {
     public class MockResidenceRepository : IResidenceRepository

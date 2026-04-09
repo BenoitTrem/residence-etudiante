@@ -6,7 +6,7 @@ namespace S14_ProjetSession.Models
     public class Jumelage
     {
         public int Id { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Required")]
         [StringLength(100, MinimumLength = 2)]
         public string Nom { get; set; }
         // faire verif de Courriel
