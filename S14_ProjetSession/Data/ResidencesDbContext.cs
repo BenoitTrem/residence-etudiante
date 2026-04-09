@@ -11,13 +11,11 @@ public class ResidencesDbContext : IdentityDbContext<ApplicationUser>
     {
     }
 
-    public DbSet<Residence> Residences { get; set; }
-    public DbSet<Unite> Unites { get; set; }
-    public DbSet<Commodite> Commodites { get; set; }
-    public DbSet<ResidenceCommodite> ResidenceCommodites { get; set; }
+        public DbSet<Residence> Residences { get; set; }
+        public DbSet<Unite> Unites { get; set; }
 
-    public DbSet<Demande> Demandes { get; set; }
-    public DbSet<Etudiant> Etudiants { get; set; }
+        public DbSet<Demande> Demandes { get; set; }
+        public DbSet<Etudiant> Etudiants { get; set; }
 
     public DbSet<Genre> Genres { get; set; }
     public DbSet<Semestre> Semestre { get; set; }
@@ -29,21 +27,8 @@ public class ResidencesDbContext : IdentityDbContext<ApplicationUser>
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<ResidenceCommodite>()
-            .HasKey(rc => new { rc.ResidenceId, rc.CommoditeId });
-
-        modelBuilder.Entity<ResidenceCommodite>()
-            .HasOne(rc => rc.Residence)
-            .WithMany(r => r.ResidenceCommodites)
-            .HasForeignKey(rc => rc.ResidenceId);
-
-        modelBuilder.Entity<ResidenceCommodite>()
-            .HasOne(rc => rc.Commodite)
-            .WithMany(c => c.ResidenceCommodites)
-            .HasForeignKey(rc => rc.CommoditeId);
-
         modelBuilder.Entity<Residence>()
-                 .OwnsOne(r => r.Adresse);
+             .OwnsOne(r => r.Adresse);
 
         modelBuilder.Entity<Residence>()
                 .HasMany(r => r.Unites)
@@ -51,24 +36,16 @@ public class ResidencesDbContext : IdentityDbContext<ApplicationUser>
                 .HasForeignKey(u => u.ResidenceId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+        // Nom unique pour résidence
         modelBuilder.Entity<Residence>()
             .HasIndex(r => r.Nom)
             .IsUnique();
 
+        // Numéro unique par résidence pour l'unité
         modelBuilder.Entity<Unite>()
             .HasIndex(u => new { u.Numero, u.ResidenceId })
             .IsUnique();
 
-        modelBuilder.Entity<Commodite>()
-           .HasIndex(c => c.Nom)
-           .IsUnique();
-        modelBuilder.Entity<Demande>()
-            .HasIndex(d => new
-            {
-                d.EtudiantId,
-                d.SemestreId
-            })
-            .IsUnique();
         // Relation Demande <-> Genre (table de jointure)
         modelBuilder.Entity<DemandeGenre>()
             .HasKey(dg => new { dg.DemandeId, dg.GenreId });
@@ -77,14 +54,13 @@ public class ResidencesDbContext : IdentityDbContext<ApplicationUser>
             .HasOne(dg => dg.Demande)
             .WithMany(d => d.DemandeGenres)
             .HasForeignKey(dg => dg.DemandeId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Cascade); 
 
         modelBuilder.Entity<DemandeGenre>()
             .HasOne(dg => dg.Genre)
             .WithMany(g => g.DemandeGenres)
             .HasForeignKey(dg => dg.GenreId)
-            .OnDelete(DeleteBehavior.Restrict);
-
+            .OnDelete(DeleteBehavior.Restrict); 
 
         // ------------------------
         // Étudiants
@@ -95,7 +71,7 @@ public class ResidencesDbContext : IdentityDbContext<ApplicationUser>
             .HasOne(e => e.Campus)
             .WithMany(c => c.Etudiants)
             .HasForeignKey(e => e.CampusId)
-            .OnDelete(DeleteBehavior.SetNull);
+            .OnDelete(DeleteBehavior.SetNull); 
 
         // Étudiant -> Programme
         modelBuilder.Entity<Etudiant>()
@@ -116,11 +92,7 @@ public class ResidencesDbContext : IdentityDbContext<ApplicationUser>
             .HasOne(e => e.Unite)
             .WithMany(u => u.Etudiants)
             .HasForeignKey(e => e.UniteId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-
-
+            .OnDelete(DeleteBehavior.SetNull); 
     }
-
 }
 

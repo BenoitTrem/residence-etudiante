@@ -14,13 +14,15 @@ namespace S14_ProjetSession.Models
         [Required(ErrorMessage = "L'étudiant est obligatoire.")]
         public int EtudiantId { get; set; }
 
-        public Etudiant? Etudiant { get; set; }
+        public Etudiant Etudiant { get; set; }
+        
+        
+        public Genre? PreferencesGenre  { get; set; }
 
-        public List<DemandeGenre> DemandeGenres { get; set; } = new();
+        public int? PreferencesGenreId { get; set; }
 
-
-        [Required(ErrorMessage = "La durée du bail est obligatoire.")]
-        [Range(1, 3650, ErrorMessage = "La durée du bail doit être supérieure à 0.")]
+        
+        // simplement le nombre de jours pour le moment
         public int PrefDureeBail { get; set; }
 
         public bool AccepteReglements { get; set; }
