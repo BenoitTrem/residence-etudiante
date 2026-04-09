@@ -148,6 +148,8 @@ namespace S14_ProjetSession.Controllers
         /// Redirige vers l'index avec un message de succès,
         /// ou affiche un message d'erreur si le campus est introuvable ou si une erreur survient.
         /// </returns>
+        /**
+         * Je vais finir l'implémentation plus tard (J.Z)
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = "AdminUniquement")]
@@ -173,6 +175,8 @@ namespace S14_ProjetSession.Controllers
                 return Erreur(500, $"Erreur suppression du campus {id}.");
             }
         }
+
+        **/
 
         /// <summary>
         /// Méthode privée pour gérer les erreurs et afficher une vue dédiée.

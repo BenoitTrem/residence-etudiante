@@ -1,5 +1,6 @@
 ﻿namespace S14_ProjetSession.Models
 {
+    /// <author>John Zuleta</author>
     public class DemandeGenre
     {
         public int DemandeId { get; set; }

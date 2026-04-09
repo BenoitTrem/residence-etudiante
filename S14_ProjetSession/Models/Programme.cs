@@ -2,6 +2,7 @@
 
 namespace S14_ProjetSession.Models
 {
+    /// <author>John Zuleta</author>
     public class Programme
     {
         public int Id { get; set; }

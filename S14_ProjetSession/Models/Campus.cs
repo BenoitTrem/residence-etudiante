@@ -1,5 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+
+
+
+/// <author>John Zuleta</author>
 namespace S14_ProjetSession.Models
 {
     public class Campus
