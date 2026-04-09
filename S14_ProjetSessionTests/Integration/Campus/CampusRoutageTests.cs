@@ -20,6 +20,7 @@ namespace S14_ProjetSessionTests.Integration.CampusTests
         private readonly HttpClient _client;
 
         private ICampusRepository _campusRepository = new MockCampusRepository();
+        private IEtudiantRepository _etudiantRepository = new MockEtudiantRepository();
 
         private ClaimsPrincipal? _currentUser;
         private readonly ClaimsPrincipal _admin = AuthUtilities.CreerAdmin();
@@ -34,6 +35,7 @@ namespace S14_ProjetSessionTests.Integration.CampusTests
                 builder.ConfigureTestServices(services =>
                 {
                     services.AddSingleton<ICampusRepository>(_campusRepository);
+                    services.AddSingleton<IEtudiantRepository>(_etudiantRepository);
                     services.AddSingleton<Func<ClaimsPrincipal?>>(() => _currentUser);
                     services.AddAuthentication("TestAuth")
                         .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("TestAuth", o => { });
