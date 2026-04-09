@@ -17,9 +17,9 @@ namespace S14_ProjetSession.Models
         public Etudiant Etudiant { get; set; }
         
         
-        public List<DemandeGenre> DemandeGenres { get; set; }
+        public List<DemandeGenre> DemandeGenres { get; set; } = new List<DemandeGenre>();
 
-        
+
         // simplement le nombre de jours pour le moment
         public int PrefDureeBail { get; set; }
 
