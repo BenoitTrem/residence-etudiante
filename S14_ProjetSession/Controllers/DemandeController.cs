@@ -380,7 +380,7 @@ namespace S14_ProjetSession.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Policy = "AdminOuGestionnaire")]
+        //[Authorize(Policy = "AdminOuGestionnaire")]
         public IActionResult Supprimer(int Id)
         {
             Demande demande = _demandeRepository.GetDemande(Id);
