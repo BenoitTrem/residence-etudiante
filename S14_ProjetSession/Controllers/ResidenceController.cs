@@ -58,7 +58,7 @@ namespace S14_ProjetSession.Controllers
             ViewData["Title"] = "Ajout d'une résidence";
             ViewBag.Commodites = GetListeCommodites(new List<CommoditeDescriptionViewModel>());
 
-            ViewBag.CampusList = new SelectList(_campusRepository.GetAll(), "Id", "Nom");
+            ViewBag.CampusList = new SelectList(_campusRepository.Campus, "Id", "Nom");
             return View(new Residence{Adresse = new Adresse()});
         }
 
@@ -128,7 +128,7 @@ namespace S14_ProjetSession.Controllers
             {
                 TempData["Erreur"] = "Veuillez corriger les erreurs.";
 
-                ViewBag.CampusList = new SelectList(_campusRepository.GetAll(), "Id", "Nom");
+                ViewBag.CampusList = new SelectList(_campusRepository.Campus, "Id", "Nom");
                 ViewBag.Commodites = GetListeCommodites(commodites); 
 
                 return View("AjouterResidence", residence);
@@ -145,7 +145,7 @@ namespace S14_ProjetSession.Controllers
         {
             Residence? residence = _residenceRepository.GetById(id);
 
-            ViewBag.CampusList = new SelectList(_campusRepository.GetAll(), "Id", "Nom", residence?.CampusId);
+            ViewBag.CampusList = new SelectList(_campusRepository.Campus, "Id", "Nom", residence?.CampusId);
 
             List<CommoditeDescriptionViewModel> commoditesSelectionnees = residence?.ResidenceCommodites
                 .Select(rc => new CommoditeDescriptionViewModel
@@ -209,7 +209,7 @@ namespace S14_ProjetSession.Controllers
             if (!ModelState.IsValid)
             {
                 ViewData["Title"] = "Modification de la résidence " + residence.Nom;
-                ViewBag.CampusList = new SelectList(_campusRepository.GetAll(), "Id", "Nom", residence.CampusId);
+                ViewBag.CampusList = new SelectList(_campusRepository.Campus, "Id", "Nom", residence.CampusId);
                 ViewBag.Commodites = GetListeCommodites(commodites);
 
                 return View("ModifierResidence", residence);

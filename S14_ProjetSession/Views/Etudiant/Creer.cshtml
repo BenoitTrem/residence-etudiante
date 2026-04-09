@@ -1,5 +1,11 @@
 ﻿@model S14_ProjetSession.Models.Etudiant
 
+@*
+    Vue : Creer.cshtml
+    Description : Formulaire permettant la création d’un nouvel étudiant
+                  avec saisie des informations personnelles et académiques.
+    @Author : John Zuleta
+*@
 <form asp-controller="Etudiant" asp-action="Creer" method="post">
 
     @Html.AntiForgeryToken()
@@ -89,6 +95,15 @@
             <label>Programme</label>
             <select asp-for="ProgrammeId" class="form-control"
                     asp-items="@(new SelectList(ViewBag.Programmes, "Id", "Nom"))">
+            </select>
+        </div>
+
+
+
+        <div class="col-md-6 mt-3">
+            <label>Campus</label>
+            <select asp-for="CampusId" class="form-control"
+                    asp-items="@(new SelectList(ViewBag.Campus, "Id", "Nom"))">
             </select>
         </div>
 

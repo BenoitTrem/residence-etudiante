@@ -39,7 +39,7 @@ namespace S14_ProjetSessionTests.Integration
 
         public ResidenceIntegrationTests(WebApplicationFactory<Program> factory)
         {
-            _campusRepo.Setup(c => c.GetAll()).Returns(new List<Campus>
+            _campusRepo.Setup(c => c.Campus).Returns(new List<Campus>
             {
                 new Campus { Id = 1, Nom = "Test Campus" }
             });

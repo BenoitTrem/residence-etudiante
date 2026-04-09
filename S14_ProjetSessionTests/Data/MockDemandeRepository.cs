@@ -1,21 +1,31 @@
-﻿using Microsoft.EntityFrameworkCore;
-using S14_ProjetSession.Models;
+﻿using S14_ProjetSession.Models;
 
 namespace S14_ProjetSession.Data
 {
     public class MockDemandeRepository : IDemandeRepository
     {
         private List<Demande> _demandes = new List<Demande>();
+        private List<Genre> _genres = new List<Genre>();
+
         public List<Demande> Demandes => _demandes;
+        public List<Genre> Genres => _genres;
 
         public MockDemandeRepository()
         {
+            _genres.Add(new Genre { Id = 1, Nom = "Homme" });
+            _genres.Add(new Genre { Id = 2, Nom = "Femme" });
+
             _demandes.Add(new Demande
             {
                 Id = 1,
                 SemestreId = 1,
                 EtudiantId = 1,
-                PreferencesGenreId = 1,
+
+                DemandeGenres = new List<DemandeGenre>
+                {
+                    new DemandeGenre { DemandeId = 1, GenreId = 1, Genre = _genres[0] }
+                },
+
                 Etudiant = new Etudiant
                 {
                     Id = 1,
@@ -26,16 +36,18 @@ namespace S14_ProjetSession.Data
                     noAdmission = "ADM001",
                     ApplicationUserId = "468a4852-42ee-4f45-9be5-41422b589904"
                 },
+
                 PrefDureeBail = 120,
-                Semestre = new Semestre() 
+
+                Semestre = new Semestre()
                 {
-                    Id= 1,
+                    Id = 1,
                     NomSemestre = "hivers-2025"
                 },
+
                 AccepteReglements = true,
                 AccepteTraitementDonnees = true,
                 ConfirmeSoumission = true,
-
                 DateDemande = DateTime.Now,
 
                 NomGarant = "Martin",
@@ -59,18 +71,20 @@ namespace S14_ProjetSession.Data
                 Id = 2,
                 SemestreId = 2,
                 EtudiantId = 2,
-                PreferencesGenreId = 1,
+                PreferencesGenreId = 2,
 
                 PrefDureeBail = 90,
 
                 AccepteReglements = true,
                 AccepteTraitementDonnees = true,
                 ConfirmeSoumission = true,
+
                 Semestre = new Semestre()
                 {
-                    Id = 1,
+                    Id = 2,
                     NomSemestre = "hivers-2025"
                 },
+
                 Etudiant = new Etudiant
                 {
                     Id = 2,
@@ -80,6 +94,7 @@ namespace S14_ProjetSession.Data
                     noEtudiant = "20230002",
                     noAdmission = "ADM002"
                 },
+
                 DateDemande = DateTime.Now.AddDays(-5),
 
                 NomGarant = "Robert",
@@ -101,11 +116,12 @@ namespace S14_ProjetSession.Data
 
         public Demande? GetDemande(int id)
         {
-            return Demandes.FirstOrDefault(x => x.Id == id);
+            return _demandes.FirstOrDefault(x => x.Id == id);
         }
 
         public void Creer(Demande demande)
         {
+            demande.Id = _demandes.Max(d => d.Id) + 1;
             _demandes.Add(demande);
         }
 
@@ -142,3 +158,4 @@ namespace S14_ProjetSession.Data
         }
     }
 }
+
