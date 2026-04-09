@@ -9,18 +9,38 @@ using S14_ProjetSession.Models;
 using System.Net;
 using System.Security.Claims;
 
+/*
+ * @author Benoit
+ * 
+ * Description: Tests d'intégrations pour l'ajout d'une résidence.
+ */
 namespace S14_ProjetSessionTests.Integration.ResidenceTests
 {
+    /*
+     * Note :
+     * Seul la configuration de la classe de test (injection des dépendances,
+     * configuration du WebApplicationFactory et de l’authentification simulée)
+     * ci-dessous a été réalisée avec l’aide de ChatGPT.
+     */
     public class AjoutResidenceTest : IClassFixture<WebApplicationFactory<Program>>
     {
+        // Factory permettant de créer un serveur de test ASP.NET
         private readonly WebApplicationFactory<Program> _factory;
+
+        // Client HTTP utilisé pour envoyer des requêtes au serveur de test
         private readonly HttpClient _client;
 
+        // Repository simulé pour les résidences (remplace la base de données)
         private IResidenceRepository _residenceRepository = new MockResidenceRepository();
+
+        // Mocks des autres repositories
         private Mock<ICampusRepository> _campusRepo = new Mock<ICampusRepository>();
         private Mock<ICommoditeRepository> _commoditeRepo = new Mock<ICommoditeRepository>();
 
+        // Représente l'utilisateur actuellement connecté (simulation)
         private ClaimsPrincipal? _utilisateurActuel;
+
+        // Utilisateur administrateur utilisé pour les tests
         private ClaimsPrincipal _admin = AuthUtilities.CreerAdmin();
 
         private async Task<string> ObtenirToken()
@@ -37,6 +57,7 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
             return form;
         }
 
+        // Constructeur : configure l’environnement de test et les dépendances
         public AjoutResidenceTest(WebApplicationFactory<Program> factory)
         {
             _campusRepo.Setup(c => c.GetAll()).Returns(new List<Campus>
@@ -50,19 +71,24 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
                 new Commodite { Id = 2, Nom = "Salle de sport" }
             });
 
+            // Permet de récupérer une commodité par son ID
             _commoditeRepo.Setup(c => c.GetCommodite(It.IsAny<int>()))
                           .Returns((int id) => _commoditeRepo.Object.Commodites.FirstOrDefault(c => c.Id == id));
 
+            // Configuration du serveur de test
             _factory = factory.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>
                 {
+                    // Injection des dépendances simulées
                     services.AddSingleton<IResidenceRepository>(_residenceRepository);
                     services.AddSingleton<ICampusRepository>(_campusRepo.Object);
                     services.AddSingleton<ICommoditeRepository>(_commoditeRepo.Object);
 
+                    // Injection de l'utilisateur courant simulé
                     services.AddSingleton<Func<ClaimsPrincipal?>>(() => _utilisateurActuel);
 
+                    // Configuration d’un système d’authentification de test
                     services.AddAuthentication("TestAuth")
                         .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("TestAuth", o => { });
                 });
@@ -73,7 +99,7 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
             _utilisateurActuel = _admin;
         }
 
-
+        // Vérifie qu'un utilisateur non connecté ne peut pas accéder à la page
         [Fact(DisplayName = "AjouterResidence refuse utilisateur non connecté")]
         public async Task AjouterRefuseNonConnecte()
         {
@@ -84,7 +110,7 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
-
+        // Vérifie qu'un administrateur peut accéder à la page
         [Fact(DisplayName = "AjouterResidence accessible admin")]
         public async Task AjouterAccessibleAdmin()
         {
@@ -95,7 +121,7 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
 
-
+        // Vérifie qu'une création valide ajoute une résidence
         [Fact(DisplayName = "Création valide redirige")]
         public async Task CreerValide()
         {
@@ -113,15 +139,17 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
 
             await _client.PostAsync("/Residence/Creer", form);
 
+            // Vérifie qu'une résidence a été ajoutée
             Assert.Equal(initial + 1, _residenceRepository.GetAll().Count);
         }
 
-
+        // Vérifie qu'une création invalide ne modifie pas les données
         [Fact(DisplayName = "Création invalide ne fonctionne pas")]
         public async Task CreerInvalide()
         {
             int initial = _residenceRepository.GetAll().Count;
 
+            // Données invalides (nom vide)
             Dictionary<string, string> data = new Dictionary<string, string>
             {
                 { "Nom", "" }, 
@@ -132,6 +160,7 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
 
             await _client.PostAsync("/Residence/Creer", form);
 
+            // Vérifie qu'aucune résidence n'a été ajoutée
             Assert.Equal(initial, _residenceRepository.GetAll().Count);
         }
     }

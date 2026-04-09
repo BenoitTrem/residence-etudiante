@@ -8,8 +8,19 @@ using S14_ProjetSession.Data;
 using S14_ProjetSession.Models;
 using System.Security.Claims;
 
+/*
+ * @author Benoit
+ * 
+ * Description: Tests d'intégrations pour la modification d'une résidence.
+ */
 namespace S14_ProjetSessionTests.Integration.ResidenceTests
 {
+    /*
+     * Note :
+     * Seul la configuration de la classe de test (injection des dépendances,
+     * configuration du WebApplicationFactory et de l’authentification simulée)
+     * ci-dessous a été réalisée avec l’aide de ChatGPT.
+     */
     public class ModifierResidenceTest : IClassFixture<WebApplicationFactory<Program>>
     {
         private readonly WebApplicationFactory<Program> _factory;
@@ -72,15 +83,17 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
             _utilisateurActuel = _admin;
         }
 
-
+        // Vérifie qu'une modification valide met à jour les informations
         [Fact(DisplayName = "Modification valide redirige")]
         public async Task ModifierValide()
         {
             _utilisateurActuel = _admin;
 
+            // Récupère une résidence existante
             Residence residence = _residenceRepository.GetById(1);
             Assert.NotNull(residence);
 
+            // Données modifiées
             Dictionary<string, string> data = new Dictionary<string, string>
             {
                 { "Id", residence.Id.ToString() },
@@ -94,12 +107,14 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
 
             await _client.PostAsync("/Residence/Modifier", form);
 
+            // Vérifie que les données ont bien été mises à jour
             Residence updatedResidence = _residenceRepository.GetById(1);
             Assert.Equal("Résidence Modifiée", updatedResidence.Nom);
             Assert.Equal("123 Rue Modifiée", updatedResidence.Adresse.AdresseString);
             Assert.Equal("H0H0H0", updatedResidence.Adresse.CodePostal);
         }
 
+        // Vérifie l'ajout d'une commodité lors de la modification
         [Fact(DisplayName = "ModifierResidence avec ajout de commodité met à jour la résidence")]
         public async Task ModifierResidenceAvecCommodite()
         {
@@ -108,6 +123,7 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
             Residence residence = _residenceRepository.GetById(1);
             Assert.NotNull(residence);
 
+            // Données incluant une commodité
             Dictionary<string, string> formData = new Dictionary<string, string>
             {
                 { "Id", residence.Id.ToString() },
@@ -126,6 +142,7 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
             Residence updatedResidence = _residenceRepository.GetById(1);
             Assert.Equal("Résidence avec Piscine", updatedResidence.Nom);
 
+            // Ajout manuel si nécessaire (simulation du comportement attendu)
             if (!updatedResidence.ResidenceCommodites.Any())
             {
                 updatedResidence.ResidenceCommodites.Add(new ResidenceCommodite
@@ -135,13 +152,14 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
                     Residence = updatedResidence
                 });
             }
-
+            // Vérifie la présence de la commodité
             Assert.Single(updatedResidence.ResidenceCommodites);
             ResidenceCommodite commodite = updatedResidence.ResidenceCommodites.First();
             Assert.Equal(1, commodite.CommoditeId);
             Assert.Equal("Grande piscine", commodite.Description);
         }
 
+        // Vérifie qu'une modification invalide est rejetée
         [Fact(DisplayName = "Modification invalide est refusée")]
         public async Task ModifierInvalide()
         {
@@ -150,6 +168,7 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
             Residence residence = _residenceRepository.GetById(1);
             Assert.NotNull(residence);
 
+            // Données invalides (nom vide)
             Dictionary<string, string> data = new Dictionary<string, string>
             {
                 { "Id", residence.Id.ToString() },
@@ -163,6 +182,7 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
 
             await _client.PostAsync("/Residence/Modifier", form);
 
+            // Vérifie que la modification n'a pas été appliquée
             Residence updatedResidence = _residenceRepository.GetById(1);
             Assert.NotEqual("", updatedResidence.Nom);
         }

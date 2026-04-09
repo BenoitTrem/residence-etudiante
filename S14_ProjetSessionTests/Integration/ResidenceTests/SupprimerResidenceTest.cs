@@ -9,6 +9,11 @@ using S14_ProjetSession.Models;
 using System.Net;
 using System.Security.Claims;
 
+/*
+ * @author Benoit
+ * 
+ * Description: Tests d'intégrations pour la suppression d'une résidence.
+ */
 namespace S14_ProjetSessionTests.Integration.ResidenceTests
 {
     public class SupprimerResidenceTest : IClassFixture<WebApplicationFactory<Program>>
@@ -73,10 +78,11 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
             _utilisateurActuel = _admin;
         }
 
+        // Vérifie que la suppression d'une résidence fonctionne correctement
         [Fact(DisplayName = "Suppression fonctionne")]
         public async Task SupprimerFonctionne()
         {
-            int initial = _residenceRepository.GetAll().Count;
+            int initial = _residenceRepository.GetAll().Count; // Nombre initial de résidences
 
             Dictionary<string, string> data = new Dictionary<string, string>
             {
@@ -87,6 +93,7 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
 
             await _client.PostAsync("/Residence/Supprimer", form);
 
+            // Vérifie qu'une résidence a été supprimée
             Assert.Equal(initial - 1, _residenceRepository.GetAll().Count);
         }
     }

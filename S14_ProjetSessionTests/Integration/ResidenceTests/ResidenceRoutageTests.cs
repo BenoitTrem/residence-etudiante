@@ -2,51 +2,60 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
 using S14_ProjetSession.Data;
 using System.Net;
-using Xunit;
 
-namespace S14_ProjetSessionTests.Integration.ResidenceTests;
-
-public class ResidenceRoutageTests : IClassFixture<WebApplicationFactory<Program>>
+/*
+ * @author Benoit
+ * 
+ * Description: Tests d'intégrations pour la suppression d'une résidence.
+ */
+namespace S14_ProjetSessionTests.Integration.ResidenceTests
 {
-    private readonly WebApplicationFactory<Program> _factory;
-    private readonly HttpClient _client;
 
-    public ResidenceRoutageTests(WebApplicationFactory<Program> factory)
+    public class ResidenceRoutageTests : IClassFixture<WebApplicationFactory<Program>>
     {
-        var mockRepo = new MockResidenceRepository();
+        private readonly WebApplicationFactory<Program> _factory;
+        private readonly HttpClient _client;
 
-       _factory = factory.WithWebHostBuilder(builder =>
+        public ResidenceRoutageTests(WebApplicationFactory<Program> factory)
         {
-            builder.ConfigureTestServices(services =>
+            var mockRepo = new MockResidenceRepository();
+
+           _factory = factory.WithWebHostBuilder(builder =>
             {
-                services.AddSingleton<IResidenceRepository>(mockRepo);
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddSingleton<IResidenceRepository>(mockRepo);
+                });
+                builder.UseEnvironment("Test");
             });
-            builder.UseEnvironment("Test");
-        });
 
-        _client = _factory.CreateClient();
-    }
+            _client = _factory.CreateClient();
+        }
 
-    [InlineData("/Residence")]
-    [InlineData("/Residence/ResidenceDetails/1")]
-    [Theory]
-    public async Task RouteExiste(string url)
-    {
-        HttpResponseMessage response = await _client.GetAsync(url);
-        string body = await response.Content.ReadAsStringAsync();
+        // Vérifie que certaines routes valides retournent une réponse OK
+        [InlineData("/Residence")]
+        [InlineData("/Residence/ResidenceDetails/1")]
+        [Theory]
+        public async Task RouteExiste(string url)
+        {
+            HttpResponseMessage response = await _client.GetAsync(url);
+            string body = await response.Content.ReadAsStringAsync();
 
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.False(string.IsNullOrEmpty(body));
-    }
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.False(string.IsNullOrEmpty(body)); // Vérifie que la réponse contient du contenu
+        }
 
-    [InlineData("/Residence/InvalidRoute")]
-    [Theory]
-    public async Task RouteNexistePas(string url)
-    {
-        HttpResponseMessage response = await _client.GetAsync(url);
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        // Vérifie que les routes invalides retournent une erreur 404
+        [InlineData("/Residence/InvalidRoute")]
+        [Theory]
+        public async Task RouteNexistePas(string url)
+        {
+            HttpResponseMessage response = await _client.GetAsync(url);
+            
+            // Vérifie que la route n'existe pas (code 404)
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
     }
 }

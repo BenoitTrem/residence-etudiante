@@ -15,12 +15,12 @@ namespace S14_ProjetSession.Models
         [Display(Name = "Adresse")]
         public string AdresseString { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Required")]
         [StringLength(50)]
         [Display(Name = "Ville")]
         public string Ville { get; set; } = "Gatineau";
 
-        [Required]
+        [Required(ErrorMessage = "Required")]
         [StringLength(2, MinimumLength = 2, ErrorMessage = "La province doit contenir 2 lettres.")]
         [Display(Name = "Province")]
         public string Province { get; set; } = "QC";
