@@ -22,6 +22,7 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
         private readonly HttpClient _client;
 
         private IResidenceRepository _residenceRepository = new MockResidenceRepository();
+        private IEtudiantRepository _etudiantRepository = new MockEtudiantRepository();
         private Mock<ICampusRepository> _campusRepo = new Mock<ICampusRepository>();
         private Mock<ICommoditeRepository> _commoditeRepo = new Mock<ICommoditeRepository>();
 
@@ -63,6 +64,7 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
                 builder.ConfigureTestServices(services =>
                 {
                     services.AddSingleton<IResidenceRepository>(_residenceRepository);
+                    services.AddSingleton<IEtudiantRepository>(_etudiantRepository);
                     services.AddSingleton<ICampusRepository>(_campusRepo.Object);
                     services.AddSingleton<ICommoditeRepository>(_commoditeRepo.Object);
 

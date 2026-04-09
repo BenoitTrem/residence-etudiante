@@ -32,6 +32,7 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
 
         // Repository simulé pour les résidences (remplace la base de données)
         private IResidenceRepository _residenceRepository = new MockResidenceRepository();
+        private IEtudiantRepository _etudiantRepository = new MockEtudiantRepository();
 
         // Mocks des autres repositories
         private Mock<ICampusRepository> _campusRepo = new Mock<ICampusRepository>();
@@ -82,6 +83,7 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
                 {
                     // Injection des dépendances simulées
                     services.AddSingleton<IResidenceRepository>(_residenceRepository);
+                    services.AddSingleton<IEtudiantRepository>(_etudiantRepository);
                     services.AddSingleton<ICampusRepository>(_campusRepo.Object);
                     services.AddSingleton<ICommoditeRepository>(_commoditeRepo.Object);
 
