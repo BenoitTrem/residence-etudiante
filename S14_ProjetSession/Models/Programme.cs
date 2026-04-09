@@ -2,7 +2,13 @@
 
 namespace S14_ProjetSession.Models
 {
-    /// <author>John Zuleta</author>
+
+    /*
+     * @author John
+     * 
+     * Description: 
+     * Modèle Programme
+     */
     public class Programme
     {
         public int Id { get; set; }
@@ -19,7 +25,7 @@ namespace S14_ProjetSession.Models
 
         [Required(ErrorMessage = "Le Campus est obligatoire")]
         [Display(Name = "Campus")]
-        public int? CampusId { get; set; }
+        public int CampusId { get; set; }
 
         public Campus? Campus { get; set; }
 

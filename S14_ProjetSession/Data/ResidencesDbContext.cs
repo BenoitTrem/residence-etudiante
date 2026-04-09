@@ -90,49 +90,65 @@ public class ResidencesDbContext : IdentityDbContext<ApplicationUser>
                 })
                 .IsUnique();
 
-        // Relation Demande <-> Genre (table de jointure)
+
+
+        // @authorJohn Zuleta
+        // Relation Demande <-> Genre (table de jointure N-N)
+        // La clé primaire composite est formée de DemandeId et GenreId
         modelBuilder.Entity<DemandeGenre>()
             .HasKey(dg => new { dg.DemandeId, dg.GenreId });
 
+        // @authorJohn Zuleta
+        // Si une Demande est supprimée, ses DemandeGenres associés sont supprimés en cascade
         modelBuilder.Entity<DemandeGenre>()
             .HasOne(dg => dg.Demande)
             .WithMany(d => d.DemandeGenres)
             .HasForeignKey(dg => dg.DemandeId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        // @authorJohn Zuleta
+        // Un Genre ne peut pas être supprimé s'il est encore référencé par une Demande
         modelBuilder.Entity<DemandeGenre>()
             .HasOne(dg => dg.Genre)
             .WithMany(g => g.DemandeGenres)
             .HasForeignKey(dg => dg.GenreId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // Étudiant -> Genre
+        // @authorJohn Zuleta
+        // Relation Étudiant -> Genre (1-N)
+        // Un Genre ne peut pas être supprimé s'il est encore associé à un Étudiant
         modelBuilder.Entity<Etudiant>()
             .HasOne(e => e.Genre)
             .WithMany(g => g.Etudiants)
             .HasForeignKey(e => e.GenreId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // Étudiant -> Unite
+        // @authorJohn Zuleta
+        // Relation Étudiant -> Unite (1-N)
+        // Si une Unité est supprimée, le champ UniteId de l'Étudiant est mis à null
         modelBuilder.Entity<Etudiant>()
             .HasOne(e => e.Unite)
             .WithMany(u => u.Etudiants)
             .HasForeignKey(e => e.UniteId)
             .OnDelete(DeleteBehavior.SetNull);
 
-        // Étudiant -> Campus
+        // @authorJohn Zuleta
+        // Relation Étudiant -> Campus (1-N)
+        // Un Campus ne peut pas être supprimé s'il est encore associé à un Étudiant
         modelBuilder.Entity<Etudiant>()
             .HasOne(e => e.Campus)
             .WithMany(c => c.Etudiants)
             .HasForeignKey(e => e.CampusId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // Étudiant -> Programme
+        // @authorJohn Zuleta
+        // Relation Étudiant -> Programme (1-N)
+        // Un Programme ne peut pas être supprimé s'il est encore associé à un Étudiant
         modelBuilder.Entity<Etudiant>()
             .HasOne(e => e.Programme)
             .WithMany(p => p.Etudiants)
             .HasForeignKey(e => e.ProgrammeId)
-            .OnDelete(DeleteBehavior.Restrict); 
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
 

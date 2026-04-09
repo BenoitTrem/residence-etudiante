@@ -6,6 +6,9 @@ using S14_ProjetSession.ViewModels;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
+
+/// <author>Felix</author>
+/// <author>John Zuleta (logique genres - demandes plusieurs à plusieurs ) </author>
 namespace S14_ProjetSession.Controllers
 {
     public class DemandeController : Controller
@@ -27,7 +30,7 @@ namespace S14_ProjetSession.Controllers
             _demandeRepository = demandeRepository;
         }
 
-        // ─── Helpers ────────────────────────────────────────────────────────────
+      
 
         /// <summary>
         /// Remplace les DemandeGenres d'une demande par les genres sélectionnés.

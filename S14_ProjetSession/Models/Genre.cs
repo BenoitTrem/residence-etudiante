@@ -1,7 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 
-/// <author>John Zuleta</author>
+
+/*
+ * @author John
+ * 
+ * Description: 
+ * Modèle Genre 
+ */
 namespace S14_ProjetSession.Models
 {
     public class Genre
@@ -17,7 +23,8 @@ namespace S14_ProjetSession.Models
 
         public List<Etudiant> Etudiants { get; set; } = new List<Etudiant>();
 
-        public List<DemandeGenre> DemandeGenres { get; set; } = new();
+        //ajout de la realtion demande et genre plsuieurs à plusieurs
+        public List<DemandeGenre> DemandeGenres { get; set; } = new List<DemandeGenre>();
 
 
     }

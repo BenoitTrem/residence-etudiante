@@ -2,8 +2,12 @@
 
 
 
-
-/// <author>John Zuleta</author>
+/*
+ * @author John
+ * 
+ * Description: 
+ * Modèle Campus
+ */
 namespace S14_ProjetSession.Models
 {
     public class Campus

@@ -35,7 +35,15 @@
                                 <a class="nav-link fw-semibold px-3" asp-controller="Commodite" asp-action="Index">Commodités</a>
                             </li>
                         }
-                      
+
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                          <li class="nav-item">
+                              <a class="nav-link fw-semibold px-3" asp-controller="Campus" asp-action="Index">Campus</a>
+                           </li>
+                        }
+
+          
                         @if ((await AuthorizationService.AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded)
                         {
                             <li class="nav-item">

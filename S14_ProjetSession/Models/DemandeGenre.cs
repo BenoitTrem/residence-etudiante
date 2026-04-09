@@ -1,6 +1,12 @@
 ﻿namespace S14_ProjetSession.Models
 {
-    /// <author>John Zuleta</author>
+
+    /*
+     * @author John
+     * 
+     * Description: 
+     * Modèle DemandeGenre qui est la classe pivot de la realtion genre et demande plusieurs à plusieurs 
+     */
     public class DemandeGenre
     {
         public int DemandeId { get; set; }

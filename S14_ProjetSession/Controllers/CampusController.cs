@@ -32,7 +32,7 @@ namespace S14_ProjetSession.Controllers
         /// Accessible à tous (y compris les utilisateurs anonymes).
         /// </summary>
         /// <returns>Une vue avec la liste des campus ou une vue d'erreur si un problème survient.</returns>
-        [AllowAnonymous]
+       
         public IActionResult Index()
         {
             try

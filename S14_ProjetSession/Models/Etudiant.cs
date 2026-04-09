@@ -4,7 +4,13 @@ using static System.Net.Mime.MediaTypeNames;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
-/// <author>John Zuleta</author>
+
+/*
+ * @author John
+ * 
+ * Description: 
+ * Modèle Etudiant 
+ */
 namespace S14_ProjetSession.Models
 {
     public class Etudiant
