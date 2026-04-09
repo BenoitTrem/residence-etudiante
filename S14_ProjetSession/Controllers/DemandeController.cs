@@ -258,6 +258,10 @@ namespace S14_ProjetSession.Controllers
             vm.Genres = _genreRepository.Genres;
             vm.Semestres = _semestreRepository.Semestres;
 
+            // Propriétés de navigation assignées côté serveur
+            ModelState.Remove("Demande.Etudiant");
+            ModelState.Remove("Demande.Semestre");
+
             if (!ModelState.IsValid)
                 return View(vm);
 
@@ -304,12 +308,6 @@ namespace S14_ProjetSession.Controllers
             {
                 ModelState.AddModelError(string.Empty,
                     "Une demande existe déjà pour cet étudiant et ce semestre.");
-                return View(vm);
-            }
-
-            if (!TryValidateModel(vm.Demande))
-            {
-                ModelState.AddModelError(string.Empty, "Certaines informations de la demande sont invalides.");
                 return View(vm);
             }
 
