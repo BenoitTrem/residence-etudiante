@@ -133,9 +133,10 @@ namespace S14_ProjetSession.Controllers
         {
             vm.Genres = _genreRepository.Genres;
             vm.Semestres = _semestreRepository.Semestres;
+            Semestre? semestre = null;
 
-            if (!ModelState.IsValid)
-                return View(vm);
+            // Propriétés de navigation assignées côté serveur
+            ModelState.Remove("Demande.Etudiant");
 
             // Étudiant connecté
             string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -154,21 +155,20 @@ namespace S14_ProjetSession.Controllers
             // Valider semestre
             if (!vm.SelectedSemestreId.HasValue)
                 ModelState.AddModelError("SelectedSemestreId", "Le semestre est requis.");
-
-            var semestre = _semestreRepository.GetSemestreParId(vm.SelectedSemestreId ?? 0);
-            if (semestre == null)
-                ModelState.AddModelError("SelectedSemestreId", "Semestre invalide.");
+            else
+            {
+                semestre = _semestreRepository.GetSemestreParId(vm.SelectedSemestreId.Value);
+                if (semestre == null)
+                    ModelState.AddModelError("SelectedSemestreId", "Semestre invalide.");
+            }
 
             // Valider genres (plusieurs)
             if (vm.SelectedGenreIds == null || !vm.SelectedGenreIds.Any())
                 ModelState.AddModelError("SelectedGenreIds", "Au moins un genre préféré est requis.");
 
-            if (!ModelState.IsValid)
-                return View(vm);
-
             // Doublon
-            bool demandeExiste = _demandeRepository.Demandes
-                .Any(d => d.EtudiantId == etudiant.Id && d.SemestreId == semestre!.Id);
+            bool demandeExiste = semestre != null && _demandeRepository.Demandes
+                .Any(d => d.EtudiantId == etudiant.Id && d.SemestreId == semestre.Id);
 
             if (demandeExiste)
             {
@@ -176,11 +176,8 @@ namespace S14_ProjetSession.Controllers
                 return View(vm);
             }
 
-            if (!TryValidateModel(vm.Demande))
-            {
-                ModelState.AddModelError(string.Empty, "Certaines informations de la demande sont invalides.");
+            if (!ModelState.IsValid)
                 return View(vm);
-            }
 
             // Jumelages
             foreach (var j in vm.Jumelages)
@@ -211,6 +208,8 @@ namespace S14_ProjetSession.Controllers
             }
 
             vm.Demande.Etudiant = etudiant;
+            vm.Demande.EtudiantId = etudiant.Id;
+            vm.Demande.SemestreId = semestre!.Id;
             vm.Demande.Semestre = semestre;
 
             _demandeRepository.Creer(vm.Demande);
@@ -262,6 +261,10 @@ namespace S14_ProjetSession.Controllers
             vm.Genres = _genreRepository.Genres;
             vm.Semestres = _semestreRepository.Semestres;
 
+            // Propriétés de navigation assignées côté serveur
+            ModelState.Remove("Demande.Etudiant");
+            ModelState.Remove("Demande.Semestre");
+
             if (!ModelState.IsValid)
                 return View(vm);
 
@@ -308,12 +311,6 @@ namespace S14_ProjetSession.Controllers
             {
                 ModelState.AddModelError(string.Empty,
                     "Une demande existe déjà pour cet étudiant et ce semestre.");
-                return View(vm);
-            }
-
-            if (!TryValidateModel(vm.Demande))
-            {
-                ModelState.AddModelError(string.Empty, "Certaines informations de la demande sont invalides.");
                 return View(vm);
             }
 
@@ -386,7 +383,7 @@ namespace S14_ProjetSession.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Policy = "AdminOuGestionnaire")]
+        //[Authorize(Policy = "AdminOuGestionnaire")]
         public IActionResult Supprimer(int Id)
         {
             Demande demande = _demandeRepository.GetDemande(Id);
