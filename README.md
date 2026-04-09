@@ -93,5 +93,5 @@ Spécifier les numéros de billets (vous pouvez compléter au fur et à mesure).
 
 - **Production de la documentation et respect des règles d'orthographe et de grammaire dans l'interface (00ST.2, 00ST.9)**
    - Felix : README et documentation des demandes
-   - John : Documentation des modèles étudiants 
+   - John : Documentation des modèles étudiants et README
    - Benoit : Documentation des résidences et unités
