@@ -1,15 +1,12 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
 using S14_ProjetSession.Data;
-using S14_ProjetSession.Models;
-using System;
-using System.Collections.Generic;
-using System.Security.AccessControl;
-using System.Text;
+using System.Net;
+using System.Security.Claims;
+
 namespace S14_ProjetSessionTests.Integration
 {
     public class RoutageTests : IClassFixture<WebApplicationFactory<Program>>
@@ -40,8 +37,39 @@ namespace S14_ProjetSessionTests.Integration
         public async Task DemandeCreeSansCompteRedirigeVersLogin()
         {
 
-            HttpResponseMessage response = await _client.GetAsync("/demande/creer");
+            HttpResponseMessage response = await _client.GetAsync("/demande/creer", TestContext.Current.CancellationToken);
             Assert.Contains("/Account/Login", response.Headers.Location?.ToString());
+        }
+
+        [Fact]
+        public async Task DemandeCreeAvecCompteEstAccessible()
+        {
+            ClaimsPrincipal? currentUser = AuthUtilities.CreerEtudiant();
+
+            WebApplicationFactory<Program> factoryAuthentifiee = _factory.WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddSingleton<IDemandeRepository>(new MockDemandeRepository());
+                    services.AddSingleton<IEtudiantRepository>(new MockEtudiantRepository());
+                    services.AddSingleton<ISemestreRepository>(new MockSemestreRepository());
+                    services.AddSingleton<IGenresRepository>(new MockGenreRepository());
+
+                    services.AddSingleton<Func<ClaimsPrincipal?>>(() => currentUser);
+                    services.AddAuthentication("TestAuth")
+                        .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("TestAuth", _ => { });
+                });
+                builder.UseEnvironment("Test");
+            });
+
+            HttpClient clientAuthentifie = factoryAuthentifiee.CreateClient(new WebApplicationFactoryClientOptions
+            {
+                AllowAutoRedirect = false
+            });
+
+            HttpResponseMessage response = await clientAuthentifie.GetAsync("/demande/creer", TestContext.Current.CancellationToken);
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
 
     }

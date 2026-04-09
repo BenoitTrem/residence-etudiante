@@ -71,6 +71,10 @@ namespace S14_ProjetSession.Data
                 Id = 2,
                 SemestreId = 2,
                 EtudiantId = 2,
+                DemandeGenres = new List<DemandeGenre>
+                {
+                    new DemandeGenre { DemandeId = 2, GenreId = 2, Genre = _genres[1] }
+                },
            
 
                 PrefDureeBail = 90,
@@ -149,6 +153,9 @@ namespace S14_ProjetSession.Data
                 demandeExistante.NomUrgence = demande.NomUrgence;
                 demandeExistante.LienParenteUrgence = demande.LienParenteUrgence;
                 demandeExistante.TelephoneUrgence = demande.TelephoneUrgence;
+                demandeExistante.DateDemande = demande.DateDemande;
+                demandeExistante.DemandeGenres = demande.DemandeGenres;
+                demandeExistante.Jumelages = demande.Jumelages;
             }
         }
 

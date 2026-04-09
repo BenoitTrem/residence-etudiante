@@ -1,16 +1,12 @@
-﻿using Castle.Components.DictionaryAdapter;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
 using S14_ProjetSession.Data;
 using S14_ProjetSession.Models;
 using System.Net;
 using System.Security.Claims;
-using System.Web;
 
 namespace S14_ProjetSessionTests.Integration
 {
@@ -159,103 +155,97 @@ namespace S14_ProjetSessionTests.Integration
 
         //- Un test pour vérifier que la création d’un objet s’effectue avec des données valides
 
-    //    [Fact]
-    //    public async Task CreationDuneDemande()
-    //    {
-    //        int avant = _demandeRepository.Demandes.Count();
-    //        var formData = new Dictionary<string, string>
-    //{
-    //    { "SemestreId", "5" },
-    //    { "EtudiantId", "1" },
-    //    { "PreferencesGenreId", "1" },
-    //    { "PrefDureeBail", "120" },
+        [Fact]
+        public async Task CreationDuneDemande()
+        {
+            int avant = _demandeRepository.Demandes.Count();
+            var formData = new Dictionary<string, string>
+            {
+                { "SelectedSemestreId", "5" },
+                { "SelectedGenreIds[0]", "1" },
+                { "SelectedGenreIds[1]", "2" },
+                { "Demande.PrefDureeBail", "120" },
 
-    //    { "AccepteReglements", "true" },
-    //    { "AccepteTraitementDonnees", "true" },
-    //    { "ConfirmeSoumission", "true" },
+                { "Demande.AccepteReglements", "true" },
+                { "Demande.AccepteTraitementDonnees", "true" },
+                { "Demande.ConfirmeSoumission", "true" },
+                { "Demande.DateDemande", DateTime.Today.ToString("yyyy-MM-dd") },
 
-    //    { "NomGarant", "Tremblay" },
-    //    { "PrenomGarant", "Jean" },
-    //    { "DateNaissanceGarant", "1990-01-01" },
-    //    { "CourrielGarant", "test@test.com" },
-    //    { "TelephoneGarant", "8191234567" },
+                { "Demande.NomGarant", "Tremblay" },
+                { "Demande.PrenomGarant", "Jean" },
+                { "Demande.DateNaissanceGarant", "1990-01-01" },
+                { "Demande.CourrielGarant", "test@test.com" },
+                { "Demande.TelephoneGarant", "8191234567" },
 
-    //    { "NomParent", "Parent Test" },
-    //    { "CourrielParent", "parent@test.com" },
+                { "Demande.NomParent", "Parent Test" },
+                { "Demande.CourrielParent", "parent@test.com" },
 
-    //    { "NomUrgence", "Urgence Test" },
-    //    { "LienParenteUrgence", "Pere" },
-    //    { "TelephoneUrgence", "8199999999" },
+                { "Demande.NomUrgence", "Urgence Test" },
+                { "Demande.LienParenteUrgence", "Pere" },
+                { "Demande.TelephoneUrgence", "8199999999" },
 
-    //    { "jumelage[0].Nom", "Alex" },
-    //    { "jumelage[0].Courriel", "alex@test.com" }
-    //};
+                { "Jumelages[0].Nom", "Alex" },
+                { "Jumelages[0].Courriel", "alex@test.com" }
+            };
 
-    //        string chemin = "/Demande/Creer";
-    //        HttpContent form = await GetForm(formData, chemin);
-    //        HttpResponseMessage response = await _client.PostAsync(chemin, form, TestContext.Current.CancellationToken);
+            string chemin = "/Demande/Creer";
+            HttpContent form = await GetForm(formData, chemin);
+            HttpResponseMessage response = await _client.PostAsync(chemin, form, TestContext.Current.CancellationToken);
 
-    //        Assert.Equal(avant + 1, _demandeRepository.Demandes.Count());
-    //    }
+            Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
+            Assert.Equal(avant + 1, _demandeRepository.Demandes.Count());
+            Demande nouvelleDemande = _demandeRepository.Demandes.Last();
+            Assert.Equal(2, nouvelleDemande.DemandeGenres.Count);
+            Assert.Contains(nouvelleDemande.DemandeGenres, dg => dg.GenreId == 1);
+            Assert.Contains(nouvelleDemande.DemandeGenres, dg => dg.GenreId == 2);
+        }
 
         // - Un test pour vérifier que la création d’un objet est refusée avec des données invalides
-        //[Fact(DisplayName = "Un nom vide retourne au formulaire et affiche message d'erreur")]
-        //public async Task CreerRedirigeVersCreationSiInvalide()
-        //{
-        //    // Créer les données du formulaire
-        //    // deja dans la liste des combinaison semestre 1 et etudiant 1 donc pas de doublon donc devrais retourné avec un texte    
+        [Fact(DisplayName = "Une demande en doublon retourne au formulaire et affiche un message d'erreur")]
+        public async Task CreerRedirigeVersCreationSiInvalide()
+        {
+            // Déjà présent dans le mock: EtudiantId=1 + SemestreId=1
+            var formData = new Dictionary<string, string>
+            {
+                { "SelectedSemestreId", "1" },
+                { "SelectedGenreIds[0]", "1" },
+                { "Demande.PrefDureeBail", "120" },
 
-        //    var formData = new Dictionary<string, string>
-        //    {
-        //        { "SemestreId", "1" },
-        //        { "EtudiantId", "1" },
-        //        { "PreferencesGenreId", "1" },
-        //        { "PrefDureeBail", "120" },
+                { "Demande.AccepteReglements", "true" },
+                { "Demande.AccepteTraitementDonnees", "true" },
+                { "Demande.ConfirmeSoumission", "true" },
+                { "Demande.DateDemande", DateTime.Today.ToString("yyyy-MM-dd") },
 
-        //        { "AccepteReglements", "true" },
-        //        { "AccepteTraitementDonnees", "true" },
-        //        { "ConfirmeSoumission", "true" },
+                { "Demande.NomGarant", "Tremblay" },
+                { "Demande.PrenomGarant", "Jean" },
+                { "Demande.DateNaissanceGarant", "1990-01-01" },
+                { "Demande.CourrielGarant", "test@test.com" },
+                { "Demande.TelephoneGarant", "8191234567" },
 
-        //        { "NomGarant", "Tremblay" },
-        //        { "PrenomGarant", "Jean" },
-        //        { "DateNaissanceGarant", "1990-01-01" },
-        //        { "CourrielGarant", "test@test.com" },
-        //        { "TelephoneGarant", "8191234567" },
+                { "Demande.NomParent", "Parent Test" },
+                { "Demande.CourrielParent", "parent@test.com" },
 
-        //        { "NomParent", "Parent Test" },
-        //        { "CourrielParent", "parent@test.com" },
+                { "Demande.NomUrgence", "Urgence Test" },
+                { "Demande.LienParenteUrgence", "Pere" },
+                { "Demande.TelephoneUrgence", "8199999999" },
 
-        //        { "NomUrgence", "Urgence Test" },
-        //        { "LienParenteUrgence", "Pere" },
-        //        { "TelephoneUrgence", "8199999999" },
+                { "Jumelages[0].Nom", "Alex" },
+                { "Jumelages[0].Courriel", "alex@test.com" }
+            };
 
-        //        { "jumelage[0].Nom", "Alex" },
-        //        { "jumelage[0].Courriel", "alex@test.com" }
-        //    };
+            string chemin = "/Demande/Creer";
+            HttpContent form = await GetForm(formData, chemin);
+            HttpResponseMessage response = await _client.PostAsync(chemin, form, TestContext.Current.CancellationToken);
+            string html = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+            html = WebUtility.HtmlDecode(html);
 
-        //    string chemin = "/Demande/Creer";
-        //    HttpContent form = await GetForm(formData, chemin);
-        //    HttpResponseMessage response = await _client.PostAsync(chemin, form, TestContext.Current.CancellationToken);
-        //    string html = await response.Content.ReadAsStringAsync();
-        //    // permet les accents et caractere spécial
-        //    html = WebUtility.HtmlDecode(html);
-
-        //    Assert.Contains("Une demande existe déjà pour cet étudiant et ce semestre.", html);
-        //}
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Contains("Une demande existe déjà pour cet étudiant et ce semestre.", html);
+        }
 
 
 
-        // - Un test pour vérifier que la modification d’un objet s’effectue avec des données valides
-
-
-
-
-        // - Un test pour vérifier la modification de la relation d’un objet
-
-
-        //- Deux tests pour vérifier qu’une route n’est pas accessible aux utilisateurs qui ne sont pas connectés
-        //(un test qui vérifie que la route est accessible à l’utilisateur connecté, un test qui vérifie que la même
-        //route n’est pas accessible à l’utilisateur qui n’est pas connecté)
+      
 
 
         [Fact]
