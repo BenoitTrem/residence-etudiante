@@ -12,6 +12,7 @@ namespace S14_ProjetSessionTests.Unit.CampusTests
     {
         /// <summary>
         /// Méthode utilitaire — valide un objet et retourne les erreurs.
+        /// j'ai utiliser chatgpt pour cette methode
         /// </summary>
         private static List<ValidationResult> Valider(object model)
         {
