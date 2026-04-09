@@ -33,6 +33,15 @@ namespace S14_ProjetSession.Data
 
         public void Supprimer(Demande demande)
         {
+            List<Jumelage> jumelages = _context.Set<Jumelage>()
+                .Where(j => EF.Property<int?>(j, "DemandeId") == demande.Id)
+                .ToList();
+
+            if (jumelages.Count > 0)
+            {
+                _context.RemoveRange(jumelages);
+            }
+
             _context.Demandes.Remove(demande);
             _context.SaveChanges();
         }
