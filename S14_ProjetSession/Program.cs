@@ -65,6 +65,9 @@ builder.Services.AddScoped<IGenresRepository, DbGenresRepository>();
 builder.Services.AddScoped<ICampusRepository, DbCampusRepository>();
 builder.Services.AddScoped<ICommoditeRepository, DbCommoditeRepository>();
 
+
+
+
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminUniquement", policy =>
@@ -75,6 +78,9 @@ builder.Services.AddAuthorization(options =>
 
     options.AddPolicy("GestionnaireUniquement", policy =>
         policy.RequireRole("Gestionnaire"));
+
+    options.AddPolicy("AdminOuUtilisateur", policy =>
+      policy.RequireRole("Admin", "Utilisateur"));
 
     options.AddPolicy("UtilisateurSeulement", policy =>
         policy.RequireRole("Utilisateur"));
@@ -97,7 +103,11 @@ WebApplication app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+
+    //gestion erreurs serveur 
+    app.UseExceptionHandler("/Home/Erreur");
+    // gestion erreurs HTTP
+    app.UseStatusCodePagesWithReExecute("/Home/Erreur", "?statusCode={0}");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }

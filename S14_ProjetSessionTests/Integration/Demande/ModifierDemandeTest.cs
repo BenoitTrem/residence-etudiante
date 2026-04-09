@@ -1,15 +1,11 @@
-using Microsoft.AspNetCore.Authentication;
+ï»¿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using S14_ProjetSession.Data;
 using S14_ProjetSession.Models;
-using System;
-using System.Collections.Generic;
-using System.Net;
 using System.Security.Claims;
-using System.Text;
 
 namespace S14_ProjetSessionTests.Integration.DemandeTests
 {
@@ -62,102 +58,104 @@ namespace S14_ProjetSessionTests.Integration.DemandeTests
             return new FormUrlEncodedContent(formData);
         }
 
-        [Fact(DisplayName = "vérifier que la modification d’un objet s’effectue avec des données valides")]
+        [Fact(DisplayName = "vÃ©rifier que la modification d'un objet s'effectue avec des donnÃ©es valides")]
         public async Task VerifierModificationValide()
         {
-            // Créer les données du formulaire
-            // deja dans la liste des combinaison semestre 1 et etudiant 1 donc pas de doublon donc devrais retourné avec un texte    
-
+            // SemestreId=1 est dÃ©jÃ  celui de la demande 1, on envoie 2 pour forcer un changement
             var formData = new Dictionary<string, string>
             {
-                { "Id", "1" },
-                { "SemestreId", "10" },
-                { "EtudiantId", "1" },
-                { "PreferencesGenreId", "1" },
-                { "PrefDureeBail", "120" },
+                { "Demande.Id",                     "1"              },
+                { "SelectedSemestreId",             "2"              }, // diffÃ©rent du SemestreId=1 initial
+                { "Demande.EtudiantId",             "1"              },
+                { "SelectedGenreIds[0]",            "1"              }, // relation N-N
+                { "SelectedGenreIds[1]",            "2"              },
+                { "Demande.PrefDureeBail",          "120"            },
 
-                { "AccepteReglements", "true" },
-                { "AccepteTraitementDonnees", "true" },
-                { "ConfirmeSoumission", "true" },
+                { "Demande.AccepteReglements",          "true"       },
+                { "Demande.AccepteTraitementDonnees",   "true"       },
+                { "Demande.ConfirmeSoumission",         "true"       },
 
-                { "NomGarant", "Tremblay" },
-                { "PrenomGarant", "Jean" },
-                { "DateNaissanceGarant", "1990-01-01" },
-                { "CourrielGarant", "test@test.com" },
-                { "TelephoneGarant", "8191234567" },
+                { "Demande.NomGarant",              "Tremblay"       },
+                { "Demande.PrenomGarant",           "Jean"           },
+                { "Demande.DateNaissanceGarant",    "1990-01-01"     },
+                { "Demande.CourrielGarant",         "test@test.com"  },
+                { "Demande.TelephoneGarant",        "8191234567"     },
 
-                { "NomParent", "Parent Test" },
-                { "CourrielParent", "parent@test.com" },
+                { "Demande.NomParent",              "Parent Test"    },
+                { "Demande.CourrielParent",         "parent@test.com"},
 
-                { "NomUrgence", "Urgence Test" },
-                { "LienParenteUrgence", "Pere" },
-                { "TelephoneUrgence", "8199999999" },
+                { "Demande.NomUrgence",             "Urgence Test"   },
+                { "Demande.LienParenteUrgence",     "Pere"           },
+                { "Demande.TelephoneUrgence",       "8199999999"     },
 
-                { "jumelage[0].Nom", "Alex" },
-                { "jumelage[0].Courriel", "alex@test.com" }
+                { "Jumelages[0].Nom",               "Alex"           },
+                { "Jumelages[0].Courriel",          "alex@test.com"  }
             };
 
-            string chemin = $"/Demande/Modifier/{1}";
-
+            string chemin = $"/Demande/Modifier/1";
             HttpContent form = await GetForm(formData, chemin);
 
-            int demandeAvant = _demandeRepository.GetDemande(1).SemestreId;
+            int semestreAvant = _demandeRepository.GetDemande(1)!.SemestreId;
 
             HttpResponseMessage response = await _client.PostAsync(chemin, form, TestContext.Current.CancellationToken);
 
-            Demande demandeApres = _demandeRepository.GetDemande(1);
+            Demande demandeApres = _demandeRepository.GetDemande(1)!;
 
-            Assert.NotEqual(demandeAvant, demandeApres.SemestreId);
+            // Le semestre doit avoir changÃ©
+            Assert.NotEqual(semestreAvant, demandeApres.SemestreId);
+
+            // Les genres N-N doivent avoir Ã©tÃ© mis Ã  jour
+            Assert.Contains(demandeApres.DemandeGenres, dg => dg.GenreId == 1);
+            Assert.Contains(demandeApres.DemandeGenres, dg => dg.GenreId == 2);
         }
 
-
-        // - Un test pour vérifier que la modification d’un objet est refusée avec des données invalides
-        [Fact]
+        [Fact(DisplayName = "vÃ©rifier que la modification d'un objet est refusÃ©e avec des donnÃ©es invalides")]
         public async Task VerifierModificationInvalideValide()
         {
-            // Créer les données du formulaire
-            // deja dans la liste des combinaison Semestre n'est pas un Id Valide Donc ca devrait ne pas changer le Id de l'objet
-            int SemestreAvant = _demandeRepository.GetDemande(1).SemestreId;
+            int semestreAvant = _demandeRepository.GetDemande(1)!.SemestreId;
+            var genresAvant = _demandeRepository.GetDemande(1)!.DemandeGenres.Select(dg => dg.GenreId).ToList();
 
             var formData = new Dictionary<string, string>
             {
-                { "Id", "1" },
-                { "SemestreId", "68" },
-                { "EtudiantId", "1" },
-                { "PreferencesGenreId", "1" },
-                { "PrefDureeBail", "120" },
+                { "Demande.Id",                     "1"              },
+                { "SelectedSemestreId",             "68"             }, // semestre invalide â†’ refus attendu
+                { "Demande.EtudiantId",             "1"              },
+                { "SelectedGenreIds[0]",            "1"              },
+                { "Demande.PrefDureeBail",          "120"            },
 
-                { "AccepteReglements", "true" },
-                { "AccepteTraitementDonnees", "true" },
-                { "ConfirmeSoumission", "true" },
+                { "Demande.AccepteReglements",          "true"       },
+                { "Demande.AccepteTraitementDonnees",   "true"       },
+                { "Demande.ConfirmeSoumission",         "true"       },
 
-                { "NomGarant", "Tremblay" },
-                { "PrenomGarant", "Jean" },
-                { "DateNaissanceGarant", "1990-01-01" },
-                { "CourrielGarant", "test@test.com" },
-                { "TelephoneGarant", "8191234567" },
+                { "Demande.NomGarant",              "Tremblay"       },
+                { "Demande.PrenomGarant",           "Jean"           },
+                { "Demande.DateNaissanceGarant",    "1990-01-01"     },
+                { "Demande.CourrielGarant",         "test@test.com"  },
+                { "Demande.TelephoneGarant",        "8191234567"     },
 
-                { "NomParent", "Parent Test" },
-                { "CourrielParent", "parent@test.com" },
+                { "Demande.NomParent",              "Parent Test"    },
+                { "Demande.CourrielParent",         "parent@test.com"},
 
-                { "NomUrgence", "Urgence Test" },
-                { "LienParenteUrgence", "Pere" },
-                { "TelephoneUrgence", "8199999999" },
+                { "Demande.NomUrgence",             "Urgence Test"   },
+                { "Demande.LienParenteUrgence",     "Pere"           },
+                { "Demande.TelephoneUrgence",       "8199999999"     },
 
-                { "jumelage[0].Nom", "Alex" },
-                { "jumelage[0].Courriel", "alex@test.com" }
+                { "Jumelages[0].Nom",               "Alex"           },
+                { "Jumelages[0].Courriel",          "alex@test.com"  }
             };
 
-            string chemin = $"/Demande/Modifier/{1}";
-
+            string chemin = $"/Demande/Modifier/1";
             HttpContent form = await GetForm(formData, chemin);
-
 
             HttpResponseMessage response = await _client.PostAsync(chemin, form, TestContext.Current.CancellationToken);
 
-            Demande demandeApres = _demandeRepository.GetDemande(1);
+            Demande demandeApres = _demandeRepository.GetDemande(1)!;
 
-            Assert.Equal(SemestreAvant, demandeApres.SemestreId);
+            // Le semestre ne doit pas avoir changÃ©
+            Assert.Equal(semestreAvant, demandeApres.SemestreId);
+
+            // Les genres ne doivent pas avoir changÃ© non plus
+            Assert.Equal(genresAvant, demandeApres.DemandeGenres.Select(dg => dg.GenreId).ToList());
         }
     }
 }

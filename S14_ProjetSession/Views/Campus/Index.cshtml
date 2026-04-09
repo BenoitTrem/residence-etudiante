@@ -1,71 +1,79 @@
-﻿@model IEnumerable<Etudiant>
+﻿@model IEnumerable<Campus>
+
 
 @*
-    Vue : Etudiants.cshtml
-    Description : Affiche la liste des étudiants sous forme de cartes avec options
-                  de modification et suppression selon les rôles.
+    Vue : Index.cshtml
+    Description : Affiche la liste des campus
     @Author : John Zuleta
 *@
 
+@{
+    var isAdmin = (await AuthorizationService
+        .AuthorizeAsync(User, "AdminUniquement")).Succeeded;
+
+    var isAdminOrGestionnaire = (await AuthorizationService
+        .AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded;
+}
 
 <div class="container mt-4">
 
-    <h1 class="mb-4">Les étudiants</h1>
+    <h1 class="mb-4">Liste des campus</h1>
 
     <div class="row">
 
-        @foreach (Etudiant etudiant in Model)
+        @foreach (var c in Model)
         {
-            var isAdmin = (await AuthorizationService.AuthorizeAsync(User, "AdminUniquement")).Succeeded;
-
             <div class="col-md-6 mb-3">
 
                 <div class="card shadow-sm">
 
                     <div class="card-body">
-
                         <h5 class="card-title">
-                            @etudiant.Prenom @etudiant.Nom
+                            @c.Nom
                         </h5>
 
                         <p class="text-muted mb-0">
-                            Programme : @etudiant.Programme.Nom
+                            Abréviation : @c.Abreviation
                         </p>
-
                     </div>
 
-                   
+                    @if (isAdminOrGestionnaire)
+                    {
                         <div class="card-footer d-flex justify-content-between">
 
-                            <a class="btn btn-primary btn-sm"
-                               asp-controller="Etudiant"
+                            <a asp-controller="Campus"
                                asp-action="Modifier"
-                               asp-route-id="@etudiant.Id">
+                               asp-route-id="@c.Id"
+                               class="btn btn-primary btn-sm">
                                 Modifier
                             </a>
+                            @*
 
                             @if (isAdmin)
                             {
-                                <!--J'ai réutiliser le code pour le modal de la Demo en classe' -->
                                 <button type="button"
                                         class="btn btn-danger btn-sm"
                                         data-bs-toggle="modal"
-                                        data-bs-target="#supprimerModal-@etudiant.Id">
+                                        data-bs-target="#supprimerModal-@c.Id">
                                     Supprimer
                                 </button>
                             }
+                            *@
 
                         </div>
-                    
+                    }
 
                 </div>
 
             </div>
 
+
+
+            @* Modal seulement pour Admin 
             @if (isAdmin)
             {
                 <div class="modal fade"
-                     id="supprimerModal-@etudiant.Id"
+                     id="supprimerModal-@c.Id"
                      tabindex="-1">
 
                     <div class="modal-dialog">
@@ -73,7 +81,7 @@
 
                             <div class="modal-header">
                                 <h5 class="modal-title">
-                                    Supprimer étudiant
+                                    Supprimer campus
                                 </h5>
 
                                 <button type="button"
@@ -84,9 +92,7 @@
 
                             <div class="modal-body">
                                 Voulez-vous supprimer
-                                <strong>
-                                    @etudiant.Prenom @etudiant.Nom
-                                </strong> ?
+                                <strong>@c.Nom</strong> ?
                             </div>
 
                             <div class="modal-footer">
@@ -97,13 +103,13 @@
                                     Annuler
                                 </button>
 
-                                <form asp-controller="Etudiant"
+                                <form asp-controller="Campus"
                                       asp-action="Supprimer"
                                       method="post">
 
                                     <input type="hidden"
                                            name="id"
-                                           value="@etudiant.Id" />
+                                           value="@c.Id" />
 
                                     <button type="submit"
                                             class="btn btn-danger">
@@ -116,23 +122,22 @@
 
                         </div>
                     </div>
-
                 </div>
-            }
+                *@
+            
         }
 
     </div>
 
-    @if (User.Identity.IsAuthenticated)
+    
+    @if (isAdminOrGestionnaire)
     {
         <div class="mt-4">
-
-            <a class="btn btn-success"
-               asp-controller="Etudiant"
-               asp-action="Creer">
-                Ajouter un étudiant
+            <a asp-controller="Campus" asp-action="Creer"
+               class="btn btn-success">
+                Ajouter un campus
             </a>
-
         </div>
     }
+
 </div>

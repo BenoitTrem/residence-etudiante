@@ -6,7 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace S14_ProjetSession.Migrations
 {
     /// <inheritdoc />
+<<<<<<<< HEAD:S14_ProjetSession/Migrations/20260409160238_correction.cs
     public partial class correction : Migration
+========
+    public partial class migration1 : Migration
+>>>>>>>> c8208fbf135c166ea1f85c19445a14fe309a1fc9:S14_ProjetSession/Migrations/20260409165829_migration1.cs
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -56,8 +60,8 @@ namespace S14_ProjetSession.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nom = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Abreviation = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Nom = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Abreviation = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -83,7 +87,7 @@ namespace S14_ProjetSession.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nom = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Nom = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -215,8 +219,8 @@ namespace S14_ProjetSession.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nom = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Nom = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     CampusId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -313,6 +317,7 @@ namespace S14_ProjetSession.Migrations
                     DateNaissance = table.Column<DateTime>(type: "datetime2", nullable: false),
                     GenreId = table.Column<int>(type: "int", nullable: false),
                     ProgrammeId = table.Column<int>(type: "int", nullable: false),
+                    CampusId = table.Column<int>(type: "int", nullable: true),
                     noEtudiant = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     noAdmission = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MobiliteReduite = table.Column<bool>(type: "bit", nullable: false),
@@ -332,22 +337,29 @@ namespace S14_ProjetSession.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
+                        name: "FK_Etudiants_Campus_CampusId",
+                        column: x => x.CampusId,
+                        principalTable: "Campus",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
                         name: "FK_Etudiants_Genres_GenreId",
                         column: x => x.GenreId,
                         principalTable: "Genres",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Etudiants_Programmes_ProgrammeId",
                         column: x => x.ProgrammeId,
                         principalTable: "Programmes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Etudiants_Unites_UniteId",
                         column: x => x.UniteId,
                         principalTable: "Unites",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -358,7 +370,6 @@ namespace S14_ProjetSession.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SemestreId = table.Column<int>(type: "int", nullable: false),
                     EtudiantId = table.Column<int>(type: "int", nullable: false),
-                    PreferencesGenreId = table.Column<int>(type: "int", nullable: true),
                     PrefDureeBail = table.Column<int>(type: "int", nullable: false),
                     AccepteReglements = table.Column<bool>(type: "bit", nullable: false),
                     AccepteTraitementDonnees = table.Column<bool>(type: "bit", nullable: false),
@@ -390,11 +401,6 @@ namespace S14_ProjetSession.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Demandes_Genres_PreferencesGenreId",
-                        column: x => x.PreferencesGenreId,
-                        principalTable: "Genres",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_Demandes_Semestre_SemestreId",
                         column: x => x.SemestreId,
                         principalTable: "Semestre",
@@ -405,6 +411,33 @@ namespace S14_ProjetSession.Migrations
                         column: x => x.UniteId,
                         principalTable: "Unites",
                         principalColumn: "Id");
+<<<<<<<< HEAD:S14_ProjetSession/Migrations/20260409160238_correction.cs
+========
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DemandeGenre",
+                columns: table => new
+                {
+                    DemandeId = table.Column<int>(type: "int", nullable: false),
+                    GenreId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DemandeGenre", x => new { x.DemandeId, x.GenreId });
+                    table.ForeignKey(
+                        name: "FK_DemandeGenre_Demandes_DemandeId",
+                        column: x => x.DemandeId,
+                        principalTable: "Demandes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DemandeGenre_Genres_GenreId",
+                        column: x => x.GenreId,
+                        principalTable: "Genres",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+>>>>>>>> c8208fbf135c166ea1f85c19445a14fe309a1fc9:S14_ProjetSession/Migrations/20260409165829_migration1.cs
                 });
 
             migrationBuilder.CreateTable(
@@ -473,15 +506,22 @@ namespace S14_ProjetSession.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+<<<<<<<< HEAD:S14_ProjetSession/Migrations/20260409160238_correction.cs
                 name: "IX_Demandes_EtudiantId_SemestreId",
                 table: "Demandes",
                 columns: new[] { "EtudiantId", "SemestreId" },
                 unique: true);
+========
+                name: "IX_DemandeGenre_GenreId",
+                table: "DemandeGenre",
+                column: "GenreId");
+>>>>>>>> c8208fbf135c166ea1f85c19445a14fe309a1fc9:S14_ProjetSession/Migrations/20260409165829_migration1.cs
 
             migrationBuilder.CreateIndex(
-                name: "IX_Demandes_PreferencesGenreId",
+                name: "IX_Demandes_EtudiantId_SemestreId",
                 table: "Demandes",
-                column: "PreferencesGenreId");
+                columns: new[] { "EtudiantId", "SemestreId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Demandes_SemestreId",
@@ -497,6 +537,11 @@ namespace S14_ProjetSession.Migrations
                 name: "IX_Etudiants_ApplicationUserId",
                 table: "Etudiants",
                 column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Etudiants_CampusId",
+                table: "Etudiants",
+                column: "CampusId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Etudiants_GenreId",
@@ -568,6 +613,9 @@ namespace S14_ProjetSession.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "DemandeGenre");
 
             migrationBuilder.DropTable(
                 name: "Jumelage");

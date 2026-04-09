@@ -1,5 +1,10 @@
 ﻿@model S14_ProjetSession.Models.Etudiant
 
+@*
+    Vue : Modifier.cshtml
+    Description : Formulaire permettant de modifier les informations d’un étudiant.
+    @Author : John Zuleta
+*@
 <div class="container mt-4">
 
     <h1 class="mb-4">Modifier un étudiant</h1>
@@ -9,6 +14,8 @@
         @Html.AntiForgeryToken()
 
         <input type="hidden" asp-for="Id" />
+
+        <input type="hidden" asp-for="ApplicationUserId" />
 
         <div asp-validation-summary="All" class="text-danger"></div>
 
@@ -49,6 +56,15 @@
                         asp-items="@(new SelectList(ViewBag.Programmes, "Id", "Nom"))">
                 </select>
                 <span asp-validation-for="ProgrammeId" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <label>Campus</label>
+                <select asp-for="CampusId"
+                        class="form-control"
+                        asp-items="@(new SelectList(ViewBag.Campus, "Id", "Nom"))">
+                </select>
+                <span asp-validation-for="CampusId" class="text-danger"></span>
             </div>
 
             <div class="col-md-6 mt-3">

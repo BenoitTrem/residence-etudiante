@@ -2,6 +2,11 @@
 using S14_ProjetSession.Models;
 using System;
 
+/// <summary>
+/// Repository responsable de la gestion des etudiants
+/// </summary>
+/// <author>John Zuleta</author>
+
 namespace S14_ProjetSession.Data
 {
     public class DbEtudiantRepository : IEtudiantRepository
