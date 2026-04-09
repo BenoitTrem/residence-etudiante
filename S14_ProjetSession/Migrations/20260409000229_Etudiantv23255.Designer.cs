@@ -12,8 +12,8 @@ using S14_ProjetSession.Data;
 namespace S14_ProjetSession.Migrations
 {
     [DbContext(typeof(ResidencesDbContext))]
-    [Migration("20260407172925_Migration1")]
-    partial class Migration1
+    [Migration("20260409000229_Etudiantv23255")]
+    partial class Etudiantv23255
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -672,7 +672,7 @@ namespace S14_ProjetSession.Migrations
                     b.HasOne("S14_ProjetSession.Models.Campus", "Campus")
                         .WithMany("Etudiants")
                         .HasForeignKey("CampusId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
                     b.HasOne("S14_ProjetSession.Models.Genre", "Genre")

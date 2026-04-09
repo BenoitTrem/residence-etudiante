@@ -17,12 +17,9 @@ namespace S14_ProjetSession.Data
             _context = context;
         }
 
-        IEnumerable<Campus> ICampusRepository.Campus => _context.Campus
-            .Include(e=> e.programmes)
-            .Include(e => e.Residences)
-            ;
+        IEnumerable<Campus> ICampusRepository.Campus => _context.Campus;
 
-        public Campus? GetById(int id)
+        public Campus? GetById(int? id)
         {
             return _context.Campus.FirstOrDefault(c => c.Id == id);
         }

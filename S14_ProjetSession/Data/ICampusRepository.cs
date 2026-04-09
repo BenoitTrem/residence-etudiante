@@ -12,7 +12,7 @@ namespace S14_ProjetSession.Data
     public interface ICampusRepository
     {
         public IEnumerable<Campus> Campus { get; }
-        public Campus? GetById(int id);
+        public Campus? GetById(int? id);
     
         public void SupprimerParID(int id);
 

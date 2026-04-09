@@ -73,7 +73,7 @@ public class ResidencesDbContext : IdentityDbContext<ApplicationUser>
             .HasOne(e => e.Campus)
             .WithMany(c => c.Etudiants)
             .HasForeignKey(e => e.CampusId)
-            .OnDelete(DeleteBehavior.Restrict); 
+            .OnDelete(DeleteBehavior.SetNull); 
 
         // Étudiant -> Programme
         modelBuilder.Entity<Etudiant>()

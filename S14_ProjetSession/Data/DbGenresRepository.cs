@@ -19,7 +19,7 @@ namespace S14_ProjetSession.Data
 
         public IEnumerable<Genre> Genres => _context.Genres;
 
-        public Genre? GetGenre(int id)
+        public Genre? GetGenre(int? id)
         {
             return _context.Genres.FirstOrDefault(g => g.Id == id);
         }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace S14_ProjetSession.Migrations
 {
     /// <inheritdoc />
-    public partial class Migration1 : Migration
+    public partial class Etudiantv2325 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -277,7 +277,7 @@ namespace S14_ProjetSession.Migrations
                     DateNaissance = table.Column<DateTime>(type: "datetime2", nullable: false),
                     GenreId = table.Column<int>(type: "int", nullable: false),
                     ProgrammeId = table.Column<int>(type: "int", nullable: false),
-                    CampusId = table.Column<int>(type: "int", nullable: false),
+                    CampusId = table.Column<int>(type: "int", nullable: true),
                     noEtudiant = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     noAdmission = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MobiliteReduite = table.Column<bool>(type: "bit", nullable: false),
@@ -301,7 +301,7 @@ namespace S14_ProjetSession.Migrations
                         column: x => x.CampusId,
                         principalTable: "Campus",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Etudiants_Genres_GenreId",
                         column: x => x.GenreId,

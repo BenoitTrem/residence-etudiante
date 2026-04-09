@@ -26,7 +26,7 @@ namespace S14_ProjetSession.Data
         }
 
 
-        public Genre? GetGenre(int id)
+        public Genre? GetGenre(int? id)
         {
             return Genres.FirstOrDefault(f => f.Id == id);
         }

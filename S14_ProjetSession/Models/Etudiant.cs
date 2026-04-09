@@ -24,20 +24,19 @@ namespace S14_ProjetSession.Models
 
         [Required(ErrorMessage = "Le genre est obligatoire")]
         [Display(Name = "Genre")]
-        public int GenreId { get; set; }
+        public int? GenreId { get; set; }
 
         public Genre? Genre { get; set; }
 
         [Required(ErrorMessage = "Le programme est obligatoire")]
         [Display(Name = "Programme")]
-        public int ProgrammeId { get; set; }
+        public int? ProgrammeId { get; set; }
 
         public Programme? Programme { get; set; }
 
         [Required(ErrorMessage = "Le campus est obligatoire")]
         [Display(Name = "Campus")]
-        public int CampusId { get; set; }
-
+        public int? CampusId { get; set; }
         public Campus? Campus { get; set; }
 
         [Required(ErrorMessage = "Le numéro étudiant est obligatoire")]

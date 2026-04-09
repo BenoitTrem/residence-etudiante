@@ -20,7 +20,7 @@ namespace S14_ProjetSession.Data
 
         public IEnumerable<Programme> Programmes => _context.Programmes;
 
-        public Programme? GetProgramme(int id)
+        public Programme? GetProgramme(int? id)
         {
             return _context.Programmes.FirstOrDefault(p => p.Id == id);
         }

@@ -15,7 +15,7 @@ namespace S14_ProjetSession.Data
 
         public IEnumerable<Programme> Programmes { get; }
 
-        public Programme? GetProgramme(int id);
+        public Programme? GetProgramme(int? id);
 
 
         public void SupprimerParID(int id);
