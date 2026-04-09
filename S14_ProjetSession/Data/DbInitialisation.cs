@@ -289,7 +289,7 @@ namespace S14_ProjetSession.Data
             context.SaveChanges();
 
             var commoditesDb = context.Commodites.ToList();
-            var residencesDb = context.Residences.ToList();
+          
 
             var residenceCommodites = new ResidenceCommodite[]
             {

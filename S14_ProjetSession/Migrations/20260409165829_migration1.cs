@@ -6,11 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace S14_ProjetSession.Migrations
 {
     /// <inheritdoc />
-<<<<<<<< HEAD:S14_ProjetSession/Migrations/20260408234955_Etudiantv2325.cs
-    public partial class Etudiantv2325 : Migration
-========
-    public partial class InitialCreate : Migration
->>>>>>>> main:S14_ProjetSession/Migrations/20260404222134_InitialCreate.cs
+    public partial class migration1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,8 +30,6 @@ namespace S14_ProjetSession.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    DateNaissance = table.Column<DateOnly>(type: "date", nullable: true),
-                    Autre = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -305,7 +299,7 @@ namespace S14_ProjetSession.Migrations
                         column: x => x.ResidenceId,
                         principalTable: "Residences",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -361,7 +355,7 @@ namespace S14_ProjetSession.Migrations
                         column: x => x.UniteId,
                         principalTable: "Unites",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -377,16 +371,21 @@ namespace S14_ProjetSession.Migrations
                     AccepteTraitementDonnees = table.Column<bool>(type: "bit", nullable: false),
                     ConfirmeSoumission = table.Column<bool>(type: "bit", nullable: false),
                     DateDemande = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    NomGarant = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PrenomGarant = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DateNaissanceGarant = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CourrielGarant = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TelephoneGarant = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NomParent = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CourrielParent = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NomUrgence = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LienParenteUrgence = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TelephoneUrgence = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    NomGarant = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    PrenomGarant = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    DateNaissanceGarant = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CourrielGarant = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    TelephoneGarant = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    NomParent = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    CourrielParent = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    NomUrgence = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    LienParenteUrgence = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    TelephoneUrgence = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    DateDebutBail = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateFinBail = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    StatutDemande = table.Column<int>(type: "int", nullable: false),
+                    DateTraitement = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UniteId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -403,6 +402,11 @@ namespace S14_ProjetSession.Migrations
                         principalTable: "Semestre",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Demandes_Unites_UniteId",
+                        column: x => x.UniteId,
+                        principalTable: "Unites",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -489,26 +493,31 @@ namespace S14_ProjetSession.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-<<<<<<<< HEAD:S14_ProjetSession/Migrations/20260408234955_Etudiantv2325.cs
-                name: "IX_DemandeGenre_GenreId",
-                table: "DemandeGenre",
-                column: "GenreId");
-========
                 name: "IX_Commodites_Nom",
                 table: "Commodites",
                 column: "Nom",
                 unique: true);
->>>>>>>> main:S14_ProjetSession/Migrations/20260404222134_InitialCreate.cs
 
             migrationBuilder.CreateIndex(
-                name: "IX_Demandes_EtudiantId",
+                name: "IX_DemandeGenre_GenreId",
+                table: "DemandeGenre",
+                column: "GenreId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Demandes_EtudiantId_SemestreId",
                 table: "Demandes",
-                column: "EtudiantId");
+                columns: new[] { "EtudiantId", "SemestreId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Demandes_SemestreId",
                 table: "Demandes",
                 column: "SemestreId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Demandes_UniteId",
+                table: "Demandes",
+                column: "UniteId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Etudiants_ApplicationUserId",

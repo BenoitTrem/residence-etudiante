@@ -8,7 +8,7 @@ namespace S14_ProjetSession.Data
         private ResidencesDbContext _context;
         public List<Demande> Demandes => _context.Demandes.Include(E => E.Etudiant)
             .Include(S => S.Semestre)
-            .Include(d => d.PreferencesGenre)
+            .Include(d => d.DemandeGenres)
             .Include(j => j.Jumelages)
             .ToList();
 

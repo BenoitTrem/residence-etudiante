@@ -35,7 +35,7 @@ namespace S14_ProjetSessionTests.Unit
                     ResidenceCommodites = new List<ResidenceCommodite>()
                 });
 
-            _campusRepoMock.Setup(c => c.GetAll()).Returns(new List<Campus>());
+            _campusRepoMock.Setup(c => c.Campus).Returns(new List<Campus>());
             _commoditeRepoMock.Setup(c => c.Commodites).Returns(new List<Commodite>());
 
             _controller = new ResidenceController(

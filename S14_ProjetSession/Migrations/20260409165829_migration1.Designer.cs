@@ -12,8 +12,8 @@ using S14_ProjetSession.Data;
 namespace S14_ProjetSession.Migrations
 {
     [DbContext(typeof(ResidencesDbContext))]
-    [Migration("20260409000229_Etudiantv23255")]
-    partial class Etudiantv23255
+    [Migration("20260409165829_migration1")]
+    partial class migration1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -170,15 +170,9 @@ namespace S14_ProjetSession.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<string>("Autre")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateOnly?>("DateNaissance")
-                        .HasColumnType("date");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -256,6 +250,27 @@ namespace S14_ProjetSession.Migrations
                     b.ToTable("Campus");
                 });
 
+            modelBuilder.Entity("S14_ProjetSession.Models.Commodite", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Nom")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Nom")
+                        .IsUnique();
+
+                    b.ToTable("Commodites");
+                });
+
             modelBuilder.Entity("S14_ProjetSession.Models.Demande", b =>
                 {
                     b.Property<int>("Id")
@@ -275,15 +290,26 @@ namespace S14_ProjetSession.Migrations
 
                     b.Property<string>("CourrielGarant")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("CourrielParent")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<DateTime?>("DateDebutBail")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DateDemande")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("DateNaissanceGarant")
+                    b.Property<DateTime?>("DateFinBail")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateNaissanceGarant")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateTraitement")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("EtudiantId")
@@ -291,42 +317,58 @@ namespace S14_ProjetSession.Migrations
 
                     b.Property<string>("LienParenteUrgence")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("NomGarant")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("NomParent")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("NomUrgence")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("PrefDureeBail")
                         .HasColumnType("int");
 
                     b.Property<string>("PrenomGarant")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("SemestreId")
                         .HasColumnType("int");
 
+                    b.Property<int>("StatutDemande")
+                        .HasColumnType("int");
+
                     b.Property<string>("TelephoneGarant")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("TelephoneUrgence")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int?>("UniteId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EtudiantId");
-
                     b.HasIndex("SemestreId");
+
+                    b.HasIndex("UniteId");
+
+                    b.HasIndex("EtudiantId", "SemestreId")
+                        .IsUnique();
 
                     b.ToTable("Demandes");
                 });
@@ -524,6 +566,25 @@ namespace S14_ProjetSession.Migrations
                     b.ToTable("Residences");
                 });
 
+            modelBuilder.Entity("S14_ProjetSession.Models.ResidenceCommodite", b =>
+                {
+                    b.Property<int>("ResidenceId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CommoditeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.HasKey("ResidenceId", "CommoditeId");
+
+                    b.HasIndex("CommoditeId");
+
+                    b.ToTable("ResidenceCommodites");
+                });
+
             modelBuilder.Entity("S14_ProjetSession.Models.Semestre", b =>
                 {
                     b.Property<int>("Id")
@@ -639,9 +700,15 @@ namespace S14_ProjetSession.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("S14_ProjetSession.Models.Unite", "Unite")
+                        .WithMany()
+                        .HasForeignKey("UniteId");
+
                     b.Navigation("Etudiant");
 
                     b.Navigation("Semestre");
+
+                    b.Navigation("Unite");
                 });
 
             modelBuilder.Entity("S14_ProjetSession.Models.DemandeGenre", b =>
@@ -690,7 +757,7 @@ namespace S14_ProjetSession.Migrations
                     b.HasOne("S14_ProjetSession.Models.Unite", "Unite")
                         .WithMany("Etudiants")
                         .HasForeignKey("UniteId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Campus");
 
@@ -767,12 +834,31 @@ namespace S14_ProjetSession.Migrations
                     b.Navigation("Campus");
                 });
 
+            modelBuilder.Entity("S14_ProjetSession.Models.ResidenceCommodite", b =>
+                {
+                    b.HasOne("S14_ProjetSession.Models.Commodite", "Commodite")
+                        .WithMany("ResidenceCommodites")
+                        .HasForeignKey("CommoditeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("S14_ProjetSession.Models.Residence", "Residence")
+                        .WithMany("ResidenceCommodites")
+                        .HasForeignKey("ResidenceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Commodite");
+
+                    b.Navigation("Residence");
+                });
+
             modelBuilder.Entity("S14_ProjetSession.Models.Unite", b =>
                 {
                     b.HasOne("S14_ProjetSession.Models.Residence", "Residence")
                         .WithMany("Unites")
                         .HasForeignKey("ResidenceId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Residence");
@@ -785,6 +871,11 @@ namespace S14_ProjetSession.Migrations
                     b.Navigation("Residences");
 
                     b.Navigation("programmes");
+                });
+
+            modelBuilder.Entity("S14_ProjetSession.Models.Commodite", b =>
+                {
+                    b.Navigation("ResidenceCommodites");
                 });
 
             modelBuilder.Entity("S14_ProjetSession.Models.Demande", b =>
@@ -813,6 +904,8 @@ namespace S14_ProjetSession.Migrations
 
             modelBuilder.Entity("S14_ProjetSession.Models.Residence", b =>
                 {
+                    b.Navigation("ResidenceCommodites");
+
                     b.Navigation("Unites");
                 });
 
