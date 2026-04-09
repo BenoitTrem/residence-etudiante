@@ -34,14 +34,14 @@ namespace S14_ProjetSession.Data
 
             foreach (var campus in campusList)
             {
-                if (!context.Campus.Any(c => c.Nom == campus.Nom))
+                if (!context.Campuses.Any(c => c.Nom == campus.Nom))
                 {
-                    context.Campus.Add(campus);
+                    context.Campuses.Add(campus);
                 }
             }
             context.SaveChanges();
 
-            var campusDb = context.Campus.ToList();
+            var campusDb = context.Campuses.ToList();
 
             // Résidences
             var residences = new Residence[]
@@ -242,13 +242,13 @@ namespace S14_ProjetSession.Data
             {
                 foreach (string saison in saisons)
                 {
-                    if (!context.Semestre.Any(s => s.NomSemestre == $"{saison}-{i}"))
+                    if (!context.Semestres.Any(s => s.NomSemestre == $"{saison}-{i}"))
                     {
                         semestres.Add(new Semestre() { NomSemestre = $"{saison}-{i}" });
                     }
                 }
             }
-            context.Semestre.AddRange(semestres);
+            context.Semestres.AddRange(semestres);
             context.SaveChanges();
 
             // Parcourt une liste d'étudiants et crée un compte utilisateur pour chacun

@@ -9,7 +9,7 @@ namespace S14_ProjetSession.Data
 
         
 
-        public List<Semestre> Semestres => _context.Semestre.ToList();
+        public List<Semestre> Semestres => _context.Semestres.ToList();
 
         public DbSemestreRepository(ResidencesDbContext context)
         {
@@ -18,7 +18,7 @@ namespace S14_ProjetSession.Data
 
         public void Creer(Semestre semestre)
         {
-            _context.Semestre.Add(semestre);
+            _context.Semestres.Add(semestre);
             _context.SaveChanges();
         }
 
@@ -31,13 +31,13 @@ namespace S14_ProjetSession.Data
 
         public void Modifier(Semestre semestre)
         {
-            _context.Semestre.Update(semestre);
+            _context.Semestres.Update(semestre);
             _context.SaveChanges();
         }
 
         public void Supprimer(Semestre semestre)
         {
-            _context.Semestre.Remove(semestre);
+            _context.Semestres.Remove(semestre);
             _context.SaveChanges();
         }
 

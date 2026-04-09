@@ -17,35 +17,35 @@ namespace S14_ProjetSession.Data
             _context = context;
         }
 
-        IEnumerable<Campus> ICampusRepository.Campus => _context.Campus;
+        IEnumerable<Campus> ICampusRepository.Campus => _context.Campuses;
 
         public Campus? GetById(int? id)
         {
-            return _context.Campus.FirstOrDefault(c => c.Id == id);
+            return _context.Campuses.FirstOrDefault(c => c.Id == id);
         }
 
         void ICampusRepository.Creer(Campus campus)
         {
-            _context.Campus.Add(campus);
+            _context.Campuses.Add(campus);
             _context.SaveChanges();
         }
 
         void ICampusRepository.Modifier(Campus campus)
         {
-            _context.Campus.Update(campus);
+            _context.Campuses.Update(campus);
             _context.SaveChanges();
         }
 
         void ICampusRepository.Supprimer(Campus campus)
         {
-            _context.Campus.Remove(campus);
+            _context.Campuses.Remove(campus);
             _context.SaveChanges();
         }
 
         void ICampusRepository.SupprimerParID(int id)
         {
             Campus campus = GetById(id);
-            _context.Campus.Remove(campus);
+            _context.Campuses.Remove(campus);
             _context.SaveChanges();
         }
     }

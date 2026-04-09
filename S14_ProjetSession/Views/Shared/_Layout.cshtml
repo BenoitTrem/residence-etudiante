@@ -35,11 +35,7 @@
                                 <a class="nav-link fw-semibold px-3" asp-controller="Commodite" asp-action="Index">Commodités</a>
                             </li>
                         }
-                        <li class="nav-item">                      
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Etudiant" asp-action="Index">Étudiants</a>
-                        </li>
-
-
+                      
                         @if ((await AuthorizationService.AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded)
                         {
                             <li class="nav-item">

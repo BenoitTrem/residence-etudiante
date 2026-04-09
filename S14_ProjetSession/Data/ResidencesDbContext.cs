@@ -18,15 +18,16 @@ public class ResidencesDbContext : IdentityDbContext<ApplicationUser>
         public DbSet<Demande> Demandes { get; set; }
         public DbSet<Etudiant> Etudiants { get; set; }
 
-    public DbSet<Genre> Genres { get; set; }
-    public DbSet<Semestre> Semestre { get; set; }
-    public DbSet<Programme> Programmes { get; set; }
+        public DbSet<Genre> Genres { get; set; }
+        public DbSet<Semestre> Semestres { get; set; }
+        public DbSet<Programme> Programmes { get; set; }
 
-    public DbSet<Commodite> Commodites { get; set; } 
+        public DbSet<Commodite> Commodites { get; set; } 
 
-    public DbSet<ResidenceCommodite> ResidenceCommodites { get; set; }
+        public DbSet<ResidenceCommodite> ResidenceCommodites { get; set; }
 
-    public DbSet<Campus> Campus { get; set; }
+        public DbSet<Campus> Campuses { get; set; }
+    public DbSet<DemandeGenre> DemandeGenres { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -117,7 +118,21 @@ public class ResidencesDbContext : IdentityDbContext<ApplicationUser>
             .HasOne(e => e.Unite)
             .WithMany(u => u.Etudiants)
             .HasForeignKey(e => e.UniteId)
-            .OnDelete(DeleteBehavior.SetNull); 
+            .OnDelete(DeleteBehavior.SetNull);
+
+        // Étudiant -> Campus
+        modelBuilder.Entity<Etudiant>()
+            .HasOne(e => e.Campus)
+            .WithMany(c => c.Etudiants)
+            .HasForeignKey(e => e.CampusId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Étudiant -> Programme
+        modelBuilder.Entity<Etudiant>()
+            .HasOne(e => e.Programme)
+            .WithMany(p => p.Etudiants)
+            .HasForeignKey(e => e.ProgrammeId)
+            .OnDelete(DeleteBehavior.Restrict); 
     }
 }
 
