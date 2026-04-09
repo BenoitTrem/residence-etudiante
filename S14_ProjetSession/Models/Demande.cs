@@ -17,9 +17,7 @@ namespace S14_ProjetSession.Models
         public Etudiant Etudiant { get; set; }
         
         
-        public Genre? PreferencesGenre  { get; set; }
-
-        public int? PreferencesGenreId { get; set; }
+        public List<DemandeGenre> DemandeGenres { get; set; }
 
         
         // simplement le nombre de jours pour le moment

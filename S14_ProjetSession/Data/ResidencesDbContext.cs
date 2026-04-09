@@ -22,6 +22,10 @@ public class ResidencesDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Semestre> Semestre { get; set; }
     public DbSet<Programme> Programmes { get; set; }
 
+    public DbSet<Commodite> Commodites { get; set; } 
+
+    public DbSet<ResidenceCommodite> ResidenceCommodites { get; set; }
+
     public DbSet<Campus> Campus { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -84,6 +88,22 @@ public class ResidencesDbContext : IdentityDbContext<ApplicationUser>
                     d.SemestreId
                 })
                 .IsUnique();
+
+        // Relation Demande <-> Genre (table de jointure)
+        modelBuilder.Entity<DemandeGenre>()
+            .HasKey(dg => new { dg.DemandeId, dg.GenreId });
+
+        modelBuilder.Entity<DemandeGenre>()
+            .HasOne(dg => dg.Demande)
+            .WithMany(d => d.DemandeGenres)
+            .HasForeignKey(dg => dg.DemandeId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<DemandeGenre>()
+            .HasOne(dg => dg.Genre)
+            .WithMany(g => g.DemandeGenres)
+            .HasForeignKey(dg => dg.GenreId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         // Étudiant -> Genre
         modelBuilder.Entity<Etudiant>()

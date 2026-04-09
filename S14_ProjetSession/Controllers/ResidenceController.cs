@@ -96,7 +96,7 @@ namespace S14_ProjetSession.Controllers
 
             // Envoie en ViewBag les commoditées et campus à la vue
             ViewBag.Commodites = GetListeCommodites(new List<CommoditeDescriptionViewModel>());
-            ViewBag.CampusList = new SelectList(_campusRepository.GetAll(), "Id", "Nom");
+            ViewBag.CampusList = new SelectList(_campusRepository.Campus, "Id", "Nom");
 
             return View(new Residence{Adresse = new Adresse()});
         }
@@ -223,7 +223,7 @@ namespace S14_ProjetSession.Controllers
             Residence? residence = _residenceRepository.GetById(id);
 
             // Envoie la liste des campus et sélectionne celui associé à la résidence
-            ViewBag.CampusList = new SelectList(_campusRepository.GetAll(), "Id", "Nom", residence?.CampusId);
+            ViewBag.CampusList = new SelectList(_campusRepository.Campus, "Id", "Nom", residence?.CampusId);
 
             // Récupère la liste des commodités déjà associées à la résidence
             List<CommoditeDescriptionViewModel> commoditesSelectionnees = residence?.ResidenceCommodites
