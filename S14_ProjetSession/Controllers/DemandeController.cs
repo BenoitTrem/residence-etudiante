@@ -57,6 +57,10 @@ namespace S14_ProjetSession.Controllers
             }
 
             // Remplacer la collection
+            if (demande.DemandeGenres == null)
+            {
+                demande.DemandeGenres = new List<DemandeGenre>();
+            }
             demande.DemandeGenres.Clear();
             foreach (var genre in genres)
             {
@@ -176,9 +180,6 @@ namespace S14_ProjetSession.Controllers
                 return View(vm);
             }
 
-            if (!ModelState.IsValid)
-                return View(vm);
-
             // Jumelages
             foreach (var j in vm.Jumelages)
             {
@@ -265,8 +266,7 @@ namespace S14_ProjetSession.Controllers
             ModelState.Remove("Demande.Etudiant");
             ModelState.Remove("Demande.Semestre");
 
-            if (!ModelState.IsValid)
-                return View(vm);
+           
 
             // Étudiant connecté
             string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -294,8 +294,7 @@ namespace S14_ProjetSession.Controllers
             if (vm.SelectedGenreIds == null || !vm.SelectedGenreIds.Any())
                 ModelState.AddModelError("SelectedGenreIds", "Au moins un genre préféré est requis.");
 
-            if (!ModelState.IsValid)
-                return View(vm);
+           
 
             // Demande existante
             var demandeEnBase = _demandeRepository.GetDemande(vm.Demande.Id);
