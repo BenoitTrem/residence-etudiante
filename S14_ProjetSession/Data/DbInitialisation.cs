@@ -316,6 +316,158 @@ namespace S14_ProjetSession.Data
 
             context.ResidenceCommodites.AddRange(residenceCommodites);
             context.SaveChanges();
+
+            // Seed des demandes pour démonstration
+            var etudiantsDb = context.Etudiants.ToList();
+            var semestresDb = context.Semestres.ToList();
+            var genresDb = context.Genres.ToList();
+            var unitesDb = context.Unites.ToList();
+
+            var demandes = new Demande[]
+            {
+                new Demande
+                {
+                    EtudiantId = etudiantsDb[0].Id, // Alex Tremblay
+                    SemestreId = semestresDb[0].Id, // printemps-2025
+                    PrefDureeBail = 365,
+                    AccepteReglements = true,
+                    AccepteTraitementDonnees = true,
+                    ConfirmeSoumission = true,
+                    DateDemande = DateTime.Now.AddDays(-10),
+                    NomGarant = "Tremblay Père",
+                    PrenomGarant = "Jean",
+                    DateNaissanceGarant = new DateTime(1970, 1, 1),
+                    CourrielGarant = "jean.tremblay@gmail.com",
+                    TelephoneGarant = "6131112222",
+                    NomParent = "Tremblay Mère",
+                    CourrielParent = "mere.tremblay@gmail.com",
+                    NomUrgence = "Gagnon Marie",
+                    LienParenteUrgence = "Soeur",
+                    TelephoneUrgence = "6133334444",
+                    StatutDemande = StatutDemande.EnAttente,
+                    Jumelages = new List<Jumelage>
+                    {
+                        new Jumelage { Nom = "Marie Gagnon", Courriel = "marie.gagnon@college.ca" }
+                    },
+                    DemandeGenres = new List<DemandeGenre>
+                    {
+                        new DemandeGenre { GenreId = genresDb[0].Id } // Homme
+                    }
+                },
+                new Demande
+                {
+                    EtudiantId = etudiantsDb[1].Id, // Marie Gagnon
+                    SemestreId = semestresDb[1].Id, // été-2025
+                    PrefDureeBail = 180,
+                    AccepteReglements = true,
+                    AccepteTraitementDonnees = true,
+                    ConfirmeSoumission = true,
+                    DateDemande = DateTime.Now.AddDays(-5),
+                    NomGarant = "Gagnon Père",
+                    PrenomGarant = "Pierre",
+                    DateNaissanceGarant = new DateTime(1965, 5, 10),
+                    CourrielGarant = "pierre.gagnon@gmail.com",
+                    TelephoneGarant = "6133334444",
+                    NomParent = "Gagnon Mère",
+                    CourrielParent = "mere.gagnon@gmail.com",
+                    NomUrgence = "Tremblay Alex",
+                    LienParenteUrgence = "Frère",
+                    TelephoneUrgence = "6131112222",
+                    StatutDemande = StatutDemande.Acceptee,
+                    DateTraitement = DateTime.Now.AddDays(-2),
+                    UniteId = unitesDb[0].Id, // Assignée à une unité
+                    Jumelages = new List<Jumelage>
+                    {
+                        new Jumelage { Nom = "Sophie Bouchard", Courriel = "sophie.bouchard@college.ca" }
+                    },
+                    DemandeGenres = new List<DemandeGenre>
+                    {
+                        new DemandeGenre { GenreId = genresDb[1].Id } // Femme
+                    }
+                },
+                new Demande
+                {
+                    EtudiantId = etudiantsDb[2].Id, // David Nguyen
+                    SemestreId = semestresDb[2].Id, // automne-2025
+                    PrefDureeBail = 270,
+                    AccepteReglements = true,
+                    AccepteTraitementDonnees = true,
+                    ConfirmeSoumission = true,
+                    DateDemande = DateTime.Now.AddDays(-7),
+                    NomGarant = "Nguyen Père",
+                    PrenomGarant = "Viet",
+                    DateNaissanceGarant = new DateTime(1975, 3, 15),
+                    CourrielGarant = "viet.nguyen@gmail.com",
+                    TelephoneGarant = "6135556666",
+                    NomUrgence = "Bouchard Sophie",
+                    LienParenteUrgence = "Amie",
+                    TelephoneUrgence = "6137778888",
+                    StatutDemande = StatutDemande.Refusee,
+                    DateTraitement = DateTime.Now.AddDays(-1),
+                    Jumelages = new List<Jumelage>(),
+                    DemandeGenres = new List<DemandeGenre>
+                    {
+                        new DemandeGenre { GenreId = genresDb[0].Id } // Homme
+                    }
+                },
+                new Demande
+                {
+                    EtudiantId = etudiantsDb[3].Id, // Sophie Bouchard
+                    SemestreId = semestresDb[3].Id, // hiver-2025
+                    PrefDureeBail = 90,
+                    AccepteReglements = true,
+                    AccepteTraitementDonnees = true,
+                    ConfirmeSoumission = true,
+                    DateDemande = DateTime.Now.AddDays(-3),
+                    NomGarant = "Bouchard Père",
+                    PrenomGarant = "Michel",
+                    DateNaissanceGarant = new DateTime(1968, 7, 20),
+                    CourrielGarant = "michel.bouchard@gmail.com",
+                    TelephoneGarant = "6137778888",
+                    NomParent = "Bouchard Mère",
+                    CourrielParent = "mere.bouchard@gmail.com",
+                    NomUrgence = "Nguyen David",
+                    LienParenteUrgence = "Ami",
+                    TelephoneUrgence = "6135556666",
+                    StatutDemande = StatutDemande.EnAttente,
+                    Jumelages = new List<Jumelage>
+                    {
+                        new Jumelage { Nom = "Alex Tremblay", Courriel = "alex.tremblay@college.ca" },
+                        new Jumelage { Nom = "Marie Gagnon", Courriel = "marie.gagnon@college.ca" }
+                    },
+                    DemandeGenres = new List<DemandeGenre>
+                    {
+                        new DemandeGenre { GenreId = genresDb[1].Id } // Femme
+                    }
+                },
+                new Demande
+                {
+                    EtudiantId = etudiantsDb[4].Id, // Julien Lefevre
+                    SemestreId = semestresDb[4].Id, // printemps-2026
+                    PrefDureeBail = 365,
+                    AccepteReglements = true,
+                    AccepteTraitementDonnees = true,
+                    ConfirmeSoumission = true,
+                    DateDemande = DateTime.Now.AddDays(-1),
+                    NomGarant = "Lefevre Père",
+                    PrenomGarant = "Paul",
+                    DateNaissanceGarant = new DateTime(1972, 9, 5),
+                    CourrielGarant = "paul.lefevre@gmail.com",
+                    TelephoneGarant = "6139990000",
+                    NomUrgence = "Tremblay Alex",
+                    LienParenteUrgence = "Cousin",
+                    TelephoneUrgence = "6131112222",
+                    StatutDemande = StatutDemande.EnAttente,
+                    Jumelages = new List<Jumelage>(),
+                    DemandeGenres = new List<DemandeGenre>
+                    {
+                        new DemandeGenre { GenreId = genresDb[0].Id } // Homme
+                    }
+                }
+            };
+
+            context.Demandes.AddRange(demandes);
+            context.SaveChanges();
         }
 
         /// <summary>
