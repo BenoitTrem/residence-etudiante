@@ -12,8 +12,8 @@ using S14_ProjetSession.Data;
 namespace S14_ProjetSession.Migrations
 {
     [DbContext(typeof(ResidencesDbContext))]
-    [Migration("20260409181312_Ajout")]
-    partial class Ajout
+    [Migration("20260411224607_test")]
+    partial class test
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
