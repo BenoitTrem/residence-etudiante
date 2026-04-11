@@ -6,8 +6,12 @@ namespace S14_ProjetSession.Data
     public class DbDemandeRepository : IDemandeRepository
     {
         private ResidencesDbContext _context;
-        public List<Demande> Demandes => _context.Demandes.Include(E => E.Etudiant)
-            .Include(S => S.Semestre)
+        public List<Demande> Demandes => _context.Demandes
+            .Include(d => d.Etudiant)
+            .Include(d => d.Semestre)
+            .Include(d => d.Jumelages)
+            .Include(d => d.DemandeGenres)
+                .ThenInclude(dg => dg.Genre)
             .ToList();
 
         public DbDemandeRepository(ResidencesDbContext context)
@@ -26,6 +30,7 @@ namespace S14_ProjetSession.Data
             return _context.Demandes
                 .Include(d => d.Etudiant)
                 .Include(d => d.Semestre)
+                .Include(d => d.Jumelages)
                 .Include(d => d.DemandeGenres)
                     .ThenInclude(dg => dg.Genre)
                 .FirstOrDefault(d => d.Id == id);
@@ -48,23 +53,8 @@ namespace S14_ProjetSession.Data
 
         public void Modifier(Demande demande)
         {
-            
-            Demande? demandeExistante = GetDemande(demande.Id);
-            if (demandeExistante != null) 
-            {
-                //TODO fix temporaire
-                demandeExistante.Jumelages.Clear();
-               
-
-                _context.Entry(demandeExistante).CurrentValues.SetValues(demande);
-                if (demande.Jumelages != null)
-                {
-                    foreach (Jumelage jumelage in demande.Jumelages)
-                    {
-                        demandeExistante.Jumelages.Add(jumelage);
-                    }
-                }
-            }
+            // Le contrôleur modifie déjà l'entité trackée (demandeEnBase) directement,
+            // donc il suffit de sauvegarder les changements.
             _context.SaveChanges();
         }
     }

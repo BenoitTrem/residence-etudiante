@@ -213,6 +213,16 @@ namespace S14_ProjetSession.Controllers
             vm.Demande.SemestreId = semestre!.Id;
             vm.Demande.Semestre = semestre;
 
+            // Retirer les propriétés de navigation enfants pour éviter les erreurs de validation récursive
+            ModelState.Remove("Demande.DemandeGenres");
+            ModelState.Remove("Demande.Jumelages");
+            ModelState.Remove("Demande.Semestre");
+
+            TryValidateModel(vm.Demande);
+
+            if (!ModelState.IsValid)
+                return View(vm);
+
             _demandeRepository.Creer(vm.Demande);
 
             TempData["Succes"] = $"Nouvelle demande ajoutée pour {etudiant.Nom} ({semestre!.NomSemestre})";
@@ -364,6 +374,16 @@ namespace S14_ProjetSession.Controllers
                     });
                 }
             }
+
+            // Retirer les propriétés de navigation enfants pour éviter les erreurs de validation récursive
+            ModelState.Remove("Demande.DemandeGenres");
+            ModelState.Remove("Demande.Jumelages");
+            ModelState.Remove("Demande.Semestre");
+
+            TryValidateModel(demandeEnBase);
+
+            if (!ModelState.IsValid)
+                return View(vm);
 
             _demandeRepository.Modifier(demandeEnBase);
 

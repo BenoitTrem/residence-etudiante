@@ -71,7 +71,11 @@ namespace S14_ProjetSession.Data
                 Id = 2,
                 SemestreId = 2,
                 EtudiantId = 2,
-           
+
+                DemandeGenres = new List<DemandeGenre>
+                {
+                    new DemandeGenre { DemandeId = 2, GenreId = 2, Genre = _genres[1] }
+                },
 
                 PrefDureeBail = 90,
 
@@ -134,7 +138,6 @@ namespace S14_ProjetSession.Data
                 demande.EtudiantId = demandeExistante.EtudiantId;
 
                 demandeExistante.SemestreId = demande.SemestreId;
-                //demandeExistante.PreferencesGenreId = demande.PreferencesGenreId;
                 demandeExistante.PrefDureeBail = demande.PrefDureeBail;
                 demandeExistante.AccepteReglements = demande.AccepteReglements;
                 demandeExistante.AccepteTraitementDonnees = demande.AccepteTraitementDonnees;
@@ -149,6 +152,12 @@ namespace S14_ProjetSession.Data
                 demandeExistante.NomUrgence = demande.NomUrgence;
                 demandeExistante.LienParenteUrgence = demande.LienParenteUrgence;
                 demandeExistante.TelephoneUrgence = demande.TelephoneUrgence;
+
+                // Sync Jumelages
+                demandeExistante.Jumelages = demande.Jumelages ?? new List<Jumelage>();
+
+                // Sync DemandeGenres
+                demandeExistante.DemandeGenres = demande.DemandeGenres ?? new List<DemandeGenre>();
             }
         }
 

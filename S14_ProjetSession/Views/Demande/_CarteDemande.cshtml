@@ -28,13 +28,32 @@
                             <strong>Urgence :</strong> @Model.NomUrgence <br />
                             <strong>Lien :</strong> @Model.LienParenteUrgence
                         </p>
-                        <!-- Jumelage -->
-                        <ul>
-                            @foreach (Jumelage jumelage in @Model.Jumelages)
+                        <!-- Genres -->
+                        @if (Model.DemandeGenres != null && Model.DemandeGenres.Any())
+                        {
+                            <p class="card-text"><strong>Genres :</strong></p>
+                            <ul>
+                                @foreach (var dg in Model.DemandeGenres)
                                 {
-                                    <li>@jumelage.Nom  @jumelage.Courriel</li>
+                                    @if (dg.Genre != null)
+                                    {
+                                        <li>@dg.Genre.Nom</li>
+                                    }
                                 }
                             </ul>
+                        }
+
+                        <!-- Jumelage -->
+                        @if (Model.Jumelages != null && Model.Jumelages.Any())
+                        {
+                            <p class="card-text"><strong>Jumelages :</strong></p>
+                            <ul>
+                                @foreach (var jumelage in Model.Jumelages)
+                                {
+                                    <li>@jumelage.Nom — @jumelage.Courriel</li>
+                                }
+                            </ul>
+                        }
 
                         <!-- Statut -->
                         <p>
