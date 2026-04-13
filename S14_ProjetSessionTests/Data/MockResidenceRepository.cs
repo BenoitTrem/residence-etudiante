@@ -18,7 +18,7 @@ namespace S14_ProjetSession.Data
         public MockResidenceRepository()
         {
             _residences = new List<Residence>
-{
+            {
                 new Residence
                 {
                     Id = 1,

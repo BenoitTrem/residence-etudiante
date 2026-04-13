@@ -239,7 +239,7 @@ dialog {
 }
 
     .form-container:hover {
-        box-shadow: 0 25px 35px rgba(37, 99, 235, 0.5);
+        box-shadow: 0 8px 35px rgba(37, 99, 235, 0.5);
     }
 
 .form-control:hover,
