@@ -57,17 +57,16 @@ namespace S14_ProjetSession.Controllers
             }
 
             // Remplacer la collection
-            if (demande.DemandeGenres == null)
+            if (demande.Genres == null)
             {
-                demande.DemandeGenres = new List<DemandeGenre>();
+                demande.Genres = new List<Genre>();
             }
-            demande.DemandeGenres.Clear();
+            demande.Genres.Clear();
             foreach (var genre in genres)
             {
-                demande.DemandeGenres.Add(new DemandeGenre
+                demande.Genres.Add(new Genre
                 {
-                    GenreId = genre!.Id,
-                    DemandeId = demande.Id   // 0 lors de la création, EF le résout
+                    Id = genre!.Id,
                 });
             }
 
@@ -214,14 +213,15 @@ namespace S14_ProjetSession.Controllers
             vm.Demande.Semestre = semestre;
 
             // Retirer les propriétés de navigation enfants pour éviter les erreurs de validation récursive
-            ModelState.Remove("Demande.DemandeGenres");
+            
+
+            TryValidateModel(vm.Demande);
+            ModelState.Remove("Genres");
             ModelState.Remove("Demande.Jumelages");
             ModelState.Remove("Demande.Semestre");
 
-            TryValidateModel(vm.Demande);
-
             if (!ModelState.IsValid)
-                return View(vm);
+                return View(vm.Demande);
 
             _demandeRepository.Creer(vm.Demande);
 
@@ -252,7 +252,7 @@ namespace S14_ProjetSession.Controllers
                 Genres = _genreRepository.Genres,
                 Semestres = _semestreRepository.Semestres,
                 // Pré-cocher les genres déjà associés
-                SelectedGenreIds = demande.DemandeGenres.Select(dg => dg.GenreId).ToList(),
+                SelectedGenreIds = demande.Genres.Select(dg => dg.Id).ToList(),
                 SelectedSemestreId = demande.Semestre?.Id
             };
 
@@ -376,7 +376,7 @@ namespace S14_ProjetSession.Controllers
             }
 
             // Retirer les propriétés de navigation enfants pour éviter les erreurs de validation récursive
-            ModelState.Remove("Demande.DemandeGenres");
+            ModelState.Remove("Demande.Genre");
             ModelState.Remove("Demande.Jumelages");
             ModelState.Remove("Demande.Semestre");
 

@@ -24,7 +24,8 @@ namespace S14_ProjetSession.Models
         public List<Etudiant> Etudiants { get; set; } = new List<Etudiant>();
 
         //ajout de la realtion demande et genre plsuieurs à plusieurs
-        public List<DemandeGenre> DemandeGenres { get; set; } = new List<DemandeGenre>();
+
+        public List<Demande> Genres { get; set; } = new List<Demande>();
 
 
     }

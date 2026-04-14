@@ -21,7 +21,7 @@ namespace S14_ProjetSession.Models
 
        //@author John
        //Ajout de la realtion genre - demande
-       public List<DemandeGenre> DemandeGenres { get; set; }
+       public List<Genre> Genres { get; set; }
         
         // simplement le nombre de jours pour le moment
         public int PrefDureeBail { get; set; }

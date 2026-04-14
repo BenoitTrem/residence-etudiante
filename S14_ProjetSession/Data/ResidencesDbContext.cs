@@ -10,6 +10,7 @@ public class ResidencesDbContext : IdentityDbContext<ApplicationUser>
 {
     public ResidencesDbContext(DbContextOptions<ResidencesDbContext> options) : base(options)
     {
+
     }
 
         public DbSet<Residence> Residences { get; set; }
@@ -27,7 +28,7 @@ public class ResidencesDbContext : IdentityDbContext<ApplicationUser>
         public DbSet<ResidenceCommodite> ResidenceCommodites { get; set; }
 
         public DbSet<Campus> Campuses { get; set; }
-    public DbSet<DemandeGenre> DemandeGenres { get; set; }
+    //public DbSet<DemandeGenre> DemandeGenres { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -95,25 +96,14 @@ public class ResidencesDbContext : IdentityDbContext<ApplicationUser>
         // @authorJohn Zuleta
         // Relation Demande <-> Genre (table de jointure N-N)
         // La clé primaire composite est formée de DemandeId et GenreId
-        modelBuilder.Entity<DemandeGenre>()
-            .HasKey(dg => new { dg.DemandeId, dg.GenreId });
+       
 
         // @authorJohn Zuleta
         // Si une Demande est supprimée, ses DemandeGenres associés sont supprimés en cascade
-        modelBuilder.Entity<DemandeGenre>()
-            .HasOne(dg => dg.Demande)
-            .WithMany(d => d.DemandeGenres)
-            .HasForeignKey(dg => dg.DemandeId)
-            .OnDelete(DeleteBehavior.Cascade);
-
+        
         // @authorJohn Zuleta
         // Un Genre ne peut pas être supprimé s'il est encore référencé par une Demande
-        modelBuilder.Entity<DemandeGenre>()
-            .HasOne(dg => dg.Genre)
-            .WithMany(g => g.DemandeGenres)
-            .HasForeignKey(dg => dg.GenreId)
-            .OnDelete(DeleteBehavior.Restrict);
-
+        
         // @authorJohn Zuleta
         // Relation Étudiant -> Genre (1-N)
         // Un Genre ne peut pas être supprimé s'il est encore associé à un Étudiant

@@ -346,9 +346,9 @@ namespace S14_ProjetSession.Data
                     {
                         new Jumelage { Nom = "Marie Gagnon", Courriel = "marie.gagnon@college.ca" }
                     },
-                    DemandeGenres = new List<DemandeGenre>
+                    Genres = new List<Genre>
                     {
-                        new DemandeGenre { GenreId = genresDb[0].Id } // Homme
+                        new Genre { Id = genresDb[0].Id } // Homme
                     }
                 },
                 new Demande
@@ -377,9 +377,9 @@ namespace S14_ProjetSession.Data
                     {
                         new Jumelage { Nom = "Sophie Bouchard", Courriel = "sophie.bouchard@college.ca" }
                     },
-                    DemandeGenres = new List<DemandeGenre>
+                    Genres = new List<Genre>
                     {
-                        new DemandeGenre { GenreId = genresDb[1].Id } // Femme
+                        new Genre { Id = genresDb[1].Id } // Femme
                     }
                 },
                 new Demande
@@ -402,9 +402,9 @@ namespace S14_ProjetSession.Data
                     StatutDemande = StatutDemande.Refusee,
                     DateTraitement = DateTime.Now.AddDays(-1),
                     Jumelages = new List<Jumelage>(),
-                    DemandeGenres = new List<DemandeGenre>
+                    Genres = new List<Genre>
                     {
-                        new DemandeGenre { GenreId = genresDb[0].Id } // Homme
+                          new Genre { Id = genresDb[1].Id }
                     }
                 },
                 new Demande
@@ -432,9 +432,9 @@ namespace S14_ProjetSession.Data
                         new Jumelage { Nom = "Alex Tremblay", Courriel = "alex.tremblay@college.ca" },
                         new Jumelage { Nom = "Marie Gagnon", Courriel = "marie.gagnon@college.ca" }
                     },
-                    DemandeGenres = new List<DemandeGenre>
+                    Genres = new List<Genre>
                     {
-                        new DemandeGenre { GenreId = genresDb[1].Id } // Femme
+                        new Genre { Id = genresDb[1].Id } // Femme
                     }
                 },
                 new Demande
@@ -456,9 +456,9 @@ namespace S14_ProjetSession.Data
                     TelephoneUrgence = "6131112222",
                     StatutDemande = StatutDemande.EnAttente,
                     Jumelages = new List<Jumelage>(),
-                    DemandeGenres = new List<DemandeGenre>
+                    Genres = new List<Genre>
                     {
-                        new DemandeGenre { GenreId = genresDb[0].Id } // Homme
+                        new Genre { Id = genresDb[0].Id } // Homme
                     }
                 }
             };

@@ -113,7 +113,7 @@ namespace S14_ProjetSessionTests.Integration.DemandeTests
         public async Task VerifierModificationInvalideValide()
         {
             int semestreAvant = _demandeRepository.GetDemande(1)!.SemestreId;
-            var genresAvant = _demandeRepository.GetDemande(1)!.DemandeGenres.Select(dg => dg.GenreId).ToList();
+            var genresAvant = _demandeRepository.GetDemande(1)!.Genres.Select(dg => dg.Id).ToList();
 
             var formData = new Dictionary<string, string>
             {
@@ -155,7 +155,7 @@ namespace S14_ProjetSessionTests.Integration.DemandeTests
             Assert.Equal(semestreAvant, demandeApres.SemestreId);
 
             // Les genres ne doivent pas avoir changé non plus
-            Assert.Equal(genresAvant, demandeApres.DemandeGenres.Select(dg => dg.GenreId).ToList());
+            Assert.Equal(genresAvant, demandeApres.Genres.Select(dg => dg.Id).ToList());
         }
     }
 }

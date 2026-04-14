@@ -29,16 +29,14 @@
                             <strong>Lien :</strong> @Model.LienParenteUrgence
                         </p>
                         <!-- Genres -->
-                        @if (Model.DemandeGenres != null && Model.DemandeGenres.Any())
+            @if (Model.Genres != null && Model.Genres.Any())
                         {
                             <p class="card-text"><strong>Genres :</strong></p>
                             <ul>
-                                @foreach (var dg in Model.DemandeGenres)
+                    @foreach (var dg in Model.Genres)
                                 {
-                                    @if (dg.Genre != null)
-                                    {
-                                        <li>@dg.Genre.Nom</li>
-                                    }
+                                        <li>@dg.Nom</li>
+                                    
                                 }
                             </ul>
                         }

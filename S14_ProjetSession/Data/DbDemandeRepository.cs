@@ -10,8 +10,7 @@ namespace S14_ProjetSession.Data
             .Include(d => d.Etudiant)
             .Include(d => d.Semestre)
             .Include(d => d.Jumelages)
-            .Include(d => d.DemandeGenres)
-                .ThenInclude(dg => dg.Genre)
+            .Include(d => d.Genres)
             .ToList();
 
         public DbDemandeRepository(ResidencesDbContext context)
@@ -31,8 +30,7 @@ namespace S14_ProjetSession.Data
                 .Include(d => d.Etudiant)
                 .Include(d => d.Semestre)
                 .Include(d => d.Jumelages)
-                .Include(d => d.DemandeGenres)
-                    .ThenInclude(dg => dg.Genre)
+                .Include(d => d.Genres)
                 .FirstOrDefault(d => d.Id == id);
         }
 
