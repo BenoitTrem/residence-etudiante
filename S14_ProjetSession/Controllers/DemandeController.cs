@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using S14_ProjetSession.Data;
 using S14_ProjetSession.Models;
 using S14_ProjetSession.ViewModels;
@@ -64,10 +65,7 @@ namespace S14_ProjetSession.Controllers
             demande.Genres.Clear();
             foreach (var genre in genres)
             {
-                demande.Genres.Add(new Genre
-                {
-                    Id = genre!.Id,
-                });
+                demande.Genres.Add(genre);
             }
 
             return true;
@@ -219,7 +217,7 @@ namespace S14_ProjetSession.Controllers
             ModelState.Remove("Genres");
             ModelState.Remove("Demande.Jumelages");
             ModelState.Remove("Demande.Semestre");
-
+            ModelState.Remove("Demande.Genres");
             if (!ModelState.IsValid)
                 return View(vm.Demande);
 
