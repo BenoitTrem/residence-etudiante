@@ -1,0 +1,41 @@
+﻿@page
+@model DeletePersonalDataModel
+@{
+    ViewData["Title"] = "Supprimer les données personnelles";
+    ViewData["ActivePage"] = ManageNavPages.PersonalData;
+}
+
+<h3 class="text-center mb-4">@ViewData["Title"]</h3>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="p-4 rounded utilisateur-container">
+            <div class="alert alert-warning" role="alert">
+                <p>
+                    <strong>La suppression de ces données entraînera la suppression définitive de votre compte et ces informations ne pourront pas être récupérées.</strong>
+                </p>
+            </div>
+
+            <form id="delete-user" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+                @if (Model.RequirePassword)
+                {
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Password" type="password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Veuillez saisir votre mot de passe." />
+                        <label asp-for="Input.Password">Mot de passe</label>
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+                }
+
+                <button class="w-100 btn btn-outline-danger btn-lg" type="submit">
+                    Supprimer les données et fermer mon compte
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

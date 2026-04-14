@@ -1,0 +1,155 @@
+﻿@model S14_ProjetSession.ViewModels.DemandeCreateViewModel
+
+@{
+    ViewData["Title"] = "Créer une demande";
+}
+
+<h2>Créer une demande</h2>
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+<form asp-action="Creer" method="post">
+    @Html.AntiForgeryToken()
+
+    <!-- SEMESTRE -->
+    <div class="mb-3">
+        <label class="form-label">Semestre *</label>
+        <select asp-for="SelectedSemestreId" class="form-control"
+                asp-items="@(new SelectList(Model.Semestres, "Id", "NomSemestre"))">
+            <option value="">-- Choisir --</option>
+        </select>
+        <span asp-validation-for="SelectedSemestreId" class="text-danger"></span>
+    </div>
+
+    <!-- author John  -->
+    <!-- prendre les genres cochées -->
+    <div class="mb-3">
+        <label class="form-label">Préférences de genre</label>
+        <div class="border p-2 rounded">
+            @foreach (var genre in Model.Genres)
+            {
+                bool estCoche = Model.SelectedGenreIds != null
+                && Model.SelectedGenreIds.Contains(genre.Id);
+                <div class="form-check">
+                    <input class="form-check-input"
+                           type="checkbox"
+                           name="SelectedGenreIds"
+                           value="@genre.Id"
+                           @(estCoche ? "checked" : "") />
+                    <label class="form-check-label">@genre.Nom</label>
+                </div>
+            }
+        </div>
+    </div>
+    <!-- DEMANDE -->
+    <div class="mb-3">
+        <label class="form-label">Durée du bail *</label>
+        <input asp-for="Demande.PrefDureeBail" class="form-control" />
+        <span asp-validation-for="Demande.PrefDureeBail" class="text-danger"></span>
+    </div>
+
+    <div class="form-check">
+        <input asp-for="Demande.AccepteReglements" class="form-check-input" />
+        <label class="form-check-label">Accepter les règlements *</label>
+        <span asp-validation-for="Demande.AccepteReglements" class="text-danger"></span>
+    </div>
+
+    <div class="form-check">
+        <input asp-for="Demande.AccepteTraitementDonnees" class="form-check-input" />
+        <label class="form-check-label">Accepter le traitement des données *</label>
+        <span asp-validation-for="Demande.AccepteTraitementDonnees" class="text-danger"></span>
+    </div>
+
+    <div class="form-check">
+        <input asp-for="Demande.ConfirmeSoumission" class="form-check-input" />
+        <label class="form-check-label">Confirmer la soumission *</label>
+        <span asp-validation-for="Demande.ConfirmeSoumission" class="text-danger"></span>
+    </div>
+
+    <!-- JUMELAGES -->
+    <h5>Jumelage</h5>
+    @for (int i = 0; i < Model.Jumelages.Count; i++)
+    {
+        <div class="mb-3">
+            <label class="form-label">Nom du jumelage @(i + 1)</label>
+            <input asp-for="Jumelages[i].Nom" class="form-control" />
+            <span asp-validation-for="Jumelages[i].Nom" class="text-danger"></span>
+
+            <label class="form-label">Courriel du jumelage @(i + 1)</label>
+            <input asp-for="Jumelages[i].Courriel" class="form-control" />
+            <span asp-validation-for="Jumelages[i].Courriel" class="text-danger"></span>
+        </div>
+    }
+
+    <!-- GARANT -->
+    <h5>Garant</h5>
+    <div class="mb-3">
+        <label class="form-label">Nom du garant *</label>
+        <input asp-for="Demande.NomGarant" class="form-control" />
+        <span asp-validation-for="Demande.NomGarant" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Prénom du garant *</label>
+        <input asp-for="Demande.PrenomGarant" class="form-control" />
+        <span asp-validation-for="Demande.PrenomGarant" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Date de naissance *</label>
+        <input asp-for="Demande.DateNaissanceGarant" type="date" class="form-control" />
+        <span asp-validation-for="Demande.DateNaissanceGarant" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Courriel du garant *</label>
+        <input asp-for="Demande.CourrielGarant" class="form-control" />
+        <span asp-validation-for="Demande.CourrielGarant" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Téléphone du garant *</label>
+        <input asp-for="Demande.TelephoneGarant" class="form-control" />
+        <span asp-validation-for="Demande.TelephoneGarant" class="text-danger"></span>
+    </div>
+
+    <!-- PARENT -->
+    <h5>Parent</h5>
+    <div class="mb-3">
+        <label class="form-label">Nom du parent</label>
+        <input asp-for="Demande.NomParent" class="form-control" />
+        <span asp-validation-for="Demande.NomParent" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Courriel du parent</label>
+        <input asp-for="Demande.CourrielParent" class="form-control" />
+        <span asp-validation-for="Demande.CourrielParent" class="text-danger"></span>
+    </div>
+
+    <!-- URGENCE -->
+    <h5>Contact d'urgence</h5>
+    <div class="mb-3">
+        <label class="form-label">Nom *</label>
+        <input asp-for="Demande.NomUrgence" class="form-control" />
+        <span asp-validation-for="Demande.NomUrgence" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Lien de parenté *</label>
+        <input asp-for="Demande.LienParenteUrgence" class="form-control" />
+        <span asp-validation-for="Demande.LienParenteUrgence" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Téléphone *</label>
+        <input asp-for="Demande.TelephoneUrgence" class="form-control" />
+        <span asp-validation-for="Demande.TelephoneUrgence" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Créer la demande</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

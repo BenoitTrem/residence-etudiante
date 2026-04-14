@@ -1,0 +1,16 @@
+﻿
+<div class="container">
+    <div class="row">
+        
+            @if (ViewBag.Demandes.Count <= 0)
+            {
+                <h1>Y'a pas de demande'</h1>
+            
+        }else{
+        @foreach (Demande demande in ViewBag.Demandes)
+        {
+            <partial name="_CarteDemande" model="demande" />
+        }
+        }
+    </div>
+</div>

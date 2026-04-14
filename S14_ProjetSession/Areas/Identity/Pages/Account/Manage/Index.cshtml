@@ -1,0 +1,65 @@
+﻿@page
+@model IndexModel
+@using Microsoft.AspNetCore.Identity
+@using S14_ProjetSession.Areas.Identity.Data
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
+    ViewData["Title"] = "Profil";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+
+    string? afficherRole = null;
+
+    if (SignInManager.IsSignedIn(User))
+    {
+        ApplicationUser? user = UserManager.GetUserAsync(User).Result;
+        if (user != null)
+        {
+            System.Collections.Generic.IList<string> roles = UserManager.GetRolesAsync(user).Result;
+            if (roles.Contains("Admin"))
+            {
+                afficherRole = "Administrateur";
+            }
+            else if (roles.Contains("Gestionnaire"))
+            {
+                afficherRole = "Gestionnaire";
+            }
+        }
+    }
+}
+
+<h3 class="text-center mb-4">@ViewData["Title"]</h3>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        @if (!string.IsNullOrEmpty(afficherRole))
+        {
+            <div class="alert alert-info text-center">
+                Rôle : <strong>@afficherRole</strong>
+            </div>
+        }
+
+        <partial name="_StatusMessage" for="StatusMessage" />
+        <form id="profile-form" method="post" class="p-4 rounded utilisateur-container">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Username" class="form-control" placeholder="Veuillez choisir votre nom d'utilisateur." disabled />
+                <label asp-for="Username">Nom d'utilisateur</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Veuillez saisir votre numéro de téléphone." />
+                <label asp-for="Input.PhoneNumber">Numéro de téléphone</label>
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+
+            <button id="update-profile-button" type="submit" class="w-100 btn btn-outline-primary btn-lg">Enregistrer</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

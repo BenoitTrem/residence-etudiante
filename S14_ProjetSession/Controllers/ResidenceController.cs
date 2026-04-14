@@ -1,0 +1,351 @@
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using S14_ProjetSession.Data;
+using S14_ProjetSession.Models;
+using S14_ProjetSession.ViewModels;
+
+/*
+ * @author Benoit
+ * 
+ * Description: Controller responsable pour la gestion des résidences.
+ */
+namespace S14_ProjetSession.Controllers
+{
+    [Authorize]
+    public class ResidenceController : Controller
+    {
+
+        private readonly IResidenceRepository _residenceRepository;
+        private readonly ICampusRepository _campusRepository;
+        private readonly ICommoditeRepository _commoditeRepository;
+
+        public ResidenceController(IResidenceRepository residenceRepository, ICampusRepository campusRepository, ICommoditeRepository commoditeRepository)
+        {
+            _residenceRepository = residenceRepository;
+            _campusRepository = campusRepository;
+            _commoditeRepository = commoditeRepository;
+        }
+
+        /// <summary>
+        /// Génère une liste de commodités,
+        /// en tenant compte de leurs résidence.
+        /// </summary>
+        /// <param name="commoditesActuelles">
+        /// Liste des commodités déjà associées à la résidence.
+        /// </param>
+        /// <returns>
+        /// Une collection de ResidenceCommoditeViewModel représentant toutes les commodités,
+        /// avec l'état "checked" et la description si elles existent déjà.
+        /// </returns>
+        private IEnumerable<ResidenceCommoditeViewModel> GetListeCommodites(List<CommoditeDescriptionViewModel>? commoditesActuelles)
+        {
+            return _commoditeRepository.Commodites.Select(c =>
+            {
+                // Cherche la commodité actuelle
+                CommoditeDescriptionViewModel? commoditeActuelle = commoditesActuelles?.FirstOrDefault(x => x.Id == c.Id);
+
+                // Crée un ViewModel pour cette commodité
+                return new ResidenceCommoditeViewModel(
+                    c,
+                    commoditeActuelle?.IsChecked ?? false,
+                    commoditeActuelle?.Description
+                );
+            });
+        }
+
+        /// <summary>
+        /// Affiche la liste de toutes les résidences.
+        /// </summary>
+        /// <returns>Vue "Residences" avec la liste complète des résidences</returns>
+        [AllowAnonymous]
+        public IActionResult Index()
+        {
+            ViewData["Title"] = "Résidences";
+            return View("Residences", _residenceRepository.GetAll());
+        }
+
+        /// <summary>
+        /// Affiche les détails d'une résidence spécifique.
+        /// </summary>
+        /// <param name="id">Identifiant de la résidence à afficher</param>
+        /// <returns>
+        /// Vue contenant les détails de la résidence si elle existe,
+        /// sinon retourne NotFound() si l'identifiant n'est pas valide
+        /// </returns>
+        [AllowAnonymous]
+        public IActionResult ResidenceDetails(int id)
+        {
+            Residence residence = _residenceRepository.GetById(id); 
+            if (residence == null) return NotFound();
+            return View(residence);
+        }
+
+        /// <summary>
+        /// Affiche le formulaire pour ajouter une nouvelle résidence.
+        /// Accessible uniquement aux utilisateurs ayant la politique "AdminOuGestionnaire".
+        /// </summary>
+        /// <returns>
+        /// La vue AjouterResidence.
+        /// </returns>
+        [Authorize(Policy = "AdminOuGestionnaire")]
+        public IActionResult AjouterResidence()
+        {
+            ViewData["Title"] = "Ajout d'une résidence";
+
+            // Envoie en ViewBag les commoditées et campus à la vue
+            ViewBag.Commodites = GetListeCommodites(new List<CommoditeDescriptionViewModel>());
+            ViewBag.CampusList = new SelectList(_campusRepository.Campus, "Id", "Nom");
+
+            return View(new Residence{Adresse = new Adresse()});
+        }
+
+        /// <summary>
+        /// Ajoute les commodités sélectionnées à une résidence.
+        /// </summary>
+        /// <param name="residence">La résidence à laquelle ajouter les commodités</param>
+        /// <param name="commodites">Liste des commodités avec leur état sélectionné et description</param>
+        /// <exception cref="Exception">Lancée si une commodité n'existe pas dans le repo</exception>
+        private void AjoutCommoditesChoisies(Residence residence, List<CommoditeDescriptionViewModel> commodites)
+        {
+            // Vide les commodités existantes de la résidence
+            residence.ResidenceCommodites.Clear();
+
+            // Parcourt toutes les commodités sélectionnées par l'utilisateur
+            foreach (CommoditeDescriptionViewModel c in commodites.Where(x => x.IsChecked))
+            {
+                // Récupère l'objet Commodite correspondant depuis le repo
+                Commodite? commodite = _commoditeRepository.GetCommodite(c.Id);
+
+                if (commodite != null)
+                {
+                    // Ajoute la commodité à la résidence avec la description fournie
+                    residence.ResidenceCommodites.Add(new ResidenceCommodite
+                    {
+                        Commodite = commodite,
+                        Residence = residence,
+                        Description = c.Description
+                    });
+                }
+                else
+                {
+                    // Si la commodité n'existe pas dans le repo
+                    throw new Exception("Commodité invalide");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Traite la soumission du formulaire d'ajout d'une nouvelle résidence.
+        /// Accessible uniquement aux utilisateurs ayant la politique "AdminOuGestionnaire".
+        /// </summary>
+        /// <param name="residence">
+        /// Objet Residence contenant le nom, l'identifiant du campus et l'adresse saisie par l'utilisateur.
+        /// </param>
+        /// <param name="commodites">
+        /// Liste des commodités sélectionnées par l'utilisateur pour cette résidence.
+        /// </param>
+        /// <returns>
+        /// Redirige vers Index si la création réussit,
+        /// sinon retourne la vue "AjouterResidence" avec les erreurs.
+        /// </returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = "AdminOuGestionnaire")]
+        public IActionResult Creer([Bind("Nom, CampusId, Adresse")] Residence residence, List<CommoditeDescriptionViewModel> commodites)
+        {
+            ViewData["Title"] = "Ajout d'une résidence";
+
+            // Vérifie si le nom de la résidence existe déjà
+            if (_residenceRepository.NomExiste(residence.Nom, residence.Id))
+            {
+                ModelState.AddModelError("Nom", "Ce nom de résidence existe déjà.");
+            }
+
+            // Vérifie que l'adresse est correctement remplie
+            if (residence.Adresse == null || string.IsNullOrWhiteSpace(residence.Adresse.AdresseString) 
+                || string.IsNullOrWhiteSpace(residence.Adresse.CodePostal))
+            {
+                ModelState.AddModelError("Adresse", "Veuillez remplir toutes les informations d'adresse.");
+            }
+
+            // Vérifie que l'utilisateur a sélectionné un campus valide
+            if (residence.CampusId <= 0)
+            {
+                ModelState.AddModelError("CampusId", "Veuillez sélectionner un campus.");
+            }
+
+            ModelState.Remove("ResidenceCommodites"); // Supprime l'état du modèle pour les commodités avant validation
+
+            // Si le modèle est valide, les commodités choisies sont ajoutés
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    AjoutCommoditesChoisies(residence, commodites);
+                }
+                catch
+                {
+                    ModelState.AddModelError("ResidenceCommodites", "Certaines commodités sont invalides");
+                }
+            }
+
+            // Si le modèle n'est pas valide, retourne le formulaire avec les erreurs
+            if (!ModelState.IsValid)
+            {
+                TempData["Erreur"] = "Veuillez corriger les erreurs.";
+
+                ViewBag.CampusList = new SelectList(_campusRepository.Campus, "Id", "Nom");
+                ViewBag.Commodites = GetListeCommodites(commodites); 
+
+                return View("AjouterResidence", residence);
+            }
+            // Enregistre la nouvelle résidence dans la base de données
+            _residenceRepository.Creer(residence);
+            TempData["Succes"] = $"La résidence {residence.Nom ?? ""} a été créée avec succès.";
+            return RedirectToAction("Index");
+        }
+
+        /// <summary>
+        /// Affiche le formulaire de modification d'une résidence existante.
+        /// Accessible uniquement aux utilisateurs ayant la politique "AdminOuGestionnaire".
+        /// </summary>
+        /// <param name="id">Identifiant de la résidence à modifier</param>
+        /// <returns>
+        /// Vue "ModifierResidence" avec les données de la résidence et les listes de campus et commodités.
+        /// Retourne NotFound() si la résidence n'existe pas.
+        /// </returns>
+        [Authorize(Policy = "AdminOuGestionnaire")]
+        public IActionResult ModifierResidence(int id)
+        {
+            // Récupère la résidence correspondant au ID
+            Residence? residence = _residenceRepository.GetById(id);
+
+            // Envoie la liste des campus et sélectionne celui associé à la résidence
+            ViewBag.CampusList = new SelectList(_campusRepository.Campus, "Id", "Nom", residence?.CampusId);
+
+            // Récupère la liste des commodités déjà associées à la résidence
+            List<CommoditeDescriptionViewModel> commoditesSelectionnees = residence?.ResidenceCommodites
+                .Select(rc => new CommoditeDescriptionViewModel
+                {
+                    Id = rc.CommoditeId,
+                    Description = rc.Description,
+                    IsChecked = true // marque les commodités existantes comme True
+                })
+                .ToList()
+                ?? new List<CommoditeDescriptionViewModel>(); // si la résidence n'a pas de commodités, crée une liste vide
+
+            // Génère la liste complète des commodités, avec les sélections actuelles
+            ViewBag.Commodites = GetListeCommodites(commoditesSelectionnees);
+
+            ViewData["Title"] = "Modification de la résidence " + residence?.Nom;
+
+            return residence is null ? NotFound() : View("ModifierResidence", residence);
+        }
+
+        /// <summary>
+        /// Traite la soumission du formulaire de modification d'une résidence existante.
+        /// Accessible uniquement aux utilisateurs ayant la politique "AdminOuGestionnaire".
+        /// </summary>
+        /// <param name="residence">
+        /// Objet Residence contenant l'identifiant, le nom, le campus et l'adresse modifiés.
+        /// </param>
+        /// <param name="commodites">
+        /// Liste des commodités sélectionnées pour cette résidence.
+        /// </param>
+        /// <returns>
+        /// Redirige vers Index si la modification réussit,
+        /// sinon retourne la vue "ModifierResidence" avec les erreurs de validation.
+        /// </returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = "AdminOuGestionnaire")]
+        public IActionResult Modifier([Bind("Id, Nom, CampusId, Adresse")] Residence residence, List<CommoditeDescriptionViewModel> commodites)
+        {
+            // Récupère la résidence existante depuis la base de données
+            Residence residenceDb = _residenceRepository.GetById(residence.Id);
+
+            if (residenceDb == null) // Si la résidence n'existe pas, retourne NotFound
+            {
+                return NotFound();
+            }
+
+            // Vérifie que le nom de la résidence n'est pas déjà utilisé par une autre résidence
+            if (_residenceRepository.NomExiste(residence.Nom, residence.Id))
+            {
+                ModelState.AddModelError("Nom", "Ce nom de résidence existe déjà.");
+            }
+
+            // Vérifie que l'adresse est correctement remplie
+            if (residence.Adresse == null || string.IsNullOrWhiteSpace(residence.Adresse.AdresseString)
+                || string.IsNullOrWhiteSpace(residence.Adresse.CodePostal))
+            {
+                ModelState.AddModelError("Adresse", "Veuillez remplir toutes les informations d'adresse.");
+            }
+
+            ModelState.Remove("ResidenceCommodites"); // Supprime l'état du modèle pour les commodités avant validation
+
+            // Si le modèle est valide, applique les modifications
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    residenceDb.Nom = residence.Nom;
+                    residenceDb.CampusId = residence.CampusId;
+                    residenceDb.Adresse = residence.Adresse;
+
+                    AjoutCommoditesChoisies(residenceDb, commodites);
+                }
+                catch
+                {
+                    ModelState.AddModelError("ResidenceCommodites", "Certaines commodités sont invalides");
+                }
+            }
+
+            // Si le modèle n'est pas valide, retourne le formulaire avec les erreurs
+            if (!ModelState.IsValid)
+            {
+                ViewData["Title"] = "Modification de la résidence " + residence.Nom;
+                ViewBag.CampusList = new SelectList(_campusRepository.Campus, "Id", "Nom", residence.CampusId);
+                ViewBag.Commodites = GetListeCommodites(commodites);
+
+                return View("ModifierResidence", residence);
+            }
+
+            // Sauvegarde les modifications dans la base de données
+            _residenceRepository.Modifier(residenceDb);
+            TempData["Succes"] = $"La résidence {residence.Nom ?? ""} a été modifiée avec succès.";
+            return RedirectToAction("Index");
+        }
+
+        /// <summary>
+        /// Supprime une résidence existante.
+        /// Accessible uniquement aux utilisateurs ayant la politique "AdminUniquement".
+        /// </summary>
+        /// <param name="id">Identifiant de la résidence à supprimer</param>
+        /// <returns>
+        /// Redirige vers Index avec un message de succès ou d'erreur.
+        /// </returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = "AdminUniquement")]
+        public IActionResult Supprimer(int id)
+        {
+            // Récupère la résidence correspondant au ID
+            Residence? residence = _residenceRepository.GetById(id);
+
+            // Si la résidence n'existe pas
+            if (residence == null)
+            {
+                TempData["Erreur"] = $"La résidence avec l'ID {id} n'existe pas.";
+                return RedirectToAction("Index");
+            }
+
+            // Supprime la résidence de la base de données
+            _residenceRepository.Supprimer(residence);
+            TempData["Succes"] = $"La résidence {residence.Nom ?? ""} a été supprimé avec succès.";
+            return RedirectToAction("Index");
+        }
+    }
+}

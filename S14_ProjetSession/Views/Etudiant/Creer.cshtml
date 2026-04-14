@@ -1,0 +1,121 @@
+﻿@model S14_ProjetSession.Models.Etudiant
+
+@*
+    Vue : Creer.cshtml
+    Description : Formulaire permettant la création d’un nouvel étudiant
+                  avec saisie des informations personnelles et académiques.
+    @Author : John Zuleta
+*@
+<form asp-controller="Etudiant" asp-action="Creer" method="post">
+
+    @Html.AntiForgeryToken()
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="row">
+
+        <div class="col-md-6">
+            <label asp-for="Prenom"></label>
+            <input asp-for="Prenom" class="form-control" />
+            <span asp-validation-for="Prenom" class="text-danger"></span>
+        </div>
+    
+        <div class="col-md-6">
+            <label asp-for="Nom"></label>
+            <input asp-for="Nom" class="form-control" />
+            <span asp-validation-for="Nom" class="text-danger"></span>
+        </div>
+
+     
+
+        <div class="col-md-6 mt-3">
+            <label asp-for="DateNaissance"></label>
+            <input asp-for="DateNaissance" type="date" class="form-control" />
+            <span asp-validation-for="DateNaissance" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6 mt-3">
+            <label>Genre</label>
+            <select asp-for="GenreId" class="form-control"
+                    asp-items="@(new SelectList(ViewBag.Genres, "Id", "Nom"))">
+            </select>
+            <span asp-validation-for="GenreId" class="text-danger"></span>
+        </div>
+
+ 
+        <div class="col-12 mt-3">
+            <div class="form-check">
+                <input asp-for="MobiliteReduite" class="form-check-input" />
+                <label class="form-check-label">Mobilité réduite</label>
+            </div>
+        </div>
+ 
+
+        <div class="col-12 mt-3">
+            <label asp-for="AdressePermanente">Adresse</label>
+            <input asp-for="AdressePermanente" class="form-control" />
+            <span asp-validation-for="AdressePermanente" class="text-danger"></span>
+        </div>
+
+      
+        <div class="col-md-6 mt-3">
+            <label>Code postal</label>
+            <input name="CodePostal" class="form-control" />
+        </div>
+
+        <div class="col-md-6 mt-3">
+            <label asp-for="Telephone"></label>
+            <input asp-for="Telephone" class="form-control" />
+            <span asp-validation-for="Telephone" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6 mt-3">
+            <label asp-for="CourrielInstitutionnel"></label>
+            <input asp-for="CourrielInstitutionnel" class="form-control" value="@ViewBag.EmailPerso" />
+        </div>
+
+        <div class="col-md-6 mt-3">
+            <label asp-for="CourrielPersonnel"></label>
+            <input asp-for="CourrielPersonnel" class="form-control" />
+        </div>
+
+  
+        <div class="col-md-6 mt-3">
+            <label asp-for="noEtudiant"></label>
+            <input asp-for="noEtudiant" class="form-control" />
+        </div>
+
+        
+        <div class="col-md-6 mt-3">
+            <label asp-for="noAdmission"></label>
+            <input asp-for="noAdmission" class="form-control" />
+        </div>
+
+        <div class="col-md-6 mt-3">
+            <label>Programme</label>
+            <select asp-for="ProgrammeId" class="form-control"
+                    asp-items="@(new SelectList(ViewBag.Programmes, "Id", "Nom"))">
+            </select>
+        </div>
+
+
+
+        <div class="col-md-6 mt-3">
+            <label>Campus</label>
+            <select asp-for="CampusId" class="form-control"
+                    asp-items="@(new SelectList(ViewBag.Campus, "Id", "Nom"))">
+            </select>
+        </div>
+
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary">Créer</button>
+        <a asp-action="Index" class="btn btn-secondary">Annuler</a>
+    </div>
+
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
