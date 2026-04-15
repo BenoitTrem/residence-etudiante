@@ -16,7 +16,7 @@
         </a>
     }
 
-    <hr />
+    <div class="hr"></div>
 
     <div class="row mt-5">
         @foreach (Residence residence in Model)
@@ -33,8 +33,7 @@
                             </a>
                         </div>
 
-                        <p class="card-text mb-1">@residence.AdresseString</p>
-                        <p class="card-text">@residence.Campus.Nom</p>
+                        <p class="card-text mb-1">@residence.AdresseComplete</p>
 
                         <p class="dispo">
                             @if (residence.UnitesDisponibles == 0)

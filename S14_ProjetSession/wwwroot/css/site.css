@@ -297,7 +297,7 @@ dialog {
     bottom: 120%;
     left: 50%;
     transform: translateX(-40%);
-    width: 460px;
+    width: 500px;
     background-color: rgba(37, 99, 235, 1);
     color: #e5e7eb;
     padding: 12px;
@@ -407,6 +407,10 @@ dialog {
         color: rgba(37, 99, 235, 1);
         background-color: rgba(37, 99, 235, 1);
     }
+
+.info-section {
+    display: block;
+}
 
 .utilisateur-container {
     background: #ffffff;
@@ -549,3 +553,10 @@ dialog {
         transform: scale(1.01);
         box-shadow: 0 20px 30px rgba(37, 99, 235, 0.5);
     }
+
+.hr {
+    border-top: 1px solid #ddd;
+    margin: 1rem 0;
+    width: 100%;
+}
+

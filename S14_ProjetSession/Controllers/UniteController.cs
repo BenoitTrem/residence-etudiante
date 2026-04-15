@@ -32,23 +32,26 @@ namespace S14_ProjetSession.Controllers
         [Authorize(Policy = "AdminOuGestionnaire")]
         public IActionResult Index(int id)
         {
-            // Récupère la résidence à partir de son ID
+            // Récupère la résidence
             Residence residence = _residenceRepository.GetById(id);
 
-            // Récupère la liste des unités disponibles associées à la résidence
+            if (residence == null)
+            {
+                return NotFound();
+            }
+
+            // Récupère les unités
             List<Unite> unitesDisponibles = _uniteRepository.GetByResidenceId(id);
 
-            // Vérifie si la résidence existe et passe les informations de la résidence à la vue via ViewBag
-            if (residence != null)
-            {
-                ViewBag.ResidenceId = residence.Id;
-                ViewBag.Adresse = residence.AdresseString;
-                ViewBag.Campus = residence.Campus?.Nom ?? "N/A";
-                ViewBag.NombreTotal = residence.TotalUnites; 
-                ViewBag.NombreUnites = residence.UnitesDisponibles;
-                ViewBag.TotalPlacesDisponibles = residence.TotalPlacesDisponibles;
-                ViewData["Title"] = "Unités de la résidence " + residence.Nom;
-            }
+            // Infos pour la vue
+            ViewBag.ResidenceId = residence.Id;
+            ViewBag.Adresse = residence.AdresseComplete;
+
+            ViewBag.NombreTotal = residence.TotalUnites;
+            ViewBag.NombreUnites = residence.UnitesDisponibles;
+            ViewBag.TotalPlacesDisponibles = residence.TotalPlacesDisponibles;
+
+            ViewData["Title"] = "Unités de la résidence " + residence.Nom;
 
             return View("Unites", unitesDisponibles);
         }

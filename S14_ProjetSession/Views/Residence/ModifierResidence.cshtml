@@ -14,53 +14,49 @@
                 <input asp-for="Nom" class="form-control" placeholder="Entrez un nom..." />
                 <span asp-validation-for="Nom" class="text-danger"></span>
             </div>
-            <div class="mb-3">
-                <label asp-for="Adresse.AdresseString" class="form-label">Adresse
-                    <span class="info-bulle">
+           <div class="mb-3">
+            <label asp-for="AdresseLigne" class="form-label">
+                Adresse
+                  <span class="info-bulle">
                         ?
                         <span class="info-texte">
-                            <strong>Format attendu :</strong>  Numéro civique, rue<br /><br />
-                            <strong>Exemple :</strong>  123 rue Sainte-Catherine
+                             <div class="info-section mb-2">
+                                <strong>Format attendu :</strong> Numéro civique, rue
+                            </div>
+                             <strong>Exemple :</strong> 123 rue Sainte-Catherine
                         </span>
                     </span>
-                </label>
-                <input asp-for="Adresse.AdresseString" class="form-control" placeholder="Entrez l'adresse complète..." />
-                <span asp-validation-for="Adresse.AdresseString" class="text-danger"></span>
-            </div>
+            </label>
+            <input asp-for="AdresseLigne" class="form-control" placeholder="Entrez l'adresse..." />
+            <span asp-validation-for="AdresseLigne" class="text-danger"></span>
+        </div>
 
-            <div class="row mb-3">
+           <div class="row mb-3">
                 <div class="col-md-4">
-                    <label class="form-label">Ville</label>
-                    <input asp-for="Adresse.Ville" class="form-control" readonly />
-                    <span asp-validation-for="Adresse.Ville" class="text-danger"></span>
+                    <label asp-for="Ville" class="form-label"></label>
+                    <input asp-for="Ville" class="form-control" readonly />
+                    <span asp-validation-for="Ville" class="text-danger"></span>
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label">Province</label>
-                    <input asp-for="Adresse.Province" class="form-control" readonly />
-                    <span asp-validation-for="Adresse.Province" class="text-danger"></span>
+                    <label asp-for="Province" class="form-label"></label>
+                    <input asp-for="Province" class="form-control" readonly />
+                    <span asp-validation-for="Province" class="text-danger"></span>
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label">Code postal</label>
-                    <input asp-for="Adresse.CodePostal" class="form-control" placeholder="Ex: J8X 3X2" />
-                    <span asp-validation-for="Adresse.CodePostal" class="text-danger"></span>
+                    <label asp-for="CodePostal" class="form-label"></label>
+                    <input asp-for="CodePostal" class="form-control" placeholder="Ex: J8X 3X2" />
+                    <span asp-validation-for="CodePostal" class="text-danger"></span>
                 </div>
             </div>
-
-            <div class="mb-3">
-                <label asp-for="CampusId" class="form-label">Campus</label>
-                <select asp-for="CampusId" asp-items="ViewBag.CampusList" class="form-control">
-                    <option value="">-- Sélectionner un campus --</option>
-                </select>
-                <span asp-validation-for="CampusId" class="text-danger"></span>
-            </div>
-
             <div class="mb-3">
                 <label class="form-label">
                     Commodités
                     <span class="info-bulle">
                         ?
                         <span class="info-texte">
-                            Sélectionnez les commodités offertes par la résidence.<br /><br />
+                             <div class="info-section mb-2">
+                                 Sélectionnez les commodités offertes par la résidence.
+                             </div>
                             Vous pouvez ajouter une description pour préciser les détails (ex. : horaires, conditions, particularités).
                         </span>
                     </span>

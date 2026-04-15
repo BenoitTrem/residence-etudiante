@@ -31,14 +31,16 @@ namespace S14_ProjetSessionTests.Unit
 
             _residenceRepoMock.Setup(r => r.GetAll()).Returns(residences);
             _residenceRepoMock.Setup(r => r.GetById(It.IsAny<int>()))
-                .Returns(new Residence
-                {
-                    Id = 1,
-                    Nom = "Test",
-                    CampusId = 1,
-                    Adresse = new Adresse { AdresseString = "Test", CodePostal = "J1J1J1" },
-                    ResidenceCommodites = new List<ResidenceCommodite>()
-                });
+                 .Returns(new Residence
+                 {
+                     Id = 1,
+                     Nom = "Test",
+                     AdresseLigne = "Test",
+                     Ville = "Gatineau",
+                     Province = "QC",
+                     CodePostal = "J1J1J1",
+                     ResidenceCommodites = new List<ResidenceCommodite>()
+                 });
 
             _campusRepoMock.Setup(c => c.Campus).Returns(new List<Campus>());
             _commoditeRepoMock.Setup(c => c.Commodites).Returns(new List<Commodite>());
@@ -76,11 +78,15 @@ namespace S14_ProjetSessionTests.Unit
             Residence residence = new Residence
             {
                 Nom = "Test",
-                CampusId = 1,
-                Adresse = new Adresse { AdresseString = "Test", CodePostal = "J1J1J1" }
+
+                AdresseLigne = "Test",
+                Ville = "Gatineau",
+                Province = "QC",
+                CodePostal = "J1J1J1"
             };
 
-            RedirectToActionResult resultat = _controller.Creer(residence, new List<CommoditeDescriptionViewModel>()) as RedirectToActionResult;
+            RedirectToActionResult resultat =
+                _controller.Creer(residence, new List<CommoditeDescriptionViewModel>()) as RedirectToActionResult;
 
             Assert.Equal("Index", resultat.ActionName);
         }
@@ -92,13 +98,16 @@ namespace S14_ProjetSessionTests.Unit
             Residence residence = new Residence
             {
                 Nom = "Test",
-                CampusId = 1,
-                Adresse = new Adresse { AdresseString = "Test", CodePostal = "J1J1J1" }
+
+                AdresseLigne = "Test",
+                Ville = "Gatineau",
+                Province = "QC",
+                CodePostal = "J1J1J1"
             };
 
             _controller.Creer(residence, new List<CommoditeDescriptionViewModel>());
 
-            _residenceRepoMock.Verify(r => r.Creer(residence), Times.Once);
+            _residenceRepoMock.Verify(r => r.Creer(It.IsAny<Residence>()), Times.Once);
         }
 
         // Vérifie que la création échoue si le nom existe déjà
@@ -108,12 +117,16 @@ namespace S14_ProjetSessionTests.Unit
             Residence residence = new Residence
             {
                 Nom = "Test",
-                CampusId = 1,
-                Adresse = new Adresse { AdresseString = "Test", CodePostal = "J1J1J1" }
+                AdresseLigne = "Test street",
+                Ville = "Gatineau",
+                Province = "QC",
+                CodePostal = "J1J1J1"
             };
 
             // Simule qu'un nom existe déjà
-            _residenceRepoMock.Setup(r => r.NomExiste("Test", 0)).Returns(true);
+            _residenceRepoMock
+                .Setup(r => r.NomExiste("Test", 0))
+                .Returns(true);
 
             _controller.Creer(residence, new List<CommoditeDescriptionViewModel>());
 
@@ -129,8 +142,10 @@ namespace S14_ProjetSessionTests.Unit
             {
                 Id = 1,
                 Nom = "Test",
-                CampusId = 1,
-                Adresse = new Adresse { AdresseString = "Test", CodePostal = "J1J1J1" }
+                AdresseLigne = "Test street",
+                Ville = "Gatineau",
+                Province = "QC",
+                CodePostal = "J1J1J1"
             };
 
             RedirectToActionResult resultat = _controller.Modifier(residence, new List<CommoditeDescriptionViewModel>()) as RedirectToActionResult;
@@ -146,8 +161,10 @@ namespace S14_ProjetSessionTests.Unit
             {
                 Id = 1,
                 Nom = "Test",
-                CampusId = 1,
-                Adresse = new Adresse { AdresseString = "Test", CodePostal = "J1J1J1" }
+                AdresseLigne = "Test",
+                Ville = "Gatineau",
+                Province = "QC",
+                CodePostal = "J1J1J1"
             };
 
             _controller.Modifier(residence, new List<CommoditeDescriptionViewModel>());

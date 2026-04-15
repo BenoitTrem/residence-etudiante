@@ -47,30 +47,22 @@ namespace S14_ProjetSession.Data
             // Résidences
             var residences = new Residence[]
             {
-        new Residence
-        {
-            Nom = "Résidence Maple",
-            CampusId = campusDb[0].Id,
-            Adresse = new Adresse
-            {
-                AdresseString = "100 Rue Maple",
-                Ville = "Gatineau",
-                Province = "QC",
-                CodePostal = "J8X 1A1"
-            }
-        },
-        new Residence
-        {
-            Nom = "Résidence Oak",
-            CampusId = campusDb[1].Id,
-            Adresse = new Adresse
-            {
-                AdresseString = "200 Rue Oak",
-                Ville = "Gatineau",
-                Province = "QC",
-                CodePostal = "J8X 2B2"
-            }
-        }
+                new Residence
+                {
+                    Nom = "Résidence Maple",
+                    AdresseLigne = "100 Rue Maple",
+                    Ville = "Gatineau",
+                    Province = "QC",
+                    CodePostal = "J8X 1A1"
+                },
+                new Residence
+                {
+                    Nom = "Résidence Oak",
+                    AdresseLigne = "200 Rue Oak",
+                    Ville = "Gatineau",
+                    Province = "QC",
+                    CodePostal = "J8X 2B2"
+                }
             };
 
             foreach (var residence in residences)
@@ -300,18 +292,17 @@ namespace S14_ProjetSession.Data
             context.Commodites.AddRange(commodites);
             context.SaveChanges();
 
-            var commoditesDb = context.Commodites.ToList();
           
 
             var residenceCommodites = new ResidenceCommodite[]
             {
-                new ResidenceCommodite { ResidenceId = residencesDb[0].Id, CommoditeId = commoditesDb[0].Id, Description = "WiFi rapide dans toutes les chambres" },
-                new ResidenceCommodite { ResidenceId = residencesDb[0].Id, CommoditeId = commoditesDb[1].Id, Description = "Salle de sport ouverte 6h-22h" },
-                new ResidenceCommodite { ResidenceId = residencesDb[0].Id, CommoditeId = commoditesDb[3].Id, Description = "Buanderie avec 4 machines" },
+                new ResidenceCommodite { ResidenceId = residencesDb[0].Id, CommoditeId = commodites[0].Id, Description = "WiFi rapide dans toutes les chambres" },
+                new ResidenceCommodite { ResidenceId = residencesDb[0].Id, CommoditeId = commodites[1].Id, Description = "Salle de sport ouverte 6h-22h" },
+                new ResidenceCommodite { ResidenceId = residencesDb[0].Id, CommoditeId = commodites[3].Id, Description = "Buanderie avec 4 machines" },
 
-                new ResidenceCommodite { ResidenceId = residencesDb[1].Id, CommoditeId = commoditesDb[0].Id, Description = "WiFi illimité" },
-                new ResidenceCommodite { ResidenceId = residencesDb[1].Id, CommoditeId = commoditesDb[2].Id, Description = "Stationnement extérieur gratuit" },
-                new ResidenceCommodite { ResidenceId = residencesDb[1].Id, CommoditeId = commoditesDb[5].Id}
+                new ResidenceCommodite { ResidenceId = residencesDb[1].Id, CommoditeId = commodites[0].Id, Description = "WiFi illimité" },
+                new ResidenceCommodite { ResidenceId = residencesDb[1].Id, CommoditeId = commodites[2].Id, Description = "Stationnement extérieur gratuit" },
+                new ResidenceCommodite { ResidenceId = residencesDb[1].Id, CommoditeId = commodites[5].Id}
             };
 
             context.ResidenceCommodites.AddRange(residenceCommodites);

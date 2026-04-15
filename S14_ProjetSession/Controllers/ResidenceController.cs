@@ -94,11 +94,17 @@ namespace S14_ProjetSession.Controllers
         {
             ViewData["Title"] = "Ajout d'une résidence";
 
-            // Envoie en ViewBag les commoditées et campus à la vue
+            // Envoie les commodités à la vue
             ViewBag.Commodites = GetListeCommodites(new List<CommoditeDescriptionViewModel>());
-            ViewBag.CampusList = new SelectList(_campusRepository.Campus, "Id", "Nom");
 
-            return View(new Residence{Adresse = new Adresse()});
+            // Initialisation du modèle avec valeurs par défaut
+            Residence residence = new Residence
+            {
+                Ville = "Gatineau",
+                Province = "QC"
+            };
+
+            return View(residence);
         }
 
         /// <summary>
@@ -153,32 +159,26 @@ namespace S14_ProjetSession.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = "AdminOuGestionnaire")]
-        public IActionResult Creer([Bind("Nom, CampusId, Adresse")] Residence residence, List<CommoditeDescriptionViewModel> commodites)
+        public IActionResult Creer([Bind("Nom, AdresseLigne, Ville, Province, CodePostal")] Residence residence,
+            List<CommoditeDescriptionViewModel> commodites)
         {
             ViewData["Title"] = "Ajout d'une résidence";
 
-            // Vérifie si le nom de la résidence existe déjà
+            // Vérifie si le nom existe déjà
             if (_residenceRepository.NomExiste(residence.Nom, residence.Id))
             {
                 ModelState.AddModelError("Nom", "Ce nom de résidence existe déjà.");
             }
 
-            // Vérifie que l'adresse est correctement remplie
-            if (residence.Adresse == null || string.IsNullOrWhiteSpace(residence.Adresse.AdresseString) 
-                || string.IsNullOrWhiteSpace(residence.Adresse.CodePostal))
+            // Vérifie que l'adresse est complète
+            if (string.IsNullOrWhiteSpace(residence.AdresseLigne) || string.IsNullOrWhiteSpace(residence.CodePostal))
             {
-                ModelState.AddModelError("Adresse", "Veuillez remplir toutes les informations d'adresse.");
+                ModelState.AddModelError("AdresseLigne", "Veuillez remplir toutes les informations d'adresse.");
             }
 
-            // Vérifie que l'utilisateur a sélectionné un campus valide
-            if (residence.CampusId <= 0)
-            {
-                ModelState.AddModelError("CampusId", "Veuillez sélectionner un campus.");
-            }
+            ModelState.Remove("ResidenceCommodites");
 
-            ModelState.Remove("ResidenceCommodites"); // Supprime l'état du modèle pour les commodités avant validation
-
-            // Si le modèle est valide, les commodités choisies sont ajoutés
+            // Ajout des commodités si valide
             if (ModelState.IsValid)
             {
                 try
@@ -191,19 +191,21 @@ namespace S14_ProjetSession.Controllers
                 }
             }
 
-            // Si le modèle n'est pas valide, retourne le formulaire avec les erreurs
+            // Si erreurs, retourner la vue
             if (!ModelState.IsValid)
             {
                 TempData["Erreur"] = "Veuillez corriger les erreurs.";
 
-                ViewBag.CampusList = new SelectList(_campusRepository.Campus, "Id", "Nom");
-                ViewBag.Commodites = GetListeCommodites(commodites); 
+                ViewBag.Commodites = GetListeCommodites(commodites);
 
                 return View("AjouterResidence", residence);
             }
-            // Enregistre la nouvelle résidence dans la base de données
+
+            // Sauvegarde
             _residenceRepository.Creer(residence);
+
             TempData["Succes"] = $"La résidence {residence.Nom ?? ""} a été créée avec succès.";
+
             return RedirectToAction("Index");
         }
 
@@ -222,8 +224,11 @@ namespace S14_ProjetSession.Controllers
             // Récupère la résidence correspondant au ID
             Residence? residence = _residenceRepository.GetById(id);
 
-            // Envoie la liste des campus et sélectionne celui associé à la résidence
-            ViewBag.CampusList = new SelectList(_campusRepository.Campus, "Id", "Nom", residence?.CampusId);
+            if (residence == null)
+            {
+                TempData["Erreur"] = "La résidence demandée est introuvable.";
+                return RedirectToAction("Index");
+            }
 
             // Récupère la liste des commodités déjà associées à la résidence
             List<CommoditeDescriptionViewModel> commoditesSelectionnees = residence?.ResidenceCommodites
@@ -261,14 +266,16 @@ namespace S14_ProjetSession.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = "AdminOuGestionnaire")]
-        public IActionResult Modifier([Bind("Id, Nom, CampusId, Adresse")] Residence residence, List<CommoditeDescriptionViewModel> commodites)
+        public IActionResult Modifier([Bind("Id, Nom, AdresseLigne, Ville, Province, CodePostal")] Residence residence,
+            List<CommoditeDescriptionViewModel> commodites)
         {
-            // Récupère la résidence existante depuis la base de données
+            // Récupère la résidence existante
             Residence residenceDb = _residenceRepository.GetById(residence.Id);
 
-            if (residenceDb == null) // Si la résidence n'existe pas, retourne NotFound
+            if (residenceDb == null)
             {
-                return NotFound();
+                TempData["Erreur"] = "La résidence demandée est introuvable.";
+                return RedirectToAction("Index");
             }
 
             // Vérifie que le nom de la résidence n'est pas déjà utilisé par une autre résidence
@@ -278,10 +285,9 @@ namespace S14_ProjetSession.Controllers
             }
 
             // Vérifie que l'adresse est correctement remplie
-            if (residence.Adresse == null || string.IsNullOrWhiteSpace(residence.Adresse.AdresseString)
-                || string.IsNullOrWhiteSpace(residence.Adresse.CodePostal))
+            if (string.IsNullOrWhiteSpace(residence.AdresseLigne) || string.IsNullOrWhiteSpace(residence.CodePostal))
             {
-                ModelState.AddModelError("Adresse", "Veuillez remplir toutes les informations d'adresse.");
+                ModelState.AddModelError("AdresseLigne", "Veuillez remplir toutes les informations d'adresse.");
             }
 
             ModelState.Remove("ResidenceCommodites"); // Supprime l'état du modèle pour les commodités avant validation
@@ -292,8 +298,10 @@ namespace S14_ProjetSession.Controllers
                 try
                 {
                     residenceDb.Nom = residence.Nom;
-                    residenceDb.CampusId = residence.CampusId;
-                    residenceDb.Adresse = residence.Adresse;
+                    residenceDb.AdresseLigne = residence.AdresseLigne;
+                    residenceDb.Ville = residence.Ville;
+                    residenceDb.Province = residence.Province;
+                    residenceDb.CodePostal = residence.CodePostal;
 
                     AjoutCommoditesChoisies(residenceDb, commodites);
                 }
@@ -307,10 +315,9 @@ namespace S14_ProjetSession.Controllers
             if (!ModelState.IsValid)
             {
                 ViewData["Title"] = "Modification de la résidence " + residence.Nom;
-                ViewBag.CampusList = new SelectList(_campusRepository.Campus, "Id", "Nom", residence.CampusId);
                 ViewBag.Commodites = GetListeCommodites(commodites);
 
-                return View("ModifierResidence", residence);
+                return View("ModifierResidence", residenceDb);
             }
 
             // Sauvegarde les modifications dans la base de données
