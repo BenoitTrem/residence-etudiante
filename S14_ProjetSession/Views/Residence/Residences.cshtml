@@ -25,9 +25,9 @@
                 <div class="carte">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-start mb-3">
-                            <h5 class="card-title mb-0 text-truncate width" title="@residence.Nom">
+                            <h2 class="card-title mb-0 text-truncate width">
                                 @residence.Nom
-                            </h5>
+                            </h2>
                             <a class="btn btn-sm btn-outline-primary ms-2 flex-shrink-0" asp-controller="Residence" asp-action="ResidenceDetails" asp-route-id="@residence.Id">
                                 Détails
                             </a>
@@ -58,9 +58,9 @@
 
                                 <dialog id="@($"modalIndisponible_{residence.Id}")" class="info-modal">
                                     <div class="text-center py-3 px-3">
-                                        <h3 class="mb-3 text-danger fw-bold">
+                                        <h2 class="mb-3 text-danger fw-bold">
                                             Aucune unité disponible
-                                        </h3>
+                                        </h2>
                                         <p class="text-muted fs-5">
                                             Il n’y a actuellement aucune unité disponible dans la résidence
                                             <strong class="text-truncate">@residence.Nom</strong>.
@@ -129,7 +129,7 @@
                         }
 
                         <dialog id="@($"modalSupprimer_{residence.Id}")" class="danger">
-                            <h3>Supprimer une résidence</h3>
+                            <h2>Supprimer une résidence</h2>
                             <p class="mt-3">
                                 Êtes-vous sûr de vouloir supprimer la résidence
                                 <strong class="text-truncate">@residence.Nom</strong> ?
@@ -145,7 +145,7 @@
                         </dialog>
 
                         <dialog id="modalNonAdmin" class="info-modal">
-                            <h3>Accès refusé</h3>
+                            <h2>Accès refusé</h2>
                             <p>Vous devez être Admin pour effectuer cette action.</p>
                             <div class="d-flex justify-content-end mt-3">
                                 <button class="btn btn-outline-dark px-4" type="button" data-dialog-close>
@@ -155,7 +155,7 @@
                         </dialog>
 
                         <dialog id="modalConnexion" class="info-modal">
-                            <h3>Connexion requise</h3>
+                            <h2>Connexion requise</h2>
                             <p class="mt-3">
                                 Vous devez être connecté pour faire une demande.
                             </p>
@@ -170,7 +170,7 @@
                         </dialog>
 
                         <dialog id="modalEtudiant" class="info-modal">
-                            <h3>Profil étudiant requis</h3>
+                            <h2>Profil étudiant requis</h2>
                             <p class="mt-3">
                                 Vous devez compléter votre profil étudiant avant de faire une demande.
                             </p>

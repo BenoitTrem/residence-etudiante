@@ -57,3 +57,15 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
+
+function ouvreModiferModal(id, nom) {
+    document.getElementById("idCommoditeModifier").value = id;
+    document.getElementById("nomCommoditeModifier").value = nom;
+    document.getElementById("modalModifier").showModal();
+}
+
+function ouvreSupprimerModal(id, nom) {
+    document.getElementById("idCommoditeSupprimer").value = id;
+    document.getElementById("nomCommoditeSupprimer").innerText = nom;
+    document.getElementById("modalSupprimer").showModal();
+}

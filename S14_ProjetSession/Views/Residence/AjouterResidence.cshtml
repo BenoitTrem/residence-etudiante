@@ -73,7 +73,11 @@
                                         @commodite.CheckBoxViewModel.Label
                                     </label>
 
-                                    <textarea name="commodites[@index].Description" class="form-control mt-1 mb-3 description-input" rows="2" placeholder="Ajouter une description..."
+                                <label class="form-label visually-hidden"
+                                       for="desc-@index">
+                                    Description commodité
+                                </label>
+                                <textarea id="desc-@index" name="commodites[@index].Description" class="form-control mt-1 mb-3 description-input" rows="2" placeholder="Ajouter une description..."
                                         style="display:none;">@commodite.DescriptionViewModel.Description</textarea>
                                 </li>
 
