@@ -9,19 +9,19 @@
 
         <div class="form-container">
             <div class="mb-4">
-                <label asp-for="Numero" class="form-label"></label>
+                <label asp-for="Numero" class="form-label required"></label>
                 <input asp-for="Numero" class="form-control" placeholder="Ex: 101" />
                 <span asp-validation-for="Numero" class="text-danger"></span>
             </div>
 
-            <div class="mb-3">
-                <label asp-for="Capacite" class="form-label"></label>
+            <div class="mb-4">
+                <label asp-for="Capacite" class="form-label required"></label>
                 <input asp-for="Capacite" class="form-control" placeholder="Nombre de places..." />
                 <span asp-validation-for="Capacite" class="text-danger"></span>
             </div>
 
-            <div class="mb-3">
-                <label asp-for="AdapteePourMobiliteReduite" class="form-label"></label>
+            <div class="mb-4">
+                <label asp-for="AdapteePourMobiliteReduite" class="form-label required"></label>
                 <select asp-for="AdapteePourMobiliteReduite" class="form-control">
                     <option value="">-- Sélectionner --</option>
                     <option value="true">Oui</option>

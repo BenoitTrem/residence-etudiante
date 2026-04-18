@@ -78,7 +78,12 @@ namespace S14_ProjetSession.Controllers
         public IActionResult ResidenceDetails(int id)
         {
             Residence residence = _residenceRepository.GetById(id); 
-            if (residence == null) return NotFound();
+            if (residence == null)
+            {
+                TempData["Erreur"] = "La résidence demandée n’existe pas ou a été supprimée.";
+                return RedirectToAction("Index");
+            }
+               
             return View(residence);
         }
 
@@ -194,7 +199,7 @@ namespace S14_ProjetSession.Controllers
             // Si erreurs, retourner la vue
             if (!ModelState.IsValid)
             {
-                TempData["Erreur"] = "Veuillez corriger les erreurs.";
+                TempData["Erreur"] = "Une erreur s'est produite.";
 
                 ViewBag.Commodites = GetListeCommodites(commodites);
 
@@ -246,7 +251,7 @@ namespace S14_ProjetSession.Controllers
 
             ViewData["Title"] = "Modification de la résidence " + residence?.Nom;
 
-            return residence is null ? NotFound() : View("ModifierResidence", residence);
+            return View("ModifierResidence", residence);
         }
 
         /// <summary>
@@ -314,6 +319,7 @@ namespace S14_ProjetSession.Controllers
             // Si le modèle n'est pas valide, retourne le formulaire avec les erreurs
             if (!ModelState.IsValid)
             {
+                TempData["Erreur"] = "Une erreur s'est produite.";
                 ViewData["Title"] = "Modification de la résidence " + residence.Nom;
                 ViewBag.Commodites = GetListeCommodites(commodites);
 
@@ -341,7 +347,7 @@ namespace S14_ProjetSession.Controllers
         {
             // Récupère la résidence correspondant au ID
             Residence? residence = _residenceRepository.GetById(id);
-
+ 
             // Si la résidence n'existe pas
             if (residence == null)
             {

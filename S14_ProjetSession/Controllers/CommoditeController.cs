@@ -43,20 +43,23 @@ namespace S14_ProjetSession.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Creer([Bind("Nom")] Commodite commodite)
         {
-            if (ModelState.IsValid)
+            // Vérifie si le nom de la commodité existe déjà dans le repo.
+            if (_commoditeRepository.NomExiste(commodite.Nom))
             {
-                // Vérifie si le nom de la commodité existe déjà dans le repo.
-                if (_commoditeRepository.NomExiste(commodite.Nom))
-                {
-                    TempData["Erreur"] = "Ce nom de commodité existe déjà.";
-                }
-                else
-                {
-                    // Sinon, ajoute la nouvelle commodité a la DB
-                    _commoditeRepository.Ajouter(commodite);
-                    TempData["Succes"] = $"La commodité {commodite.Nom} a été ajoutée avec succès.";
-                }
+                TempData["Erreur"] = "Ce nom de commodité existe déjà.";
+                return RedirectToAction("Index");
             }
+
+            if (!ModelState.IsValid)
+            {
+                TempData["Erreur"] = "Une erreur s'est produite avec l'ajout de la commodité.";
+                return RedirectToAction("Index");
+            }
+            // Ajoute la nouvelle commodité a la DB
+            _commoditeRepository.Ajouter(commodite);
+            TempData["Succes"] = $"La commodité {commodite.Nom} a été ajoutée avec succès.";
+                
+            
             return RedirectToAction("Index");
         }
 
@@ -73,20 +76,21 @@ namespace S14_ProjetSession.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Modifier([Bind("Id, Nom")] Commodite commodite)
         {
+                // Vérifie si le nouveau nom existe déjà pour une autre commodité
+            if (_commoditeRepository.NomExiste(commodite.Nom, commodite.Id))
+            {
+                TempData["Erreur"] = "Ce nom de commodité existe déjà.";
+                return RedirectToAction("Index");
+            }
+
             if (ModelState.IsValid)
             {
-                // Vérifie si le nouveau nom existe déjà pour une autre commodité
-                if (_commoditeRepository.NomExiste(commodite.Nom, commodite.Id))
-                {
-                    TempData["Erreur"] = "Ce nom de commodité existe déjà.";
-                }
-                else
-                {
-                    // Sinon, modifie la commodité
-                    _commoditeRepository.Modifier(commodite);
-                    TempData["Succes"] = $"La commodité {commodite.Nom} a été modifiée avec succès.";
-                }
+                TempData["Erreur"] = $"Une erreur s'est produite avec la modification de la commodité {commodite.Nom}.";
+                return RedirectToAction("Index");
             }
+
+            _commoditeRepository.Modifier(commodite);
+            TempData["Succes"] = $"La commodité {commodite.Nom} a été modifiée avec succès.";
             return RedirectToAction("Index");
         }
 
@@ -101,20 +105,18 @@ namespace S14_ProjetSession.Controllers
         /// </returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Supprimer(int Id)
+        public IActionResult Supprimer(int id)
         {
             // Récupère la commodité correspondant au ID
-            Commodite? commodite = _commoditeRepository.GetCommodite(Id);
+            Commodite? commodite = _commoditeRepository.GetCommodite(id);
             if (commodite == null)
             {
-                TempData["Erreur"] = "La commodité n'existe pas.";
+                TempData["Erreur"] = $"La commodité avec l'ID {id} n'existe pas.";
+                return RedirectToAction("Index");
             }
-            else
-            {
-                // Sinon, supprime la commodité de la DB
-                _commoditeRepository.Supprimer(commodite);
-                TempData["Succes"] = $"La commodité {commodite.Nom} a été supprimée avec succès.";
-            }
+           
+            _commoditeRepository.Supprimer(commodite);
+            TempData["Succes"] = $"La commodité {commodite.Nom} a été supprimée avec succès.";
             return RedirectToAction("Index");
         }
     }

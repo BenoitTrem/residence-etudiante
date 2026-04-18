@@ -100,12 +100,13 @@ body {
 .unite-row {
     border-radius: 5px;
     border-left: 3px solid white;
-    padding: 2rem;
+    padding: 1.5rem;
     margin-bottom: 15px;
     background: linear-gradient(145deg, #ffffff, #f8fafc);
     box-shadow: 0 8px 25px rgba(0,0,0,0.3);
     transition: all 0.2s ease;
     cursor: pointer;
+    line-height: 1.5rem;
 }
 
     .unite-row:hover {
@@ -118,6 +119,42 @@ body {
         padding: 0.5rem 1.4rem;
         border-radius: 5px;
     }
+
+.unite-compact {
+    padding: 0.75rem 1rem;
+    line-height: 1.3rem;
+    margin-bottom: 8px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+}
+
+    .unite-compact h2 {
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+    }
+
+    .unite-compact small {
+        font-size: 0.8rem;
+    }
+.unite-compact:hover {
+    border-left: 3px solid #0d6efd;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 14px rgba(37, 99, 235, 0.5);
+}
+
+.unite-compact .btn {
+    font-size: 1rem;
+    padding: 0.5rem 1.4rem;
+    border-radius: 5px;
+}
+
+.unite-full {
+}
+
+   .unite-full:hover {
+    border-left: 3px solid #dc3545;
+    box-shadow: 0 18px 40px rgba(220, 53, 69, 0.5);
+}
+ 
 
 .btn {
     border-radius:5px;
@@ -564,3 +601,7 @@ dialog {
     width: 100%;
 }
 
+label.required::after {
+    content: " *";
+    color: inherit;
+}

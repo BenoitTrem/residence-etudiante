@@ -18,6 +18,43 @@
 
     <div class="hr"></div>
 
+    @if (Model == null || !Model.Any())
+    {
+        <div class="text-center py-5">
+
+            @if ((await AuthorizationService.AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded)
+            {
+                <h2 class="mb-3 text-danger fw-bold">
+                    Aucune résidence disponible
+                </h2>
+
+                <p class="text-muted fs-5">
+                    Aucune résidence n’a encore été ajoutée.
+                </p>
+
+                <p class="text-muted fs-5">
+                    Utilisez le bouton <strong>« Ajouter une résidence »</strong> en haut de la page pour en créer une.
+                </p>
+            }
+            else
+            {
+                <h2 class="mb-3 text-danger fw-bold">
+                    Aucune résidence disponible
+                </h2>
+
+                <p class="text-muted fs-5">
+                    Il n’y a actuellement aucune résidence disponible.
+                </p>
+
+                <p class="text-muted fs-5">
+                    Revenez plus tard ou contactez l’administration pour plus d’informations.
+                </p>
+            }
+
+        </div>
+    }
+    else
+    {
     <div class="row mt-5">
         @foreach (Residence residence in Model)
         {
@@ -127,6 +164,7 @@
                                 }
                             </div>
                         }
+                   
 
                         <dialog id="@($"modalSupprimer_{residence.Id}")" class="danger">
                             <h2>Supprimer une résidence</h2>
@@ -189,4 +227,5 @@
             </div>
         }
     </div>
+    }
 </div>

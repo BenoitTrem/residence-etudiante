@@ -10,19 +10,33 @@
         <div class="form-container">
 
             <div class="mb-4">
-                <label asp-for="Numero" class="form-label"></label>
-                <input asp-for="Numero" class="form-control" placeholder="Ex: 101" />
-                <span asp-validation-for="Numero" class="text-danger"></span>
+
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <label class="form-label fw-semibold mb-0 required">
+                        Nombre d’unités à ajouter
+                    </label>
+
+                    <span class="text-muted small">
+                        Maximum 50 unités par création
+                    </span>
+                </div>
+
+                <input type="number" name="nombreUnites" class="form-control" min="1" max="50" value="1" />
+
+                <span class="text-danger small">
+                    @Html.ValidationMessage("nombreUnites")
+                </span>
+
             </div>
 
-            <div class="mb-3">
-                <label asp-for="Capacite" class="form-label"></label>
+            <div class="mb-4">
+                <label asp-for="Capacite" class="form-label required"></label>
                 <input asp-for="Capacite" class="form-control" placeholder="Nombre de places..." />
                 <span asp-validation-for="Capacite" class="text-danger"></span>
             </div>
 
-            <div class="mb-3">
-                <label asp-for="AdapteePourMobiliteReduite" class="form-label"></label>
+            <div class="mb-4">
+                <label asp-for="AdapteePourMobiliteReduite" class="form-label required"></label>
                 <select asp-for="AdapteePourMobiliteReduite" class="form-control">
                     <option value="">-- Sélectionner --</option>
                     <option value="true">Oui</option>

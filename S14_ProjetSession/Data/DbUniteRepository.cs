@@ -16,7 +16,17 @@ namespace S14_ProjetSession.Data
         public List<Unite> GetByResidenceId(int residenceId)
         {
             return _context.Unites
-                .Where(u => u.ResidenceId == residenceId && (u.Capacite - u.PlacesOccupees) > 0)
+                .Where(u => u.ResidenceId == residenceId)
+                .OrderByDescending(u => u.Capacite > u.PlacesOccupees)
+                .ThenBy(u => u.Numero)
+                .Include(u => u.Residence)
+                .ToList();
+        }
+
+        public List<Unite> GetDisponibleByResidenceId(int residenceId)
+        {
+            return _context.Unites
+                .Where(u => u.ResidenceId == residenceId && u.EstDisponible)
                 .Include(u => u.Residence)
                 .ToList();
         }
@@ -62,12 +72,13 @@ namespace S14_ProjetSession.Data
             return _context.Unites
                 .Any(u => u.Numero == numero && u.ResidenceId == residenceId);
         }
-        public bool UniteExiste(int numero, int residenceId, int id)
+        public bool UniteExiste(int? numero, int residenceId, int uniteId)
         {
-            return _context.Unites
-                .Any(u => u.Numero == numero
-                       && u.ResidenceId == residenceId
-                       && u.Id != id);
+            return _context.Unites.Any(u =>
+                u.Numero == numero &&
+                u.ResidenceId == residenceId &&
+                u.Id != uniteId
+            );
         }
     }
 }
