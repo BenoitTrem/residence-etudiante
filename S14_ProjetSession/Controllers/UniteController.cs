@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using S14_ProjetSession.Data;
 using S14_ProjetSession.Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 /*
  * @author Benoit
@@ -29,7 +30,7 @@ namespace S14_ProjetSession.Controllers
         /// <param name="id">Identifiant de la résidence</param>
         /// <returns>Vue Unites avec la liste des unités disponibles de la résidence</returns>
         [Authorize(Policy = "AdminOuGestionnaire")]
-        public IActionResult Index(int id, int page = 1)
+        public IActionResult Index(int id, int page = 1, bool? disponible = null, int? capacite = null, int? numero = null, bool? ascendant = true, bool? mobiliteReduite = null)
         {
             // Récupère la résidence
             Residence residence = _residenceRepository.GetById(id);
@@ -39,16 +40,21 @@ namespace S14_ProjetSession.Controllers
                 return NotFound();
             }
 
+          
             // Récupère toutes les unités
             List<Unite> totalUnites = _uniteRepository.GetByResidenceId(id);
+
+
+            List<Unite> filteredUnites = _uniteRepository.GetFiltrerByResidenceId(
+                id, disponible, capacite, numero, ascendant ?? true, mobiliteReduite: mobiliteReduite);
 
             // Pagination
             int nbPage = 10;
 
-            List<Unite> unites = totalUnites
-                .Skip((page - 1) * nbPage)
-                .Take(nbPage)
-                .ToList();
+            List<Unite> unites = filteredUnites
+              .Skip((page - 1) * nbPage)
+              .Take(nbPage)
+              .ToList();
 
             // Infos pour la vue
             ViewBag.ResidenceId = residence.Id;
@@ -58,8 +64,14 @@ namespace S14_ProjetSession.Controllers
             ViewBag.NombreUnites = totalUnites.Count(u => u.EstDisponible);
             ViewBag.TotalPlacesDisponibles = totalUnites.Sum(u => u.PlacesDisponibles);
 
+            ViewBag.Disponible = disponible;
+            ViewBag.Capacite = capacite;
+            ViewBag.Numero = numero;
+            ViewBag.MobiliteReduite = mobiliteReduite;
+            ViewBag.Ascendant = ascendant;
+
             ViewBag.PageActuelle = page;
-            ViewBag.TotalPages = (int)Math.Ceiling((double)totalUnites.Count / nbPage);
+            ViewBag.TotalPages = (int)Math.Ceiling((double)filteredUnites.Count / nbPage);
 
             ViewData["Title"] = "Unités de la résidence " + residence.Nom;
 
@@ -122,17 +134,22 @@ namespace S14_ProjetSession.Controllers
             }
 
             Random random = new Random();
-
             // Création d'une nouvelle unité pour chaque itération
             for (int i = 0; i < nombreUnites; i++)
             {
+                int numeroSuivant = _uniteRepository
+                    .GetByResidenceId(unite.ResidenceId)
+                    .Select(u => u.Numero ?? 0)
+                    .DefaultIfEmpty(0)
+                    .Max() + 1;
+
                 Unite nouvelleUnite = new Unite
                 {
                     Capacite = unite.Capacite,
                     AdapteePourMobiliteReduite = unite.AdapteePourMobiliteReduite,
                     ResidenceId = unite.ResidenceId,
                     PlacesOccupees = 0,
-                    Numero = random.Next(1, 9999)   // Génération d'un numéro aléatoire pour l'unité
+                    Numero = numeroSuivant
                 };
 
                 // Enregistre la nouvelle unité dans la DB

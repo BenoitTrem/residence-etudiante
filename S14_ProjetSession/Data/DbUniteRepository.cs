@@ -36,6 +36,54 @@ namespace S14_ProjetSession.Data
             return _context.Unites.Count(u => u.ResidenceId == residenceId);
         }
 
+        public List<Unite> GetFiltrerByResidenceId(int residenceId, bool? disponible, int? capacite, int? numero, bool ascendant = true, bool? mobiliteReduite = null)
+        {
+            List<Unite> unites = _context.Unites
+                .Where(u => u.ResidenceId == residenceId)
+                .Include(u => u.Residence)
+                .ToList();
+
+            if (disponible.HasValue)
+            {
+                unites = unites
+                    .Where(u => u.EstDisponible == disponible.Value)
+                    .ToList();
+            }
+
+            if (capacite.HasValue)
+            {
+                unites = unites
+                    .Where(u => u.Capacite >= capacite.Value)
+                    .ToList();
+            }
+
+            if (numero.HasValue)
+            {
+                unites = unites
+                    .Where(u => u.Numero.HasValue &&
+                                u.Numero.Value >= numero.Value)
+                    .ToList();
+            }
+
+            if (mobiliteReduite.HasValue)
+            {
+                unites = unites
+                    .Where(u => u.AdapteePourMobiliteReduite == mobiliteReduite.Value)
+                    .ToList();
+            }
+
+            if (ascendant)
+            {
+                unites = unites.OrderBy(u => u.Numero).ToList();
+            }
+            else
+            {
+                unites = unites.OrderByDescending(u => u.Numero).ToList();
+            }
+
+            return unites;
+        }
+
         public void Creer(Unite unite)
         {
             _context.Unites.Add(unite);

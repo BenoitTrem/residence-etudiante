@@ -10,6 +10,8 @@ namespace S14_ProjetSession.Data
 
         int GetTotalByResidenceId(int residenceId);
 
+        List<Unite> GetFiltrerByResidenceId(int residenceId, bool? disponible, int? capacite, int? numero, bool ascendant = true, bool? mobiliteReduite = null);
+
         public List<Unite> GetAll();
 
         public Unite GetById(int id);

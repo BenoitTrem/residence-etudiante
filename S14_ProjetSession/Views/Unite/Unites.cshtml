@@ -9,6 +9,7 @@
 @{
     bool compact = Model.Count >= 10;
     bool afficherPagination = ViewBag.TotalPages > 1;
+    bool estFiltrer = ViewBag.Disponible != null || ViewBag.Capacite != null || ViewBag.Numero != null;
 }
 
 <div class="container">
@@ -63,17 +64,93 @@
          }
 
   <div class="hr"></div>
+    <form method="get" class="mb-4">
+        <input type="hidden" name="id" value="@ViewBag.ResidenceId" />
+
+        <div class="row g-2">
+            <div class="col">
+                <label for="disponible" class="form-label small text-muted mb-1">
+                    Disponibilité
+                </label>
+                <select id="disponible" name="disponible" class="form-select form-select-sm">
+                    <option value="">Toutes</option>
+                    <option value="true" selected="@(ViewBag.Disponible?.ToString() == "True")">Disponible</option>
+                    <option value="false" selected="@(ViewBag.Disponible?.ToString() == "False")">Non disponible</option>
+                </select>
+            </div>
+
+            <div class="col">
+                <label for="capacite" class="form-label small text-muted mb-1">
+                    Capacité
+                </label>
+                <input id="capacite" type="number" name="capacite"
+                       class="form-control form-control-sm"
+                       value="@ViewBag.Capacite" placeholder="(ex: 1)" />
+            </div>
+
+            <div class="col">
+                <label for="numero" class="form-label small text-muted mb-1">
+                    Numéro
+                </label>
+                <input id="numero" type="number" name="numero"
+                       class="form-control form-control-sm"
+                       value="@ViewBag.Numero" placeholder="(ex: 1)" />
+            </div>
+
+            <div class="col">
+                <label for="mobiliteReduite" class="form-label small text-muted mb-1">
+                    Mobilité réduite
+                </label>
+                <select id="mobiliteReduite" name="mobiliteReduite" class="form-select form-select-sm">
+                    <option value="">Toutes</option>
+                    <option value="true" selected="@(ViewBag.MobiliteReduite == true)">Adaptée</option>
+                    <option value="false" selected="@(ViewBag.MobiliteReduite == false)">Non adaptée</option>
+                </select>
+            </div>
+
+            <div class="col">
+                <label for="ascendant" class="form-label small text-muted mb-1">
+                    Ordre d’affichage
+                </label>
+                <select id="ascendant" name="ascendant" class="form-select form-select-sm">
+                    <option value="true" selected="@(ViewBag.Ascendant == true)">Ascendant</option>
+                    <option value="false" selected="@(ViewBag.Ascendant == false)">Descendant</option>
+                </select>
+            </div>
+
+
+            <div class="col d-flex flex-column justify-content-end">
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-outline-primary w-100">
+                        Filtrer
+                    </button>
+
+                    <a class="btn btn-outline-dark w-100 d-flex align-items-center justify-content-center"
+                       asp-action="Index"
+                       asp-route-id="@ViewBag.ResidenceId">
+                        Réinitialiser
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
     @if (afficherPagination)
     {
         <div class="d-flex justify-content-center mt-5">
 
             @for (int i = 1; i <= ViewBag.TotalPages; i++)
             {
-                <a class="btn btn-sm @(i == ViewBag.PageActuelle ? "btn-primary" : "btn-outline-primary") mx-1" asp-action="Index" asp-route-id="@ViewBag.ResidenceId" asp-route-page="@i">
+                <a class="btn btn-sm @(i == ViewBag.PageActuelle ? "btn-primary" : "btn-outline-primary") mx-1" asp-action="Index" asp-route-id="@ViewBag.ResidenceId" 
+                   asp-route-page="@i"
+                   asp-route-disponible="@ViewBag.Disponible"
+                   asp-route-capacite="@ViewBag.Capacite"
+                   asp-route-numero="@ViewBag.Numero"
+                   asp-route-mobiliteReduite="@ViewBag.MobiliteReduite"
+                   asp-route-ascendant="@ViewBag.Ascendant">
+
                     @i
                 </a>
             }
-
         </div>
     } 
    
@@ -82,16 +159,29 @@
         {
             <div class="text-center py-5">
                 <h2 class="mb-3 text-danger fw-bold">
-                    Aucune unité disponible
+                    Aucune unité
                 </h2>
 
-                <p class="text-muted fs-5">
-                    Cette résidence ne contient actuellement aucune unité.
-                </p>
+                @if (estFiltrer)
+                {
+                    <p class="text-muted fs-5">
+                        Aucune unité ne correspond aux filtres appliqués.
+                    </p>
 
-                <p class="text-muted fs-5">
-                    Utilisez le bouton <strong>« Ajouter des unités »</strong> en haut de la page pour en créer.
-                </p>
+                    <p class="text-muted fs-5">
+                        Essayez de modifier ou réinitialiser les filtres.
+                    </p>
+                }
+                else
+                {
+                    <p class="text-muted fs-5">
+                        Cette résidence ne contient actuellement aucune unité.
+                    </p>
+
+                    <p class="text-muted fs-5">
+                        Utilisez le bouton <strong>« Ajouter des unités »</strong> en haut de la page pour en créer.
+                    </p>
+                }
             </div>
         }
         else
@@ -201,4 +291,20 @@
             }
         }
     </div>
+    @if (afficherPagination)
+    {
+        <div class="d-flex justify-content-center mt-5 mb-5">
+
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                <a class="btn btn-sm @(i == ViewBag.PageActuelle ? "btn-primary" : "btn-outline-primary") mx-1" asp-action="Index" asp-route-id="@ViewBag.ResidenceId"
+                   asp-route-page="@i"
+                   asp-route-disponible="@ViewBag.Disponible"
+                   asp-route-capacite="@ViewBag.Capacite"
+                   asp-route-numero="@ViewBag.Numero">
+                    @i
+                </a>
+            }
+        </div>
+    }
 </div>
