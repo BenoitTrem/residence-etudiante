@@ -13,19 +13,35 @@
 }
 
 <div class="container">
-    <div class="d-flex justify-content-between align-items-center mt-5">
-        <h1 class="text-truncate width">@ViewData["Title"]</h1>
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mt-5 mb-3">
+        <h1 class="text-truncate">
+            @ViewData["Title"]
+        </h1>
         <a class="btn btn-outline-dark px-4" asp-controller="Residence" asp-action="Index">
             Retour
         </a>
     </div>
+    <div class="mb-3">
+        <label for="residenceSelect" class="est-invisible">
+            Sélection de la résidence
+        </label>
+        <select id="residenceSelect" class="form-select form-select-lg fw-bold text-truncate w-100 w-md-75" onchange="loadUnits(this.value)" data-selected="@ViewBag.ResidenceId">
 
-    <div class="mt-2">
+            <option value="">Toutes les unités</option>
+
+            @foreach (Residence residence in ViewBag.Residences as List<Residence>)
+            {
+                <option value="@residence.Id">@residence.Nom</option>
+            }
+        </select>
+    </div>
+
+    <div class="mt-2 ms-3">
         <strong>Adresse :</strong>
         <span>@ViewBag.Adresse</span>
     </div>
 
-    <div class="mt-3">
+    <div class="mt-3 ms-3">
         <div>
             <strong>Unités totales :</strong>
             <span>@(ViewBag.NombreTotal ?? 0)</span>
@@ -39,7 +55,7 @@
         </div>
     </div>
 
-    <div class="mb-4 mt-3 d-flex align-items-center">
+    <div class="mb-4 mt-3 d-flex align-items-center ms-3">
         <strong class="me-2">Unités disponibles :</strong>
         @if (ViewBag.NombreUnites == 0)
         {
@@ -191,9 +207,18 @@
                 <div class="list-group-item unite-row @(compact ? "unite-compact" : "") 
                         @(unite.EstDisponible ? "" : "unite-full") d-flex justify-content-between align-items-center">
 
-                    <div>
+                    <div class="flex-grow-1 min-w-0">
                         <h2 class="mb-1">Unité #@unite.Numero</h2>
-                   
+
+                        @if (ViewBag.ModeToutesLesUnites == true)
+                        {
+                            <small class="text-muted d-block">
+                                <strong>Résidence :</strong>
+                                <span class="text-truncate w-100">
+                                    @unite.Residence?.Nom
+                                </span>
+                            </small>
+                        }
                         <small class="text-muted d-block">
                             <strong>Accessibilité :</strong>
                             @if (unite.AdapteePourMobiliteReduite == true)
@@ -264,10 +289,11 @@
                     </div>
 
                     <dialog id="@($"modalSupprimer_{unite.Id}")" class="danger">
-                        <h2>Supprimer une unité</h2>
+                        <h2>Suppression d’une unité</h2>
 
                         <p class="mt-3">
-                            Êtes-vous sûr de vouloir supprimer l'unité #<strong>@unite.Numero</strong> ?
+                            Êtes-vous sûr de vouloir supprimer l'unité #<strong>@unite.Numero</strong> de la résidence
+                            <strong class="text-truncate">@unite.Residence?.Nom</strong> ?
                         </p>
 
                         <form asp-action="Supprimer" asp-controller="Unite" method="post">

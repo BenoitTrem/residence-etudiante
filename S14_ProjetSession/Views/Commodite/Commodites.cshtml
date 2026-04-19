@@ -71,7 +71,7 @@
 </div>
 
 <dialog id="modalAjouter" class="info">
-    <h2>Ajouter une commodité</h2>
+    <h2>Ajout d'une commodité</h2>
     <form asp-action="Creer" asp-controller="Commodite" method="post">
         <div class="mb-3 mt-3">
             <label class="form-label required" for="nomCommodite">Nom</label>
@@ -85,7 +85,7 @@
 </dialog>
 
 <dialog id="modalModifier" class="info">
-    <h2>Modifier une commodité</h2>
+    <h2>Modification d'une commodité</h2>
 
     <form asp-action="Modifier" method="post">
         <input type="hidden" id="idCommoditeModifier" name="Id" />
@@ -103,7 +103,7 @@
 </dialog>
 
 <dialog id="modalSupprimer" class="danger">
-    <h2>Supprimer une commodité</h2>
+    <h2>Suppression d'une commodité</h2>
 
     <p>
         Êtes-vous sûr de vouloir supprimer <strong id="nomCommoditeSupprimer"></strong> ?

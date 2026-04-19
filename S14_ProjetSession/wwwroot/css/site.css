@@ -605,3 +605,29 @@ label.required::after {
     content: " *";
     color: inherit;
 }
+
+.form-select.text-truncate {
+    padding-right: 3rem;
+}
+
+.residence-name {
+    max-width: 100%;
+}
+
+    .residence-name span {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+.est-invisible {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}

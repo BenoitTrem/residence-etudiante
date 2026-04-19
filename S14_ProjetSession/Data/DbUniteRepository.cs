@@ -38,10 +38,21 @@ namespace S14_ProjetSession.Data
 
         public List<Unite> GetFiltrerByResidenceId(int residenceId, bool? disponible, int? capacite, int? numero, bool ascendant = true, bool? mobiliteReduite = null)
         {
-            List<Unite> unites = _context.Unites
-                .Where(u => u.ResidenceId == residenceId)
-                .Include(u => u.Residence)
-                .ToList();
+            List<Unite> unites;
+
+            if (residenceId > 0)
+            {
+                unites = _context.Unites
+                    .Where(u => u.ResidenceId == residenceId)
+                    .Include(u => u.Residence)
+                    .ToList();
+            }
+            else
+            {
+                unites = _context.Unites
+                    .Include(u => u.Residence)
+                    .ToList();
+            }
 
             if (disponible.HasValue)
             {
@@ -84,20 +95,21 @@ namespace S14_ProjetSession.Data
             return unites;
         }
 
-        public void Creer(Unite unite)
-        {
-            _context.Unites.Add(unite);
-            _context.SaveChanges();
-        }
-
         public List<Unite> GetAll()
         {
-            return _context.Unites.ToList();
+            return _context.Unites
+                .Include(u => u.Residence)
+                .ToList();
         }
 
         public Unite GetById(int id)
         {
             return _context.Unites.Find(id);
+        }
+        public void Creer(Unite unite)
+        {
+            _context.Unites.Add(unite);
+            _context.SaveChanges();
         }
 
         public void Modifier(Unite unite)

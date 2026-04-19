@@ -4,12 +4,26 @@
     <h1 class="mb-4 text-truncate">@ViewData["Title"]</h1>
 
     <form asp-controller="Unite" asp-action="Creer" method="post">
-
-        <input type="hidden" asp-for="ResidenceId" />
-
         <div class="form-container">
 
             <div class="mb-4">
+
+                <div class="mb-4">
+                    <label class="form-label required">Résidence</label>
+
+                    <select asp-for="ResidenceId" class="form-select">
+                        <option value="0">-- Sélectionner une résidence --</option>
+
+                        @foreach (Residence residence in ViewBag.Residences as List<Residence>)
+                        {
+                            <option value="@residence.Id">
+                                @residence.Nom
+                            </option>
+                        }
+                    </select>
+
+                    <span asp-validation-for="ResidenceId" class="text-danger"></span>
+                </div>
 
                 <div class="d-flex justify-content-between align-items-center mb-1">
                     <label class="form-label fw-semibold mb-0 required">
@@ -37,7 +51,7 @@
 
             <div class="mb-4">
                 <label asp-for="AdapteePourMobiliteReduite" class="form-label required"></label>
-                <select asp-for="AdapteePourMobiliteReduite" class="form-control">
+                <select asp-for="AdapteePourMobiliteReduite" class="form-select">
                     <option value="">-- Sélectionner --</option>
                     <option value="true">Oui</option>
                     <option value="false">Non</option>

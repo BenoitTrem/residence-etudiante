@@ -32,6 +32,9 @@
                         @if (User.IsInRole("Admin") || User.IsInRole("Gestionnaire"))
                         {
                             <li class="nav-item">
+                                <a class="nav-link fw-semibold px-3" asp-controller="Unite" asp-action="Index">Unités</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link fw-semibold px-3" asp-controller="Commodite" asp-action="Index">Commodités</a>
                             </li>
                         }
