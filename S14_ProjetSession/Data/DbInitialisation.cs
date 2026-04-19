@@ -314,7 +314,6 @@ namespace S14_ProjetSession.Data
             context.SaveChanges();
 
           
-
             var residenceCommodites = new ResidenceCommodite[]
             {
                 new ResidenceCommodite { ResidenceId = residencesDb[0].Id, CommoditeId = commodites[0].Id, Description = "WiFi rapide dans toutes les chambres" },
