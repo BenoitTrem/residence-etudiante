@@ -29,8 +29,8 @@ namespace S14_ProjetSession.Data
             // Campus
             var campusList = new Campus[]
             {
-        new Campus{ Nom = "Campus Gabrielle-Roy", Abreviation = "CGR" },
-        new Campus{ Nom = "Campus Félix-Leclerc", Abreviation = "CFL" }
+                new Campus{ Nom = "Campus Gabrielle-Roy", Abreviation = "CGR" },
+                new Campus{ Nom = "Campus Félix-Leclerc", Abreviation = "CFL" }
             };
 
             foreach (var campus in campusList)
@@ -77,30 +77,52 @@ namespace S14_ProjetSession.Data
             var residencesDb = context.Residences.ToList();
 
             // Unités
-            var unites = new Unite[]
+            var unites = new List<Unite>();
+            var random = new Random();
+
+            int numero = 1;
+            for (int i = 0; i < 15; i++)
             {
-        new Unite { Numero = 101, Capacite = 2, ResidenceId = residencesDb[0].Id, AdapteePourMobiliteReduite = true },
-        new Unite { Numero = 102, Capacite = 1, ResidenceId = residencesDb[0].Id, AdapteePourMobiliteReduite = false },
-        new Unite { Numero = 201, Capacite = 2, ResidenceId = residencesDb[1].Id, AdapteePourMobiliteReduite = true },
-        new Unite { Numero = 202, Capacite = 3, ResidenceId = residencesDb[1].Id, AdapteePourMobiliteReduite = true }
-            };
+                unites.Add(new Unite
+                {
+                    Numero = numero++,
+                    Capacite = random.Next(1, 6),
+                    ResidenceId = residencesDb[0].Id,
+                    AdapteePourMobiliteReduite = random.Next(0, 5) == 0
+                });
+            }
+
+            numero = 1;
+            for (int i = 0; i < 5; i++)
+            {
+                unites.Add(new Unite
+                {
+                    Numero = numero++,
+                    Capacite = random.Next(1, 6),
+                    ResidenceId = residencesDb[1].Id,
+                    AdapteePourMobiliteReduite = random.Next(0, 5) == 0
+                });
+            }
 
             foreach (var unite in unites)
             {
-                if (!context.Unites.Any(u => u.Numero == unite.Numero && u.ResidenceId == unite.ResidenceId))
+                if (!context.Unites.Any(u =>
+                    u.Numero == unite.Numero &&
+                    u.ResidenceId == unite.ResidenceId))
                 {
                     context.Unites.Add(unite);
                 }
             }
+
             context.SaveChanges();
 
             // Genres
             var genres = new Genre[]
             {
-        new Genre{ Nom = "Homme" },
-        new Genre{ Nom = "Femme" },
-        new Genre{ Nom = "Non-binaire" },
-        new Genre{ Nom = "Autre" }
+                new Genre{ Nom = "Homme" },
+                new Genre{ Nom = "Femme" },
+                new Genre{ Nom = "Non-binaire" },
+                new Genre{ Nom = "Autre" }
             };
 
             foreach (var genre in genres)
@@ -117,10 +139,10 @@ namespace S14_ProjetSession.Data
             // Programmes
             var programmes = new Programme[]
             {
-        new Programme{ Nom = "Techniques de l'informatique", Code = "420.A0", CampusId = campusDb[0].Id },
-        new Programme{ Nom = "Sciences de la nature", Code = "200.B0", CampusId = campusDb[0].Id },
-        new Programme{ Nom = "Administration des affaires", Code = "410.B0", CampusId = campusDb[1].Id },
-        new Programme{ Nom = "Techniques de génie logiciel", Code = "420.B1", CampusId = campusDb[1].Id }
+                new Programme{ Nom = "Techniques de l'informatique", Code = "420.A0", CampusId = campusDb[0].Id },
+                new Programme{ Nom = "Sciences de la nature", Code = "200.B0", CampusId = campusDb[0].Id },
+                new Programme{ Nom = "Administration des affaires", Code = "410.B0", CampusId = campusDb[1].Id },
+                new Programme{ Nom = "Techniques de génie logiciel", Code = "420.B1", CampusId = campusDb[1].Id }
             };
 
             foreach (var programme in programmes)
@@ -137,87 +159,86 @@ namespace S14_ProjetSession.Data
             // Étudiants
             var etudiants = new Etudiant[]
             {
-        new Etudiant
-        {
-            Nom = "Tremblay",
-            Prenom = "Alex",
-            DateNaissance = new DateTime(2003, 5, 14),
-            GenreId = genreDb[0].Id,
-            ProgrammeId = programmeDb[0].Id,
-            CampusId = campusDb[0].Id,
-            noEtudiant = "20230001",
-            noAdmission = "ADM001",
-            MobiliteReduite = false,
-            AdressePermanente = "123 Rue Ottawa",
-            Telephone = "6131112222",
-            CourrielInstitutionnel = "alex.tremblay@college.ca",
-            CourrielPersonnel = "alex.tremblay@gmail.com"
-        },
-        new Etudiant
-        {
-            Nom = "Gagnon",
-            Prenom = "Marie",
-            DateNaissance = new DateTime(2002, 11, 2),
-            GenreId = genreDb[1].Id,
-            ProgrammeId = programmeDb[1].Id,
-            CampusId = campusDb[0].Id,
-            noEtudiant = "20230002",
-            noAdmission = "ADM002",
-            MobiliteReduite = false,
-            AdressePermanente = "45 Rue Montreal",
-            Telephone = "6133334444",
-            CourrielInstitutionnel = "marie.gagnon@college.ca",
-            CourrielPersonnel = "marie.gagnon@gmail.com"
-        },
-        new Etudiant
-        {
-            Nom = "Nguyen",
-            Prenom = "David",
-            DateNaissance = new DateTime(2004, 1, 20),
-            GenreId = genreDb[0].Id,
-            ProgrammeId = programmeDb[2].Id,
-            CampusId = campusDb[1].Id,
-            MobiliteReduite = true,
-            noEtudiant = "20230003",
-            noAdmission = "ADM003",
-            AdressePermanente = "78 Rue Gatineau",
-            Telephone = "6135556666",
-            CourrielInstitutionnel = "david.nguyen@college.ca",
-            CourrielPersonnel = "david.nguyen@gmail.com"
-        },
-        new Etudiant
-        {
-            Nom = "Bouchard",
-            Prenom = "Sophie",
-            DateNaissance = new DateTime(2003, 7, 9),
-            GenreId = genreDb[1].Id,
-            ProgrammeId = programmeDb[3].Id,
-            CampusId = campusDb[1].Id,
-            noEtudiant = "20230004",
-            noAdmission = "ADM004",
-            MobiliteReduite = false,
-            AdressePermanente = "90 Rue Quebec",
-            Telephone = "6137778888",
-            CourrielInstitutionnel = "sophie.bouchard@college.ca",
-            CourrielPersonnel = "sophie.bouchard@gmail.com"
-        },
-        new Etudiant
-{
-    Nom = "Lefevre",
-    Prenom = "Julien",
-    DateNaissance = new DateTime(2003, 3, 18),
-    GenreId = genreDb[0].Id,
-    ProgrammeId = programmeDb[1].Id,
-    CampusId = campusDb[0].Id,
-    noEtudiant = "20230005",
-    noAdmission = "ADM005",
-    MobiliteReduite = false,
-    AdressePermanente = "150 Rue Laval",
-    Telephone = "6139990000",
-    CourrielInstitutionnel = "julien.lefevre@college.ca",
-    CourrielPersonnel = "julien.lefevre@gmail.com"
-}
-
+                new Etudiant
+                {
+                    Nom = "Tremblay",
+                    Prenom = "Alex",
+                    DateNaissance = new DateTime(2003, 5, 14),
+                    GenreId = genreDb[0].Id,
+                    ProgrammeId = programmeDb[0].Id,
+                    CampusId = campusDb[0].Id,
+                    noEtudiant = "20230001",
+                    noAdmission = "ADM001",
+                    MobiliteReduite = false,
+                    AdressePermanente = "123 Rue Ottawa",
+                    Telephone = "6131112222",
+                    CourrielInstitutionnel = "alex.tremblay@college.ca",
+                    CourrielPersonnel = "alex.tremblay@gmail.com"
+                },
+                new Etudiant
+                {
+                    Nom = "Gagnon",
+                    Prenom = "Marie",
+                    DateNaissance = new DateTime(2002, 11, 2),
+                    GenreId = genreDb[1].Id,
+                    ProgrammeId = programmeDb[1].Id,
+                    CampusId = campusDb[0].Id,
+                    noEtudiant = "20230002",
+                    noAdmission = "ADM002",
+                    MobiliteReduite = false,
+                    AdressePermanente = "45 Rue Montreal",
+                    Telephone = "6133334444",
+                    CourrielInstitutionnel = "marie.gagnon@college.ca",
+                    CourrielPersonnel = "marie.gagnon@gmail.com"
+                },
+                new Etudiant
+                {
+                    Nom = "Nguyen",
+                    Prenom = "David",
+                    DateNaissance = new DateTime(2004, 1, 20),
+                    GenreId = genreDb[0].Id,
+                    ProgrammeId = programmeDb[2].Id,
+                    CampusId = campusDb[1].Id,
+                    MobiliteReduite = true,
+                    noEtudiant = "20230003",
+                    noAdmission = "ADM003",
+                    AdressePermanente = "78 Rue Gatineau",
+                    Telephone = "6135556666",
+                    CourrielInstitutionnel = "david.nguyen@college.ca",
+                    CourrielPersonnel = "david.nguyen@gmail.com"
+                },
+                new Etudiant
+                {
+                    Nom = "Bouchard",
+                    Prenom = "Sophie",
+                    DateNaissance = new DateTime(2003, 7, 9),
+                    GenreId = genreDb[1].Id,
+                    ProgrammeId = programmeDb[3].Id,
+                    CampusId = campusDb[1].Id,
+                    noEtudiant = "20230004",
+                    noAdmission = "ADM004",
+                    MobiliteReduite = false,
+                    AdressePermanente = "90 Rue Quebec",
+                    Telephone = "6137778888",
+                    CourrielInstitutionnel = "sophie.bouchard@college.ca",
+                    CourrielPersonnel = "sophie.bouchard@gmail.com"
+                },
+                new Etudiant
+                {
+                    Nom = "Lefevre",
+                    Prenom = "Julien",
+                    DateNaissance = new DateTime(2003, 3, 18),
+                    GenreId = genreDb[0].Id,
+                    ProgrammeId = programmeDb[1].Id,
+                    CampusId = campusDb[0].Id,
+                    noEtudiant = "20230005",
+                    noAdmission = "ADM005",
+                    MobiliteReduite = false,
+                    AdressePermanente = "150 Rue Laval",
+                    Telephone = "6139990000",
+                    CourrielInstitutionnel = "julien.lefevre@college.ca",
+                    CourrielPersonnel = "julien.lefevre@gmail.com"
+                }
             };
 
             foreach (var etudiant in etudiants)
