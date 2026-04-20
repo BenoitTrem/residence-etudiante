@@ -39,7 +39,7 @@ namespace S14_ProjetSession.Controllers
         {
             var model = new ErreurViewModel
             {
-                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
+              
                 StatusCode = statusCode ?? 500,
                 Message = statusCode switch
                 {
