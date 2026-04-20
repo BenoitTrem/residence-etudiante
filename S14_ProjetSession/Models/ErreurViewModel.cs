@@ -6,15 +6,7 @@ namespace S14_ProjetSession.Models
     /// <author>John Zuleta</author>
     public class ErreurViewModel
     {
-        /// <summary>
-        /// Identifiant unique de la requête 
-        /// </summary>
-        public string? RequestId { get; set; }
 
-        /// <summary>
-        /// Indique si le RequestId doit être affiché
-        /// </summary>
-        public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
         /// <summary>
         /// Code de l'erreur HTTP 
