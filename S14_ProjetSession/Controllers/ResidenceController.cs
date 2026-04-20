@@ -65,8 +65,9 @@ namespace S14_ProjetSession.Controllers
         {
             ViewData["Title"] = "Résidences";
 
-            List<Residence> residencesFiltrer = _residenceRepository.
-                GetResidenceFiltrer(disponible, nom, adresseLigne, ville, ascendant);
+            List<Residence> residencesFiltrer =
+                _residenceRepository.GetResidenceFiltrer(disponible, nom, adresseLigne, ville, ascendant)
+                ?? new List<Residence>();
 
             // Pagination
             int nbPage = 10;

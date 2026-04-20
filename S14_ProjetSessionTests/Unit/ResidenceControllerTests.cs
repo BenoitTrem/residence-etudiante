@@ -59,7 +59,9 @@ namespace S14_ProjetSessionTests.Unit
         [Fact(DisplayName = "Index retourne la vue Residences")]
         public void IndexRetourneVueResidences()
         {
-            ViewResult resultat = _controller.Index() as ViewResult;
+            ViewResult resultat = _controller.Index(null) as ViewResult;
+
+            Assert.NotNull(resultat);
             Assert.Equal("Residences", resultat.ViewName);
         }
 
@@ -67,7 +69,9 @@ namespace S14_ProjetSessionTests.Unit
         [Fact(DisplayName = "Index met le bon titre")]
         public void IndexMetBonTitre()
         {
-            ViewResult resultat = _controller.Index() as ViewResult;
+            ViewResult resultat = _controller.Index(null) as ViewResult;
+
+            Assert.NotNull(resultat);
             Assert.Equal("Résidences", resultat.ViewData["Title"]);
         }
 

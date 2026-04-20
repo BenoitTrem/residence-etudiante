@@ -112,5 +112,10 @@ namespace S14_ProjetSession.Data
         {
             return _residences.Any(r => r.Nom == nom && r.Id != id);
         }
+
+        public List<Residence> GetResidenceFiltrer(bool? disponible, string? nom, string? adresseLigne, string? ville, bool ascendant = true)
+        {
+            return _residences.ToList();
+        }
     }
 }
