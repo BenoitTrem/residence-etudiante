@@ -28,9 +28,9 @@ namespace S14_ProjetSession.Models
         public string AdresseLigne { get; set; }
 
         [Required(ErrorMessage = "Required")]
-        [StringLength(50)]
+        [StringLength(50, ErrorMessage = "La ville ne peut pas dépasser 50 caractères.")]
         [Display(Name = "Ville")]
-        public string Ville { get; set; } = "Gatineau";
+        public string Ville { get; set; }
 
         [Required(ErrorMessage = "Required")]
         [StringLength(2, MinimumLength = 2, ErrorMessage = "La province doit contenir 2 lettres.")]

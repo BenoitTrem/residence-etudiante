@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using S14_ProjetSession.Data;
 using S14_ProjetSession.Models;
 using S14_ProjetSession.ViewModels;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 /*
  * @author Benoit
@@ -60,10 +61,29 @@ namespace S14_ProjetSession.Controllers
         /// </summary>
         /// <returns>Vue "Residences" avec la liste complète des résidences</returns>
         [AllowAnonymous]
-        public IActionResult Index()
+        public IActionResult Index(int? id, int page = 1, bool? disponible = null, string? nom = null, string? adresseLigne = null, string? ville = null, bool ascendant = true)
         {
             ViewData["Title"] = "Résidences";
-            return View("Residences", _residenceRepository.GetAll());
+
+            List<Residence> residencesFiltrer = _residenceRepository.
+                GetResidenceFiltrer(disponible, nom, adresseLigne, ville, ascendant);
+
+            // Pagination
+            int nbPage = 10;
+            List<Residence> residences = residencesFiltrer
+                .Skip((page - 1) * nbPage)
+                .Take(nbPage)
+                .ToList();
+
+            ViewBag.Disponible = disponible;
+            ViewBag.Nom = nom;
+            ViewBag.AdresseLigne = adresseLigne;
+            ViewBag.Ville = ville;
+            ViewBag.Ascendant = ascendant;
+            ViewBag.PageActuelle = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)residencesFiltrer.Count / nbPage);
+
+            return View("Residences", residences);
         }
 
         /// <summary>
@@ -105,7 +125,6 @@ namespace S14_ProjetSession.Controllers
             // Initialisation du modèle avec valeurs par défaut
             Residence residence = new Residence
             {
-                Ville = "Gatineau",
                 Province = "QC"
             };
 

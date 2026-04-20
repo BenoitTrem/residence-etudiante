@@ -52,13 +52,13 @@ namespace S14_ProjetSession.Controllers
                 ViewBag.ResidenceName = "Toutes les résidences";
             }
 
-            List<Unite> filteredUnites = _uniteRepository.GetFiltrerByResidenceId(
+            List<Unite> unitesFiltrer = _uniteRepository.GetFiltrerByResidenceId(
                 id ?? 0, 
                 disponible, capacite, numero, ascendant ?? true, mobiliteReduite);
 
             // Pagination
             int nbPage = 10;
-            List<Unite> unites = filteredUnites
+            List<Unite> unites = unitesFiltrer
                 .Skip((page - 1) * nbPage)
                 .Take(nbPage)
                 .ToList();
@@ -70,7 +70,7 @@ namespace S14_ProjetSession.Controllers
             ViewBag.NombreUnites = totalUnites.Count(u => u.EstDisponible);
             ViewBag.TotalPlacesDisponibles = totalUnites.Sum(u => u.PlacesDisponibles);
             ViewBag.PageActuelle = page;
-            ViewBag.TotalPages = (int)Math.Ceiling((double)filteredUnites.Count / nbPage);
+            ViewBag.TotalPages = (int)Math.Ceiling((double)unitesFiltrer.Count / nbPage);
             ViewBag.ModeToutesLesUnites = !id.HasValue || id.Value <= 0;
 
             ViewBag.Disponible = disponible;

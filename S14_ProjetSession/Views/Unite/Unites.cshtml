@@ -9,7 +9,7 @@
 @{
     bool compact = Model.Count >= 10;
     bool afficherPagination = ViewBag.TotalPages > 1;
-    bool estFiltrer = ViewBag.Disponible != null || ViewBag.Capacite != null || ViewBag.Numero != null;
+    bool estFiltrer = ViewBag.Disponible != null || ViewBag.Capacite != null || ViewBag.Numero != null || ViewBag.MobiliteReduite != null;
 }
 
 <div class="container">
@@ -80,7 +80,7 @@
          }
 
   <div class="hr"></div>
-    <form method="get" class="mb-4">
+    <form method="get" class="mb-4 mt-4">
         <input type="hidden" name="id" value="@ViewBag.ResidenceId" />
 
         <div class="row g-2">
