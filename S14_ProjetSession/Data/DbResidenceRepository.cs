@@ -33,8 +33,8 @@ namespace S14_ProjetSession.Data
         public List<Residence> GetResidenceFiltrer(bool? disponible, string? nom, string? adresseLigne, string? ville, bool ascendant = true)
         {
             List<Residence> residences = _context.Residences
-        .Include(r => r.Unites) 
-        .ToList();
+            .Include(r => r.Unites) 
+            .ToList();
 
             if (disponible.HasValue)
             {

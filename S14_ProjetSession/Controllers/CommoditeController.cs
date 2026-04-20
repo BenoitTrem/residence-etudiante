@@ -24,10 +24,25 @@ namespace S14_ProjetSession.Controllers
         /// Affiche la liste de toutes les commodités.
         /// </summary>
         /// <returns>Vue Commodites avec la liste complète des commodités</returns>
-        public IActionResult Index()
+        public IActionResult Index(int? id, int page = 1, string? nom = null, bool ascendant = true)
         {
+            List<Commodite> commoditesFiltrer =
+               _commoditeRepository.GetCommoditeFiltrer(nom, ascendant)
+               ?? new List<Commodite>();
+
+            // Pagination
+            int nbPage = 10;
+            List<Commodite> commodites = commoditesFiltrer
+                .Skip((page - 1) * nbPage)
+                .Take(nbPage)
+                .ToList();
+
+            ViewBag.Nom = nom;
+            ViewBag.Ascendant = ascendant;
+            ViewBag.PageActuelle = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)commoditesFiltrer.Count / nbPage);
             ViewData["Title"] = "Commodités";
-            return View("Commodites", _commoditeRepository.GetAll());
+            return View("Commodites", commodites);
         }
 
         /// <summary>
