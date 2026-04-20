@@ -23,6 +23,29 @@ namespace S14_ProjetSession.Data
         {
             return _context.Commodites.ToList();
         }
+        public List<Commodite> GetCommoditeFiltrer(string? nom, bool ascendant = true)
+        {
+            List<Commodite> commodites = _context.Commodites
+            .ToList();
+
+            if (!string.IsNullOrEmpty(nom))
+            {
+                commodites = commodites
+                    .Where(r => r.Nom != null &&
+                                r.Nom.ToLower().Contains(nom.ToLower()))
+                    .ToList();
+            }
+            if (ascendant)
+            {
+                commodites = commodites.OrderBy(r => r.Nom).ToList();
+            }
+            else
+            {
+                commodites = commodites.OrderByDescending(r => r.Nom).ToList();
+            }
+
+            return commodites;
+        }
 
         public void Ajouter(Commodite commodite)
         {

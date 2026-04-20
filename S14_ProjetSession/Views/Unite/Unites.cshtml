@@ -174,9 +174,6 @@
         @if (Model == null || !Model.Any())
         {
             <div class="text-center py-5">
-                <h2 class="mb-3 text-danger fw-bold">
-                    Aucune unité
-                </h2>
 
                 @if (estFiltrer)
                 {
@@ -187,11 +184,17 @@
                     <p class="text-muted fs-5">
                         Essayez de modifier ou réinitialiser les filtres.
                     </p>
+                    <p class="text-muted fs-5">
+                        Utilisez le bouton <strong>« Ajouter des unités »</strong> en haut de la page pour en créer.
+                    </p>
                 }
                 else
                 {
+                    <h2 class="mb-3 text-danger fw-bold">
+                        Aucune unité
+                    </h2>
                     <p class="text-muted fs-5">
-                        Cette résidence ne contient actuellement aucune unité.
+                        Il y a actuellement aucune unité.
                     </p>
 
                     <p class="text-muted fs-5">
