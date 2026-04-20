@@ -50,26 +50,18 @@ namespace S14_ProjetSession.Data
                 new Residence
                 {
                     Nom = "Résidence Maple",
-                    CampusId = campusDb[0].Id,
-                    Adresse = new Adresse
-                    {
-                        AdresseString = "100 Rue Maple",
-                        Ville = "Gatineau",
-                        Province = "QC",
-                        CodePostal = "J8X 1A1"
-                    }
+                    AdresseLigne = "100 Rue Maple",
+                    Ville = "Gatineau",
+                    Province = "QC",
+                    CodePostal = "J8X 1A1"
                 },
                 new Residence
                 {
                     Nom = "Résidence Oak",
-                    CampusId = campusDb[1].Id,
-                    Adresse = new Adresse
-                    {
-                        AdresseString = "200 Rue Oak",
-                        Ville = "Gatineau",
-                        Province = "QC",
-                        CodePostal = "J8X 2B2"
-                    }
+                    AdresseLigne = "200 Rue Oak",
+                    Ville = "Gatineau",
+                    Province = "QC",
+                    CodePostal = "J8X 2B2"
                 }
             };
 
@@ -85,21 +77,43 @@ namespace S14_ProjetSession.Data
             var residencesDb = context.Residences.ToList();
 
             // Unités
-            var unites = new Unite[]
+            var unites = new List<Unite>();
+            var random = new Random();
+
+            int numero = 1;
+            for (int i = 0; i < 15; i++)
             {
-                new Unite { Numero = 101, Capacite = 2, ResidenceId = residencesDb[0].Id, AdapteePourMobiliteReduite = true },
-                new Unite { Numero = 102, Capacite = 1, ResidenceId = residencesDb[0].Id, AdapteePourMobiliteReduite = false },
-                new Unite { Numero = 201, Capacite = 2, ResidenceId = residencesDb[1].Id, AdapteePourMobiliteReduite = true },
-                new Unite { Numero = 202, Capacite = 3, ResidenceId = residencesDb[1].Id, AdapteePourMobiliteReduite = true }
-            };
+                unites.Add(new Unite
+                {
+                    Numero = numero++,
+                    Capacite = random.Next(1, 6),
+                    ResidenceId = residencesDb[0].Id,
+                    AdapteePourMobiliteReduite = random.Next(0, 5) == 0
+                });
+            }
+
+            numero = 1;
+            for (int i = 0; i < 5; i++)
+            {
+                unites.Add(new Unite
+                {
+                    Numero = numero++,
+                    Capacite = random.Next(1, 6),
+                    ResidenceId = residencesDb[1].Id,
+                    AdapteePourMobiliteReduite = random.Next(0, 5) == 0
+                });
+            }
 
             foreach (var unite in unites)
             {
-                if (!context.Unites.Any(u => u.Numero == unite.Numero && u.ResidenceId == unite.ResidenceId))
+                if (!context.Unites.Any(u =>
+                    u.Numero == unite.Numero &&
+                    u.ResidenceId == unite.ResidenceId))
                 {
                     context.Unites.Add(unite);
                 }
             }
+
             context.SaveChanges();
 
             // Genres
@@ -225,7 +239,6 @@ namespace S14_ProjetSession.Data
                     CourrielInstitutionnel = "julien.lefevre@college.ca",
                     CourrielPersonnel = "julien.lefevre@gmail.com"
                 }
-
             };
 
             foreach (var etudiant in etudiants)
@@ -299,6 +312,7 @@ namespace S14_ProjetSession.Data
 
             context.Commodites.AddRange(commodites);
             context.SaveChanges();
+
           
             var residenceCommodites = new ResidenceCommodite[]
             {

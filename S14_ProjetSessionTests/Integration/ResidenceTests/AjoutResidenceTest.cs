@@ -132,16 +132,16 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
             Dictionary<string, string> data = new Dictionary<string, string>
             {
                 { "Nom", "Nouvelle" },
-                { "CampusId", "1" },
-                { "Adresse.AdresseString", "123 rue" },
-                { "Adresse.CodePostal", "J1J1J1" }
+                { "AdresseLigne", "123 rue" },
+                { "Ville", "Gatineau" },
+                { "Province", "QC" },
+                { "CodePostal", "J1J1J1" }
             };
 
             HttpContent form = await GetForm(data);
 
             await _client.PostAsync("/Residence/Creer", form);
 
-            // Vérifie qu'une résidence a été ajoutée
             Assert.Equal(initial + 1, _residenceRepository.GetAll().Count);
         }
 
@@ -155,14 +155,16 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
             Dictionary<string, string> data = new Dictionary<string, string>
             {
                 { "Nom", "" },
-                { "CampusId", "1" }
+                { "AdresseLigne", "123 rue" },
+                { "Ville", "Gatineau" },
+                { "Province", "QC" },
+                { "CodePostal", "J1J1J1" }
             };
 
             HttpContent form = await GetForm(data);
 
             await _client.PostAsync("/Residence/Creer", form);
 
-            // Vérifie qu'aucune résidence n'a été ajoutée
             Assert.Equal(initial, _residenceRepository.GetAll().Count);
         }
     }

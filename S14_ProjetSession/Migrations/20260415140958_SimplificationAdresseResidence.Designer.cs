@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using S14_ProjetSession.Data;
 
@@ -11,9 +12,11 @@ using S14_ProjetSession.Data;
 namespace S14_ProjetSession.Migrations
 {
     [DbContext(typeof(ResidencesDbContext))]
-    partial class ResidencesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260415140958_SimplificationAdresseResidence")]
+    partial class SimplificationAdresseResidence
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -632,7 +635,7 @@ namespace S14_ProjetSession.Migrations
                     b.Property<int>("Capacite")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Numero")
+                    b.Property<int>("Numero")
                         .HasColumnType("int");
 
                     b.Property<int>("PlacesOccupees")
@@ -646,8 +649,7 @@ namespace S14_ProjetSession.Migrations
                     b.HasIndex("ResidenceId");
 
                     b.HasIndex("Numero", "ResidenceId")
-                        .IsUnique()
-                        .HasFilter("[Numero] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("Unites");
                 });

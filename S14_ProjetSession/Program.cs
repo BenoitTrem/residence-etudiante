@@ -133,7 +133,11 @@ else
 }
 
 app.UseHttpsRedirection();
+
 app.UseRouting();
+
+app.UseExceptionHandler("/Home/Erreur");
+app.UseStatusCodePagesWithReExecute("/Home/Erreur/{0}");
 
 app.UseAuthentication();
 app.UseAuthorization();

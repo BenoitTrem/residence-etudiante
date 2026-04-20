@@ -57,3 +57,35 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
+
+function ouvreModiferModal(id, nom) {
+    document.getElementById("idCommoditeModifier").value = id;
+    document.getElementById("nomCommoditeModifier").value = nom;
+    document.getElementById("modalModifier").showModal();
+}
+
+function ouvreSupprimerModal(id, nom) {
+    document.getElementById("idCommoditeSupprimer").value = id;
+    document.getElementById("nomCommoditeSupprimer").innerText = nom;
+    document.getElementById("modalSupprimer").showModal();
+}
+
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const select = document.getElementById('residenceSelect');
+    const selectedResidenceId = select.getAttribute('data-selected');
+
+    if (!selectedResidenceId) return;
+
+    for (let i = 0; i < select.options.length; i++) {
+        if (select.options[i].value == selectedResidenceId) {
+            select.selectedIndex = i;
+            break;
+        }
+    }
+});
+
+function loadUnits(residenceId) {
+    window.location.href = '/Unite/Index?id=' + residenceId;
+}

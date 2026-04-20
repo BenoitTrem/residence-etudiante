@@ -16,7 +16,17 @@ namespace S14_ProjetSession.Data
         public List<Unite> GetByResidenceId(int residenceId)
         {
             return _context.Unites
-                .Where(u => u.ResidenceId == residenceId && (u.Capacite - u.PlacesOccupees) > 0)
+                .Where(u => u.ResidenceId == residenceId)
+                .OrderByDescending(u => u.Capacite > u.PlacesOccupees)
+                .ThenBy(u => u.Numero)
+                .Include(u => u.Residence)
+                .ToList();
+        }
+
+        public List<Unite> GetDisponibleByResidenceId(int residenceId)
+        {
+            return _context.Unites
+                .Where(u => u.ResidenceId == residenceId && u.EstDisponible)
                 .Include(u => u.Residence)
                 .ToList();
         }
@@ -26,20 +36,80 @@ namespace S14_ProjetSession.Data
             return _context.Unites.Count(u => u.ResidenceId == residenceId);
         }
 
-        public void Creer(Unite unite)
+        public List<Unite> GetFiltrerByResidenceId(int residenceId, bool? disponible, int? capacite, int? numero, bool ascendant = true, bool? mobiliteReduite = null)
         {
-            _context.Unites.Add(unite);
-            _context.SaveChanges();
+            List<Unite> unites;
+
+            if (residenceId > 0)
+            {
+                unites = _context.Unites
+                    .Where(u => u.ResidenceId == residenceId)
+                    .Include(u => u.Residence)
+                    .ToList();
+            }
+            else
+            {
+                unites = _context.Unites
+                    .Include(u => u.Residence)
+                    .ToList();
+            }
+
+            if (disponible.HasValue)
+            {
+                unites = unites
+                    .Where(u => u.EstDisponible == disponible.Value)
+                    .ToList();
+            }
+
+            if (capacite.HasValue)
+            {
+                unites = unites
+                    .Where(u => u.Capacite >= capacite.Value)
+                    .ToList();
+            }
+
+            if (numero.HasValue)
+            {
+                unites = unites
+                    .Where(u => u.Numero.HasValue &&
+                                u.Numero.Value >= numero.Value)
+                    .ToList();
+            }
+
+            if (mobiliteReduite.HasValue)
+            {
+                unites = unites
+                    .Where(u => u.AdapteePourMobiliteReduite == mobiliteReduite.Value)
+                    .ToList();
+            }
+
+            if (ascendant)
+            {
+                unites = unites.OrderBy(u => u.Numero).ToList();
+            }
+            else
+            {
+                unites = unites.OrderByDescending(u => u.Numero).ToList();
+            }
+
+            return unites;
         }
 
         public List<Unite> GetAll()
         {
-            return _context.Unites.ToList();
+            return _context.Unites
+                .Include(u => u.Residence)
+                .ToList();
         }
 
         public Unite GetById(int id)
         {
             return _context.Unites.Find(id);
+        }
+        public void Creer(Unite unite)
+        {
+            _context.Unites.Add(unite);
+            _context.SaveChanges();
         }
 
         public void Modifier(Unite unite)
@@ -62,12 +132,13 @@ namespace S14_ProjetSession.Data
             return _context.Unites
                 .Any(u => u.Numero == numero && u.ResidenceId == residenceId);
         }
-        public bool UniteExiste(int numero, int residenceId, int id)
+        public bool UniteExiste(int? numero, int residenceId, int uniteId)
         {
-            return _context.Unites
-                .Any(u => u.Numero == numero
-                       && u.ResidenceId == residenceId
-                       && u.Id != id);
+            return _context.Unites.Any(u =>
+                u.Numero == numero &&
+                u.ResidenceId == residenceId &&
+                u.Id != uniteId
+            );
         }
     }
 }

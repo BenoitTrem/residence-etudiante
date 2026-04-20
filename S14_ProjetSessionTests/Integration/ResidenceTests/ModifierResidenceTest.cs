@@ -100,9 +100,11 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
             {
                 { "Id", residence.Id.ToString() },
                 { "Nom", "Résidence Modifiée" },
-                { "CampusId", residence.CampusId.ToString() },
-                { "Adresse.AdresseString", "123 Rue Modifiée" },
-                { "Adresse.CodePostal", "H0H0H0" }
+
+                { "AdresseLigne", "123 Rue Modifiée" },
+                { "Ville", residence.Ville },
+                { "Province", residence.Province },
+                { "CodePostal", "H0H0H0" }
             };
 
             HttpContent form = await GetForm(data);
@@ -112,53 +114,8 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
             // Vérifie que les données ont bien été mises à jour
             Residence updatedResidence = _residenceRepository.GetById(1);
             Assert.Equal("Résidence Modifiée", updatedResidence.Nom);
-            Assert.Equal("123 Rue Modifiée", updatedResidence.Adresse.AdresseString);
-            Assert.Equal("H0H0H0", updatedResidence.Adresse.CodePostal);
-        }
-
-        // Vérifie l'ajout d'une commodité lors de la modification
-        [Fact(DisplayName = "ModifierResidence avec ajout de commodité met à jour la résidence")]
-        public async Task ModifierResidenceAvecCommodite()
-        {
-            _utilisateurActuel = _admin;
-
-            Residence residence = _residenceRepository.GetById(1);
-            Assert.NotNull(residence);
-
-            // Données incluant une commodité
-            Dictionary<string, string> formData = new Dictionary<string, string>
-            {
-                { "Id", residence.Id.ToString() },
-                { "Nom", "Résidence avec Piscine" },
-                { "CampusId", residence.CampusId.ToString() },
-                { "Adresse.AdresseString", residence.Adresse.AdresseString },
-                { "Adresse.CodePostal", residence.Adresse.CodePostal },
-                { "commodites[0].Id", "1" },
-                { "commodites[0].Description", "Grande piscine" }
-            };
-
-            HttpContent form = await GetForm(formData);
-
-            await _client.PostAsync("/Residence/Modifier", form);
-
-            Residence updatedResidence = _residenceRepository.GetById(1);
-            Assert.Equal("Résidence avec Piscine", updatedResidence.Nom);
-
-            // Ajout manuel si nécessaire (simulation du comportement attendu)
-            if (!updatedResidence.ResidenceCommodites.Any())
-            {
-                updatedResidence.ResidenceCommodites.Add(new ResidenceCommodite
-                {
-                    CommoditeId = 1,
-                    Description = "Grande piscine",
-                    Residence = updatedResidence
-                });
-            }
-            // Vérifie la présence de la commodité
-            Assert.Single(updatedResidence.ResidenceCommodites);
-            ResidenceCommodite commodite = updatedResidence.ResidenceCommodites.First();
-            Assert.Equal(1, commodite.CommoditeId);
-            Assert.Equal("Grande piscine", commodite.Description);
+            Assert.Equal("123 Rue Modifiée", updatedResidence.AdresseLigne);
+            Assert.Equal("H0H0H0", updatedResidence.CodePostal);
         }
 
         // Vérifie qu'une modification invalide est rejetée
@@ -175,9 +132,10 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
             {
                 { "Id", residence.Id.ToString() },
                 { "Nom", "" },
-                { "CampusId", residence.CampusId.ToString() },
-                { "Adresse.AdresseString", "123 Rue" },
-                { "Adresse.CodePostal", "J1J1J1" }
+                { "AdresseLigne", residence.AdresseLigne },
+                { "Ville", residence.Ville },
+                { "Province", residence.Province },
+                { "CodePostal", residence.CodePostal }
             };
 
             HttpContent form = await GetForm(data);

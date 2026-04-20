@@ -18,20 +18,15 @@ namespace S14_ProjetSession.Data
         public MockResidenceRepository()
         {
             _residences = new List<Residence>
-            {
-                new Residence
+{
+              new Residence
                 {
                     Id = 1,
                     Nom = "Résidence Maple",
-                    CampusId = 1,
-                    Campus = new Campus { Id = 1, Nom = "Campus A" },
-                    Adresse = new Adresse
-                    {
-                        AdresseString = "100 Rue Maple",
-                        Ville = "Gatineau",
-                        Province = "QC",
-                        CodePostal = "J8X 1A1"
-                    },
+                    AdresseLigne = "100 Rue Maple",
+                    Ville = "Gatineau",
+                    Province = "QC",
+                    CodePostal = "J8X 1A1",
                     ResidenceCommodites = new List<ResidenceCommodite>(),
                     Unites = new List<Unite>
                     {
@@ -43,20 +38,15 @@ namespace S14_ProjetSession.Data
                 {
                     Id = 2,
                     Nom = "Résidence Oak",
-                    CampusId = 2,
-                    Campus = new Campus { Id = 2, Nom = "Campus B" }, 
-                    Adresse = new Adresse
-                    {
-                        AdresseString = "200 Rue Oak",
-                        Ville = "Gatineau",
-                        Province = "QC",
-                        CodePostal = "J8X 2B2"
-                    },
+                    AdresseLigne = "200 Rue Oak",
+                    Ville = "Gatineau",
+                    Province = "QC",
+                    CodePostal = "J8X 2B2",
                     ResidenceCommodites = new List<ResidenceCommodite>(),
-                      Unites = new List<Unite>
+                    Unites = new List<Unite>
                     {
-                        new Unite { Id = 1, Capacite = 2 },
-                        new Unite { Id = 2, Capacite = 0 }
+                        new Unite { Id = 3, Capacite = 2 },
+                        new Unite { Id = 4, Capacite = 0 }
                     }
                 }
             };
@@ -81,15 +71,19 @@ namespace S14_ProjetSession.Data
         public void Modifier(Residence residence)
         {
             Residence existing = GetById(residence.Id);
+
             if (existing != null)
             {
                 existing.Nom = residence.Nom;
-                existing.CampusId = residence.CampusId;
-                existing.Adresse = residence.Adresse;
+
+                existing.AdresseLigne = residence.AdresseLigne;
+                existing.Ville = residence.Ville;
+                existing.Province = residence.Province;
+                existing.CodePostal = residence.CodePostal;
 
                 existing.ResidenceCommodites.Clear();
 
-                foreach (var rc in residence.ResidenceCommodites)
+                foreach (ResidenceCommodite rc in residence.ResidenceCommodites)
                 {
                     existing.ResidenceCommodites.Add(new ResidenceCommodite
                     {
@@ -117,6 +111,11 @@ namespace S14_ProjetSession.Data
         public bool NomExiste(string nom, int id)
         {
             return _residences.Any(r => r.Nom == nom && r.Id != id);
+        }
+
+        public List<Residence> GetResidenceFiltrer(bool? disponible, string? nom, string? adresseLigne, string? ville, bool ascendant = true)
+        {
+            return _residences.ToList();
         }
     }
 }

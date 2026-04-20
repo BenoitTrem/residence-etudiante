@@ -6,7 +6,11 @@ namespace S14_ProjetSession.Data
     {
         List<Unite> GetByResidenceId(int residenceId);
 
+        List<Unite> GetDisponibleByResidenceId(int residenceId);
+
         int GetTotalByResidenceId(int residenceId);
+
+        List<Unite> GetFiltrerByResidenceId(int residenceId, bool? disponible, int? capacite, int? numero, bool ascendant = true, bool? mobiliteReduite = null);
 
         public List<Unite> GetAll();
 
@@ -19,7 +23,7 @@ namespace S14_ProjetSession.Data
         public void Supprimer(Unite unite);
 
         bool UniteExiste(int numero, int residenceId);
-        bool UniteExiste(int numero, int residenceId, int id);
+        bool UniteExiste(int? numero, int residenceId, int id);
 
     }
 }

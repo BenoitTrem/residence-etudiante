@@ -8,6 +8,8 @@ namespace S14_ProjetSession.Data
 
         public Residence GetById(int id);
 
+        public List<Residence> GetResidenceFiltrer(bool? disponible, string? nom, string? adresseLigne, string? ville, bool ascendant = true);
+
         public void Creer(Residence residence);
 
         public void Modifier(Residence residence);

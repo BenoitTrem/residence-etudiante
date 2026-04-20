@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using S14_ProjetSession.Data;
 using S14_ProjetSession.Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 /*
  * @author Benoit
@@ -28,29 +30,58 @@ namespace S14_ProjetSession.Controllers
         /// </summary>
         /// <param name="id">Identifiant de la résidence</param>
         /// <returns>Vue Unites avec la liste des unités disponibles de la résidence</returns>
-        [HttpGet("Unite/Residence/{id}")]
         [Authorize(Policy = "AdminOuGestionnaire")]
-        public IActionResult Index(int id)
+        public IActionResult Index(int? id, int page = 1, bool? disponible = null, int? capacite = null, int? numero = null, bool? ascendant = true, bool? mobiliteReduite = null)
         {
-            // Récupère la résidence à partir de son ID
-            Residence residence = _residenceRepository.GetById(id);
+            List<Residence> residences = _residenceRepository.GetAll(); 
 
-            // Récupère la liste des unités disponibles associées à la résidence
-            List<Unite> unitesDisponibles = _uniteRepository.GetByResidenceId(id);
-
-            // Vérifie si la résidence existe et passe les informations de la résidence à la vue via ViewBag
-            if (residence != null)
+            List<Unite> totalUnites;
+            if (id.HasValue && id.Value > 0)
             {
-                ViewBag.ResidenceId = residence.Id;
-                ViewBag.Adresse = residence.AdresseString;
-                ViewBag.Campus = residence.Campus?.Nom ?? "N/A";
-                ViewBag.NombreTotal = residence.TotalUnites; 
-                ViewBag.NombreUnites = residence.UnitesDisponibles;
-                ViewBag.TotalPlacesDisponibles = residence.TotalPlacesDisponibles;
-                ViewData["Title"] = "Unités de la résidence " + residence.Nom;
+                Residence residence = _residenceRepository.GetById(id.Value);
+                if (residence == null)
+                {
+                    return NotFound();
+                }
+                totalUnites = _uniteRepository.GetByResidenceId(id.Value);
+                ViewBag.ResidenceName = residence.Nom;
+            }
+            else
+            {
+                totalUnites = _uniteRepository.GetAll();
+                ViewBag.ResidenceName = "Toutes les résidences";
             }
 
-            return View("Unites", unitesDisponibles);
+            List<Unite> unitesFiltrer = _uniteRepository.GetFiltrerByResidenceId(
+                id ?? 0, 
+                disponible, capacite, numero, ascendant ?? true, mobiliteReduite);
+
+            // Pagination
+            int nbPage = 10;
+            List<Unite> unites = unitesFiltrer
+                .Skip((page - 1) * nbPage)
+                .Take(nbPage)
+                .ToList();
+
+            ViewBag.Residences = residences;
+            ViewBag.ResidenceId = id;
+            ViewBag.Adresse = id.HasValue ? _residenceRepository.GetById(id.Value)?.AdresseComplete : "N/A";
+            ViewBag.NombreTotal = totalUnites.Count;
+            ViewBag.NombreUnites = totalUnites.Count(u => u.EstDisponible);
+            ViewBag.TotalPlacesDisponibles = totalUnites.Sum(u => u.PlacesDisponibles);
+            ViewBag.PageActuelle = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)unitesFiltrer.Count / nbPage);
+            ViewBag.ModeToutesLesUnites = !id.HasValue || id.Value <= 0;
+
+            ViewBag.Disponible = disponible;
+            ViewBag.Capacite = capacite;
+            ViewBag.Numero = numero;
+            ViewBag.MobiliteReduite = mobiliteReduite;
+            ViewBag.Ascendant = ascendant;
+
+            ViewData["Title"] = "Unités de " + ViewBag.ResidenceName;
+
+            return View("Unites", unites);
         }
 
         /// <summary>
@@ -59,17 +90,26 @@ namespace S14_ProjetSession.Controllers
         /// <param name="residenceId">Identifiant de la résidence</param>
         /// <returns>Vue AjouteUnite avec un objet Unite initialisé pour la création</returns>
         [Authorize(Policy = "AdminOuGestionnaire")]
-        public IActionResult AjouterUnite(int residenceId)
+        public IActionResult AjouterUnite(int? residenceId)
         {
-            // Récupère la résidence à partir de son ID
-            Residence residence = _residenceRepository.GetById(residenceId);
+            List<Residence> residences = _residenceRepository.GetAll();
 
-            ViewData["Title"] = "Ajout d'une unité à la résidence " + residence.Nom;
+            ViewBag.Residences = residences;
+            ViewBag.ResidenceId = residenceId ?? 0;
 
-            // Initialise une nouvelle unité avec les valeurs par défaut
+            if (residenceId.HasValue && residenceId.Value > 0)
+            {
+                Residence residence = _residenceRepository.GetById(residenceId.Value);
+                ViewData["Title"] = "Ajout des unités";
+            }
+            else
+            {
+                ViewData["Title"] = "Ajout des unités";
+            }
+
             Unite unite = new Unite
             {
-                ResidenceId = residenceId,
+                ResidenceId = residenceId ?? 0,
                 PlacesOccupees = 0
             };
 
@@ -84,34 +124,60 @@ namespace S14_ProjetSession.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = "AdminOuGestionnaire")]
-        public IActionResult Creer([Bind("Numero, Capacite, ResidenceId, AdapteePourMobiliteReduite")] Unite unite)
+        public IActionResult Creer([Bind("Capacite, ResidenceId, AdapteePourMobiliteReduite")] Unite unite, int nombreUnites)
         {
-            unite.PlacesOccupees = 0;
-
             // Récupère la résidence associée à l'unité
             Residence residence = _residenceRepository.GetById(unite.ResidenceId);
 
-            // Vérifie si une unité avec le même numéro existe déjà dans la résidence
-            if (_uniteRepository.UniteExiste(unite.Numero, unite.ResidenceId))
+            if (nombreUnites < 1)
             {
-                TempData["Erreur"] = "Ce numéro d'unité existe déjà dans cette résidence.";
-                ViewData["Title"] = "Ajout d'une unité à la résidence " + residence.Nom;
+                ModelState.AddModelError("nombreUnites", "Vous devez ajouter au moins 1 unité.");
+            }
 
-                return View("AjouterUnite", unite);
+            if (nombreUnites > 50)
+            {
+                ModelState.AddModelError("nombreUnites", "Maximum 50 unités à la fois.");
+            }
+
+            if (unite.ResidenceId <= 0)
+            {
+                ModelState.AddModelError("ResidenceId", "Vous devez sélectionner une résidence.");
             }
 
             // Vérifie si les données du modèle sont valides
             if (!ModelState.IsValid)
             {
+                List<Residence> residences = _residenceRepository.GetAll();
+                ViewBag.Residences = residences;
                 TempData["Erreur"] = "Une erreur s'est produite.";
-                ViewData["Title"] = "Ajout d'une unité à la résidence " + residence.Nom;
+                ViewData["Title"] = "Ajout des unités";
 
                 return View("AjouterUnite", unite);
             }
 
-            // Enregistre la nouvelle unité dans la DB
-            _uniteRepository.Creer(unite);
-            TempData["Succes"] = $"L'unité #{unite.Numero} a été créé avec succès.";
+            Random random = new Random();
+            // Création d'une nouvelle unité pour chaque itération
+            for (int i = 0; i < nombreUnites; i++)
+            {
+                int numeroSuivant = _uniteRepository
+                    .GetByResidenceId(unite.ResidenceId)
+                    .Select(u => u.Numero ?? 0)
+                    .DefaultIfEmpty(0)
+                    .Max() + 1;
+
+                Unite nouvelleUnite = new Unite
+                {
+                    Capacite = unite.Capacite,
+                    AdapteePourMobiliteReduite = unite.AdapteePourMobiliteReduite,
+                    ResidenceId = unite.ResidenceId,
+                    PlacesOccupees = 0,
+                    Numero = numeroSuivant
+                };
+
+                // Enregistre la nouvelle unité dans la DB
+                _uniteRepository.Creer(nouvelleUnite);
+            }
+            TempData["Succes"] = $"{nombreUnites} unité(s) ont été créées avec succès.";
             return RedirectToAction("Index", new { id = unite.ResidenceId });
         }
 
@@ -129,8 +195,12 @@ namespace S14_ProjetSession.Controllers
             // Vérifie si l'unité existe
             if (unite == null)
             {
-                return NotFound();
+                TempData["Erreur"] = "L'unité demandée n'existe pas ou a été supprimée.";
+                return RedirectToAction("Index");
             }
+
+            ViewBag.Residences = _residenceRepository.GetAll();
+            ViewBag.ResidenceActuelle = _residenceRepository.GetById(unite.ResidenceId)?.Nom;
 
             ViewData["Title"] = "Modification de l'unité #" + unite.Numero;
 
@@ -147,13 +217,21 @@ namespace S14_ProjetSession.Controllers
         [Authorize(Policy = "AdminOuGestionnaire")]
         public IActionResult Modifier([Bind("Id, Numero, Capacite, ResidenceId, AdapteePourMobiliteReduite")] Unite unite)
         {
+
+            if (unite.Numero == null)
+            {
+                ModelState.AddModelError("Numero", "Le numéro est obligatoire.");
+            }
+
+            if (unite.ResidenceId <= 0)
+            {
+                ModelState.AddModelError("ResidenceId", "Vous devez sélectionner une résidence.");
+            }
+
             // Vérifie si une autre unité avec le même numéro existe déjà dans la résidence
             if (_uniteRepository.UniteExiste(unite.Numero, unite.ResidenceId, unite.Id))
             {
-                TempData["Erreur"] = "Ce numéro d'unité existe déjà dans cette résidence.";
-                ViewData["Title"] = "Modification de l'unité #" + unite.Numero;
-
-                return View("ModifierUnite", unite);
+                ModelState.AddModelError("Numero", "Ce numéro d'unité existe déjà dans cette résidence.");
             }
 
             // Vérifie si les données du modèle sont valides
@@ -161,6 +239,8 @@ namespace S14_ProjetSession.Controllers
             {
                 TempData["Erreur"] = "Une erreur s'est produite.";
                 ViewData["Title"] = "Modification de l'unité #" + unite.Numero;
+
+                ViewBag.Residences = _residenceRepository.GetAll();
 
                 return View("ModifierUnite", unite);
             }
@@ -189,7 +269,7 @@ namespace S14_ProjetSession.Controllers
             if (unite == null)
             {
                 TempData["Erreur"] = $"L'unité avec l'ID {id} n'existe pas.";
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Residence");
             }
 
             // Supprime l'unité de la DB

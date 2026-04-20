@@ -2,27 +2,44 @@
 
 <div class="container mt-5">
     <h1 class="mb-4">@ViewData["Title"]</h1>
+    <p class="text-muted mb-4">
+        Résidence actuelle : <strong>@ViewBag.ResidenceActuelle</strong>
+    </p>
 
     <form asp-controller="Unite" asp-action="Modifier" method="post">
         <input type="hidden" asp-for="Id" />
-        <input type="hidden" asp-for="ResidenceId" />
 
         <div class="form-container">
             <div class="mb-4">
-                <label asp-for="Numero" class="form-label"></label>
+                <label class="form-label required">Résidence</label>
+
+                <select asp-for="ResidenceId" class="form-select">
+                    @foreach (Residence residence in ViewBag.Residences as List<Residence>)
+                    {
+                        <option value="@residence.Id">
+                            @residence.Nom
+                        </option>
+                    }
+                </select>
+
+                <span asp-validation-for="ResidenceId" class="text-danger"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Numero" class="form-label required"></label>
                 <input asp-for="Numero" class="form-control" placeholder="Ex: 101" />
                 <span asp-validation-for="Numero" class="text-danger"></span>
             </div>
 
-            <div class="mb-3">
-                <label asp-for="Capacite" class="form-label"></label>
+            <div class="mb-4">
+                <label asp-for="Capacite" class="form-label required"></label>
                 <input asp-for="Capacite" class="form-control" placeholder="Nombre de places..." />
                 <span asp-validation-for="Capacite" class="text-danger"></span>
             </div>
 
-            <div class="mb-3">
-                <label asp-for="AdapteePourMobiliteReduite" class="form-label"></label>
-                <select asp-for="AdapteePourMobiliteReduite" class="form-control">
+            <div class="mb-4">
+                <label asp-for="AdapteePourMobiliteReduite" class="form-label required"></label>
+                <select asp-for="AdapteePourMobiliteReduite" class="form-select">
                     <option value="">-- Sélectionner --</option>
                     <option value="true">Oui</option>
                     <option value="false">Non</option>

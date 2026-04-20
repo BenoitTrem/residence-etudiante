@@ -53,11 +53,6 @@ public class ResidencesDbContext : IdentityDbContext<ApplicationUser>
                 .HasForeignKey(rc => rc.CommoditeId);
 
             // @author Benoit
-            //Permet de regrouper les champs liés à l'adresse dans l'entité Residence.
-            modelBuilder.Entity<Residence>()
-                 .OwnsOne(r => r.Adresse);
-
-            // @author Benoit
             //Relation un à plusieurs entre Residence et Unites
             modelBuilder.Entity<Residence>()
                     .HasMany(r => r.Unites) // Une résidence possède plusieurs unités
