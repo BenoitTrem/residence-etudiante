@@ -7,6 +7,7 @@
 
 <h1>Créer un campus</h1>
 
+<div class= "container mt-5 mb-5">
 <form asp-action="Creer" asp-controller="Campus" method="post">
     @Html.AntiForgeryToken()
 
@@ -27,6 +28,7 @@
     <button class="btn btn-primary">Créer</button>
     <a asp-action="Index" class="btn btn-secondary">Annuler</a>
 </form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

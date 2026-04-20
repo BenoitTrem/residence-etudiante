@@ -124,11 +124,14 @@
                 Enregistrer
             </button>
 
-            <a asp-action="Index"
-               class="btn btn-secondary">
-                Annuler
-            </a>
-
+             @if (!User.IsInRole("Admin") || !User.IsInRole("Gestionnaire"))
+             {
+                  <a asp-action="Profil" class="btn btn-secondary"> Annuler </a>
+             }
+             else
+             {
+              <a asp-action="Index" class="btn btn-secondary"> Annuler</a>     
+             }
         </div>
 
     </form>
