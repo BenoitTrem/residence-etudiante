@@ -1,4 +1,4 @@
-﻿
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -36,6 +36,9 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link fw-semibold px-3" asp-controller="Commodite" asp-action="Index">Commodités</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link fw-semibold px-3" asp-controller="GestionDemande" asp-action="Index">Gestion demandes</a>
                             </li>
                         }
                         @if ((await AuthorizationService.AuthorizeAsync(User, "estEtudiant")).Succeeded)
