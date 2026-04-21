@@ -168,7 +168,7 @@
                 if (!SignInManager.IsSignedIn(User))
                 {
                     <div class="d-flex justify-content-center mb-3">
-                        <button class="btn btn-outline-primary mt-5 px-5" type="button" data-dialog-open="modalConnexion">
+                        <button class="btn btn-outline-primary mt-5 px-5 btn-lg" type="button" data-dialog-open="modalConnexion">
                             Faire une demande
                         </button>
                     </div>
@@ -176,7 +176,7 @@
                 else if ((await AuthorizationService.AuthorizeAsync(User, "EstEtudiant")).Succeeded)
                 {
                     <div class="d-flex justify-content-center mb-3">
-                        <a class="btn btn-outline-primary mt-5" asp-controller="Demande" asp-action="Creer">
+                        <a class="btn btn-outline-primary mt-5 btn-lg" asp-controller="Demande" asp-action="Creer">
                             Faire une demande
                         </a>
                     </div>
@@ -184,7 +184,7 @@
                 else
                 {
                     <div class="d-flex justify-content-center mb-3">
-                        <button class="btn btn-outline-primary mt-5" type="button" data-dialog-open="modalEtudiant">
+                        <button class="btn btn-outline-primary mt-5 btn-lg" type="button" data-dialog-open="modalEtudiant">
                             Faire une demande
                         </button>
                      </div>
@@ -234,32 +234,28 @@
         @if ((await AuthorizationService.AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded)
         {
             <div class="d-flex justify-content-center mt-5">
-                <a class="btn btn-outline-primary w-50"
+                <a class="btn btn-outline-primary w-50 btn-lg"
                    asp-controller="Unite" asp-action="Index" asp-route-id="@Model.Id">
                     Voir les unités
                 </a>
             </div>
 
             <div class="d-flex justify-content-center gap-2 mt-2 flex-wrap w-50 mx-auto mb-3">
-                <a class="btn btn-outline-success flex-fill"
+                <a class="btn btn-outline-success flex-fill btn-lg"
                    asp-controller="Residence" asp-action="ModifierResidence" asp-route-id="@Model.Id">
                     Modifier
                 </a>
 
                 @if ((await AuthorizationService.AuthorizeAsync(User, "AdminUniquement")).Succeeded)
                 {
-                    <button class="btn btn-outline-danger flex-fill"
-                            type="button"
-                            data-dialog-open="modalSupprimer">
+                    <button class="btn btn-outline-danger flex-fill btn-lg" type="button" data-dialog-open="modalSupprimer">
                         Supprimer
                     </button>
                 }
 
                 @if ((await AuthorizationService.AuthorizeAsync(User, "GestionnaireUniquement")).Succeeded)
                 {
-                    <button class="btn btn-outline-danger btn-tooltip flex-fill"
-                            type="button"
-                            data-dialog-open="modalNonAdmin">
+                    <button class="btn btn-outline-danger btn-tooltip flex-fill btn-lg" type="button" data-dialog-open="modalNonAdmin">
                         Supprimer
                         <span class="tooltip-text">
                             Vous devez être Admin pour effectuer cette action
@@ -268,7 +264,6 @@
                 }
             </div>
         
-
             <dialog id="modalSupprimer" class="danger">
                 <h2>Supprimer une résidence</h2>
                 <p class="mt-3">

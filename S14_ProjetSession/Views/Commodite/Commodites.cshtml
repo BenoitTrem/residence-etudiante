@@ -134,10 +134,21 @@
                                 <button class="btn btn-outline-success px-3" onclick="ouvreModiferModal(@commodite.Id, '@commodite.Nom')">
                                     Modifier
                                 </button>
-
-                                <button class="btn btn-outline-danger px-3" onclick="ouvreSupprimerModal(@commodite.Id, '@commodite.Nom')">
-                                    Supprimer
-                                </button>
+                                @if ((await AuthorizationService.AuthorizeAsync(User, "AdminUniquement")).Succeeded)
+                                {
+                                    <button class="btn btn-outline-danger px-3" onclick="ouvreSupprimerModal(@commodite.Id, '@commodite.Nom')">
+                                        Supprimer
+                                    </button>
+                                }
+                                @if ((await AuthorizationService.AuthorizeAsync(User, "GestionnaireUniquement")).Succeeded)
+                                {
+                                    <button class="btn btn-outline-danger btn-tooltip flex-fill px-3" type="button" data-dialog-open="modalNonAdmin">
+                                        Supprimer
+                                        <span class="tooltip-text">
+                                            Vous devez être Admin pour effectuer cette action
+                                        </span>
+                                    </button>
+                                }
                             </div>
                         </div>
                     </div>
@@ -210,4 +221,11 @@
             <button type="button" class="btn btn-outline-dark px-4" data-dialog-close>Annuler</button>
         </div>
     </form>
+</dialog>
+<dialog id="modalNonAdmin" class="info-modal">
+    <h2>Accès refusé</h2>
+    <p>Vous devez être Admin pour effectuer cette action.</p>
+    <div class="d-flex justify-content-end mt-3">
+        <button class="btn btn-outline-dark px-4" type="button" data-dialog-close>Fermer</button>
+    </div>
 </dialog>

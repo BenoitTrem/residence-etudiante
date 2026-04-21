@@ -49,7 +49,7 @@ namespace S14_ProjetSession.Controllers
             else
             {
                 totalUnites = _uniteRepository.GetAll();
-                ViewBag.ResidenceName = "Toutes les résidences";
+                ViewBag.ResidenceName = "toutes les résidences";
             }
 
             List<Unite> unitesFiltrer = _uniteRepository.GetFiltrerByResidenceId(
