@@ -176,7 +176,7 @@
 
     else
     {
-    <div class="row mt-5">
+    <div class="row mt-5 mb-5">
         @foreach (Residence residence in Model)
         {
             <div class="col-md-6 mb-5">
@@ -209,10 +209,12 @@
                         @if (!User.IsInRole("Admin") && !User.IsInRole("Gestionnaire"))
                         {
                             if (residence.UnitesDisponibles == 0)
-                            {
-                                <button class="btn btn-outline-secondary" type="button" data-dialog-open="@($"modalIndisponible_{residence.Id}")">
-                                    Faire une demande
-                                </button>
+                                {
+                                    <div class="text-center mt-5">
+                                        <button class="btn btn-outline-secondary btn-lg px-5" type="button" data-dialog-open="@($"modalIndisponible_{residence.Id}")">
+                                            Faire une demande
+                                        </button>
+                                    </div>
 
                                 <dialog id="@($"modalIndisponible_{residence.Id}")" class="info-modal">
                                     <div class="text-center py-3 px-3">
@@ -358,7 +360,7 @@
 </div>
 @if (afficherPagination)
 {
-    <div class="d-flex justify-content-center mt-5">
+    <div class="d-flex justify-content-center mt-5 mb-5">
 
         @for (int i = 1; i <= ViewBag.TotalPages; i++)
         {

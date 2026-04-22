@@ -42,7 +42,7 @@
                 </label>
                 <input id="nom" type="text" name="nom"
                        class="form-control form-control-sm"
-                       value="@ViewBag.Nom" placeholder="(ex: Nom...)" />
+                       value="@ViewBag.Nom" placeholder="(ex: Wi-Fi, buanderie...)" />
             </div>
 
             <div class="col">
@@ -159,7 +159,7 @@
 </div>
 @if (afficherPagination)
 {
-    <div class="d-flex justify-content-center mt-5">
+    <div class="d-flex justify-content-center mt-5 mb-5">
 
         @for (int i = 1; i <= ViewBag.TotalPages; i++)
         {

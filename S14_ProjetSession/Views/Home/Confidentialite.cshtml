@@ -8,8 +8,51 @@
     ViewData["Title"] = "Politique de Confidentialité";
 }
 
-<h1>@ViewData["Title"]</h1>
+<div class="container mt-5 mb-5" style="max-width: 800px;">
 
-<p>
-    En utilisant notre site, vous acceptez le partage de l'entièreté de vos données pour des buts lucratifs.
-</p>
+    <h1 class="display-6 text-center mb-4">@ViewData["Title"]</h1>
+
+    <p class="text-muted text-center mb-5">
+        Dernière mise à jour : @DateTime.Now.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("fr-CA"))
+    </p>
+
+    <div class="bg-white p-4 shadow rounded mb-4">
+        <h2 class="h5 mb-3">1. Introduction</h2>
+        <p>
+            Résidences Étudiantes s'engage à protéger la confidentialité de ses utilisateurs.
+            Cette politique explique quelles données sont collectées et comment elles sont utilisées.
+        </p>
+    </div>
+
+    <div class="bg-white p-4 shadow rounded mb-4">
+        <h2 class="h5 mb-3">2. Données collectées</h2>
+        <p>
+            Nous pouvons collecter des informations telles que votre nom, votre adresse e-mail
+            et vos préférences de logement lors de l'utilisation du service.
+        </p>
+    </div>
+
+    <div class="bg-white p-4 shadow rounded mb-4">
+        <h2 class="h5 mb-3">3. Utilisation des données</h2>
+        <p>
+            Les données sont utilisées uniquement pour permettre le bon fonctionnement du service,
+            notamment la gestion des demandes de logement et l'amélioration de l'expérience utilisateur.
+        </p>
+    </div>
+
+    <div class="bg-white p-4 shadow rounded mb-4">
+        <h2 class="h5 mb-3">4. Partage des informations</h2>
+        <p>
+            Vos informations ne sont jamais vendues. Elles peuvent être partagées uniquement
+            avec les services internes nécessaires au fonctionnement de la plateforme.
+        </p>
+    </div>
+
+    <div class="bg-white p-4 shadow rounded">
+        <h2 class="h5 mb-3">5. Contact</h2>
+        <p>
+            Pour toute question concernant cette politique, vous pouvez nous contacter via le formulaire du site.
+        </p>
+    </div>
+
+</div>
