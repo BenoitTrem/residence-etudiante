@@ -190,7 +190,6 @@ namespace S14_ProjetSession.Controllers
             {
                 StatusCode = code,
                 Message = message,
-                RequestId = HttpContext.TraceIdentifier
             });
         }
     }
