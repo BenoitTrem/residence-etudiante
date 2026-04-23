@@ -42,26 +42,23 @@
                 <label for="nom" class="form-label small text-muted mb-1">
                     Nom
                 </label>
-                <input id="nom" type="text" name="nom"
-                       class="form-control form-control-sm"
-                       value="@ViewBag.Nom" placeholder="(ex: Résidence...)" />
+                <textarea id="nom" type="text" name="nom" class="form-control form-control-sm textarea-auto"
+                          rows="1" placeholder="(ex: Résidence...)">@ViewBag.Nom</textarea>
             </div>
 
             <div class="col">
                 <label for="adresseLigne" class="form-label small text-muted mb-1">
                     Adresse
                 </label>
-                <input id="adresseLigne" type="text" name="adresseLigne"
-                       class="form-control form-control-sm"
-                       value="@ViewBag.AdresseLigne" placeholder="(ex: 123 rue Sainte-Catherine)" />
+                <textarea id="adresseLigne" name="adresseLigne" class="form-control form-control-sm textarea-auto"
+                          rows="1" placeholder="(ex: 123 rue des Pins)">@ViewBag.AdresseLigne</textarea>
             </div>
             <div class="col">
                 <label for="ville" class="form-label small text-muted mb-1">
                     Ville
                 </label>
-                <input id="ville" type="text" name="ville"
-                       class="form-control form-control-sm"
-                       value="@ViewBag.Ville" placeholder="(ex: Gatineau)" />
+                <textarea id="ville" type="text" name="ville" class="form-control form-control-sm textarea-auto"
+                          rows="1" placeholder="(ex: Gatineau)">@ViewBag.Ville</textarea>
             </div>
             <div class="col">
                 <label for="ascendant" class="form-label small text-muted mb-1">

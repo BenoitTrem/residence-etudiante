@@ -40,9 +40,8 @@
                 <label for="nom" class="form-label small text-muted mb-1">
                     Nom
                 </label>
-                <input id="nom" type="text" name="nom"
-                       class="form-control form-control-sm"
-                       value="@ViewBag.Nom" placeholder="(ex: Wi-Fi, buanderie...)" />
+                <textarea id="nom" name="nom" class="form-control form-control-sm textarea-auto"
+                    rows="1" placeholder="(ex: Wi-Fi, buanderie...)">@ViewBag.Nom</textarea>
             </div>
 
             <div class="col">

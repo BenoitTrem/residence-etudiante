@@ -298,10 +298,11 @@ dialog {
     padding: 0.35rem 0.7rem;
     font-size: 0.875rem;
     width: 75%;
-    max-height: 200px; 
-    overflow-y: auto; 
+    max-height: 200px;
+    overflow-y: auto;
     resize: vertical;
     transition: all 0.2s ease;
+    transition: height 0s ease;
 }
 
     .description-input::placeholder {
@@ -368,6 +369,7 @@ dialog {
 .info-bulle-lg {
     position: relative;
     margin-left: 10px;
+    margin-bottom: 10px;
     display: inline-flex;
     justify-content: center;
     align-items: center;
@@ -655,3 +657,8 @@ label.required::after {
         box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
         border-left: 3px solid #0d6efd;
     }
+.textarea-auto {
+    max-height: 120px;
+    overflow-y: auto;
+    transition: height 0s ease;
+}
