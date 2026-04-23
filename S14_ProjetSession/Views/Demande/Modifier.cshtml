@@ -1,4 +1,9 @@
-﻿@model S14_ProjetSession.ViewModels.DemandeCreateViewModel
+@model S14_ProjetSession.ViewModels.DemandeCreateViewModel
+@{
+    ViewData["Title"] = "Modifier la demande";
+}
+
+<h1>Modifier la demande</h1>
 
 <form asp-action="Modifier" method="post">
     @Html.AntiForgeryToken()

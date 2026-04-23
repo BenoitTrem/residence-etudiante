@@ -1,10 +1,14 @@
-﻿
+@{
+    ViewData["Title"] = "Toutes les demandes";
+}
+
 <div class="container">
+    <h1>Toutes les demandes</h1>
     <div class="row">
         
             @if (ViewBag.Demandes.Count <= 0)
             {
-                <h1>Y'a pas de demande'</h1>
+                <p>Aucune demande trouvée.</p>
             
         }else{
         @foreach (Demande demande in ViewBag.Demandes)

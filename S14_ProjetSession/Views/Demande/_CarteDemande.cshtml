@@ -1,4 +1,4 @@
-﻿@model Demande
+@model Demande
 
 <div class="col-md-4 mb-4">
                 <div class="card shadow-sm h-100">
@@ -105,7 +105,7 @@
                                         <form asp-action="Supprimer"
                                               asp-route-id="@Model.Id"
                                               method="post"
-                                              style="display:inline;">
+                                              class="d-inline">
                                             @Html.AntiForgeryToken()
                                             <button type="submit" class="btn btn-danger">
                                                 Supprimer
