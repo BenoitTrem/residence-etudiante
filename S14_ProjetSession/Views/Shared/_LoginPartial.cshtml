@@ -8,7 +8,8 @@
 @if (SignInManager.IsSignedIn(User))
 {
     <li class="nav-item">
-            <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
+            <a id="manage" class="nav-link text-dark @(ViewContext.RouteData.Values["page"]?.ToString()?.StartsWith("/Account/Manage") == true ? "active" : "")"
+                asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
                 @{
                     string email = UserManager.GetUserName(User);
                     string nom = email.Contains("@") ? email.Split('@')[0] : email;
