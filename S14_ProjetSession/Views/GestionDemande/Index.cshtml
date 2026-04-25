@@ -277,7 +277,7 @@ else
                                                             .Where(e => e != null)
                                                             .ToList();
 
-                                                        int placesRequises = 1; // Lui-même
+                                                        int placesRequises = 1; 
                                                         foreach (var jum in demande.Jumelages)
                                                         {
                                                             if (!emailsDejaAcceptes.Contains(jum.Courriel))
@@ -294,7 +294,7 @@ else
                                                                 selected="@(demande.UniteId == unite.Id ? "selected" : null)">
                                                             @(unite.Residence?.Nom) — Unité @(unite.Numero)
                                                             (@disponibles/@unite.Capacite places)
-                                                            @(pleine ? " ⛔ PAS ASSEZ DE PLACE" : "")
+                                                            @(pleine ? " PAS ASSEZ DE PLACE" : "")
                                                         </option>
 
                                                     }
