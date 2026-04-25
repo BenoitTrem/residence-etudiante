@@ -32,14 +32,14 @@ namespace S14_ProjetSession.Controllers
         [Authorize(Policy = "AdminOuGestionnaire")]
         public IActionResult Index(int? semestreFiltre)
         {
-            var demandes = _demandeRepository.Demandes;
-
+            var demandes = _demandeRepository.Demandes
+            .OrderByDescending(d => d.Semestre.DateDebut).ToList();
             // Filtrer par semestre si sélectionné
             if (semestreFiltre.HasValue)
             {
                 demandes = demandes
-                    .Where(d => d.SemestreId == semestreFiltre.Value)
-                    .ToList();
+                     .Where(d => d.SemestreId == semestreFiltre.Value)
+                     .ToList();
             }
 
             var vm = new GestionDemandeIndexViewModel
@@ -62,12 +62,13 @@ namespace S14_ProjetSession.Controllers
         public IActionResult TraiterDemande(int demandeId, StatutDemande statut, int? uniteId)
         {
             var demande = _demandeRepository.GetDemande(demandeId);
+
             if (demande == null)
             {
                 TempData["Erreur"] = "Demande introuvable.";
                 return RedirectToAction("Index");
             }
-
+                
             // Si on accepte, il faut une unité
             if (statut == StatutDemande.Acceptee)
             {
@@ -76,29 +77,50 @@ namespace S14_ProjetSession.Controllers
                     TempData["Erreur"] = "Vous devez sélectionner une unité pour accepter la demande.";
                     return RedirectToAction("Index", new { semestreFiltre = demande.SemestreId });
                 }
-
+                    
                 var unite = _uniteRepository.GetById(uniteId.Value);
                 if (unite == null)
                 {
                     TempData["Erreur"] = "Unité introuvable.";
                     return RedirectToAction("Index", new { semestreFiltre = demande.SemestreId });
-                }
 
-                // Vérifier la capacité pour CE semestre
-                int placesOccupees = _demandeRepository.Demandes
-                    .Count(d => d.UniteId == unite.Id
+                }
+                
+                // Vérifier la capacité pour CE semestre en incluant les jumelages
+                var demandesDejaAcceptees = _demandeRepository.Demandes
+                    .Where(d => d.UniteId == unite.Id
                              && d.SemestreId == demande.SemestreId
                              && d.StatutDemande == StatutDemande.Acceptee
-                             && d.Id != demande.Id); // exclure la demande courante
+                             && d.Id != demande.Id)
+                    .ToList();
 
-                if (placesOccupees >= unite.Capacite)
+                int placesOccupees = demandesDejaAcceptees.Count;
+
+                // On évite de compter en double les colocataires qui sont déjà acceptés dans l'unité
+                var emailsDejaAcceptes = demandesDejaAcceptees
+                    .Select(d => d.Etudiant?.CourrielInstitutionnel)
+                    .Where(e => e != null)
+                    .ToList();
+
+                int placesAajouter = 1; // Le demandeur lui-même
+                foreach (var jumelage in demande.Jumelages)
                 {
-                    TempData["Erreur"] = $"L'unité {unite.Numero} est pleine pour ce semestre ({placesOccupees}/{unite.Capacite}).";
+                    if (!emailsDejaAcceptes.Contains(jumelage.Courriel))
+                    {
+                        placesAajouter++;
+                    }
+                }
+
+                if (placesOccupees + placesAajouter > unite.Capacite)
+                {
+                    TempData["Erreur"] = $"L'unité {unite.Numero} n'a pas assez de place pour accueillir le demandeur et ses colocataires ({placesOccupees + placesAajouter}/{unite.Capacite}).";
                     return RedirectToAction("Index", new { semestreFiltre = demande.SemestreId });
                 }
 
                 demande.UniteId = unite.Id;
+
             }
+
             else if (statut == StatutDemande.Refusee)
             {
                 // Si refusée, retirer l'unité assignée

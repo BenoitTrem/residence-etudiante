@@ -106,6 +106,7 @@ else
                     <th>Semestre</th>
                     <th>Date demande</th>
                     <th>Statut</th>
+                    <th>NombrePersonnePourDemandeAvecJumelage</th>
                     <th>Unité assignée</th>
                     <th class="text-center">Actions</th>
                 </tr>
@@ -143,6 +144,11 @@ else
                                 <br />
                                 <small class="text-muted">@demande.DateTraitement.Value.ToShortDateString()</small>
                             }
+                        </td>
+                        <td>
+                            <span class="badge bg-info text-dark">
+                                Personne pour demande @(demande.Jumelages.Count() + 1)
+                            </span>
                         </td>
                         <td>
                             @if (demande.Unite != null)
@@ -256,21 +262,41 @@ else
                                                     @foreach (var unite in Model.Unites)
                                                     {
                                                         @* Calculer places occupées pour ce semestre *@
-                                                        int occupees = Model.Demandes
-                                                            .Count(d => d.UniteId == unite.Id
+                                                        var demandesDejaAcceptees = Model.Demandes
+                                                            .Where(d => d.UniteId == unite.Id
                                                                      && d.SemestreId == semestreId
                                                                      && d.StatutDemande == StatutDemande.Acceptee
-                                                                     && d.Id != demande.Id);
+                                                                     && d.Id != demande.Id)
+                                                            .ToList();
+
+                                                        int occupees = demandesDejaAcceptees.Count;
+
+                                                        // Éviter de compter en double les colocataires déjà acceptés
+                                                        var emailsDejaAcceptes = demandesDejaAcceptees
+                                                            .Select(d => d.Etudiant?.CourrielInstitutionnel)
+                                                            .Where(e => e != null)
+                                                            .ToList();
+
+                                                        int placesRequises = 1; // Lui-même
+                                                        foreach (var jum in demande.Jumelages)
+                                                        {
+                                                            if (!emailsDejaAcceptes.Contains(jum.Courriel))
+                                                            {
+                                                                placesRequises++;
+                                                            }
+                                                        }
+
                                                         int disponibles = unite.Capacite - occupees;
-                                                        bool pleine = disponibles <= 0;
+                                                        bool pleine = placesRequises > disponibles;
 
                                                         <option value="@unite.Id"
                                                                 disabled="@(pleine ? "disabled" : null)"
                                                                 selected="@(demande.UniteId == unite.Id ? "selected" : null)">
                                                             @(unite.Residence?.Nom) — Unité @(unite.Numero)
                                                             (@disponibles/@unite.Capacite places)
-                                                            @(pleine ? " ⛔ PLEINE" : "")
+                                                            @(pleine ? " ⛔ PAS ASSEZ DE PLACE" : "")
                                                         </option>
+
                                                     }
                                                 </select>
                                             </div>

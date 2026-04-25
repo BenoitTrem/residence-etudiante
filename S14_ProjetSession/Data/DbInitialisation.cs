@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using S14_ProjetSession.Areas.Identity.Data;
 using S14_ProjetSession.Models;
@@ -258,10 +258,40 @@ namespace S14_ProjetSession.Data
                 {
                     if (!context.Semestres.Any(s => s.NomSemestre == $"{saison}-{i}"))
                     {
-                        semestres.Add(new Semestre() { NomSemestre = $"{saison}-{i}" });
+                        DateTime debut, fin;
+                        switch (saison)
+                        {
+                            case "hiver":
+                                debut = new DateTime(i, 1, 1);
+                                fin = new DateTime(i, 4, 30);
+                                break;
+                            case "printemps":
+                                debut = new DateTime(i, 5, 1);
+                                fin = new DateTime(i, 6, 30);
+                                break;
+                            case "été":
+                                debut = new DateTime(i, 7, 1);
+                                fin = new DateTime(i, 8, 31);
+                                break;
+                            case "automne":
+                                debut = new DateTime(i, 9, 1);
+                                fin = new DateTime(i, 12, 31);
+                                break;
+                            default:
+                                debut = DateTime.Now;
+                                fin = DateTime.Now;
+                                break;
+                        }
+                        semestres.Add(new Semestre() 
+                        { 
+                            NomSemestre = $"{saison}-{i}",
+                            DateDebut = debut,
+                            DateFin = fin
+                        });
                     }
                 }
             }
+
             context.Semestres.AddRange(semestres);
             context.SaveChanges();
 
@@ -474,11 +504,64 @@ namespace S14_ProjetSession.Data
                     {
                         new DemandeGenre { GenreId = genresDb[0].Id } // Homme
                     }
+                },
+                // Nouvelles demandes pour le premier semestre (printemps-2025)
+                new Demande
+                {
+                    EtudiantId = etudiantsDb[3].Id, // Sophie Bouchard
+                    SemestreId = semestresDb[0].Id, // printemps-2025
+                    PrefDureeBail = 180,
+                    AccepteReglements = true,
+                    AccepteTraitementDonnees = true,
+                    ConfirmeSoumission = true,
+                    DateDemande = DateTime.Now.AddDays(-2),
+                    NomGarant = "Bouchard Père",
+                    PrenomGarant = "Michel",
+                    DateNaissanceGarant = new DateTime(1968, 7, 20),
+                    CourrielGarant = "michel.bouchard@gmail.com",
+                    TelephoneGarant = "6137778888",
+                    NomUrgence = "Nguyen David",
+                    LienParenteUrgence = "Ami",
+                    TelephoneUrgence = "6135556666",
+                    StatutDemande = StatutDemande.EnAttente,
+                    Jumelages = new List<Jumelage>
+                    {
+                        new Jumelage { Nom = "David Nguyen", Courriel = "david.nguyen@college.ca" }
+                    },
+                    DemandeGenres = new List<DemandeGenre>
+                    {
+                        new DemandeGenre { GenreId = genresDb[1].Id } // Femme
+                    }
+                },
+                new Demande
+                {
+                    EtudiantId = etudiantsDb[2].Id, // David Nguyen
+                    SemestreId = semestresDb[0].Id, // printemps-2025
+                    PrefDureeBail = 270,
+                    AccepteReglements = true,
+                    AccepteTraitementDonnees = true,
+                    ConfirmeSoumission = true,
+                    DateDemande = DateTime.Now.AddDays(-3),
+                    NomGarant = "Nguyen Père",
+                    PrenomGarant = "Viet",
+                    DateNaissanceGarant = new DateTime(1975, 3, 15),
+                    CourrielGarant = "viet.nguyen@gmail.com",
+                    TelephoneGarant = "6135556666",
+                    NomUrgence = "Bouchard Sophie",
+                    LienParenteUrgence = "Amie",
+                    TelephoneUrgence = "6137778888",
+                    StatutDemande = StatutDemande.EnAttente,
+                    Jumelages = new List<Jumelage>(),
+                    DemandeGenres = new List<DemandeGenre>
+                    {
+                        new DemandeGenre { GenreId = genresDb[0].Id } // Homme
+                    }
                 }
             };
 
             context.Demandes.AddRange(demandes);
             context.SaveChanges();
+
         }
 
         /// <summary>
