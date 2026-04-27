@@ -49,12 +49,6 @@ namespace S14_ProjetSession.Models
         /// Retourne le nombre total d'unités associées à cette résidence.
         public int TotalUnites => Unites?.Count ?? 0;
 
-        /// Retourne le nombre d'unités qui ont au moins une place disponible.
-        public int UnitesDisponibles => Unites?.Count(u => u.EstDisponible) ?? 0;
-
-        /// Retourne le nombre total de places disponibles dans toutes les unités.
-        public int TotalPlacesDisponibles => Unites?.Sum(u => u.PlacesDisponibles) ?? 0;
-
         /// Retourne l'adresse complète de la résidence sous forme de chaîne de caractères.
         public string AdresseComplete =>
            $"{AdresseLigne}, {Ville}, {Province} {CodePostal}";

@@ -41,13 +41,13 @@ namespace S14_ProjetSession.Data
                 if (disponible.Value)
                 {
                     residences = residences
-                        .Where(r => r.UnitesDisponibles > 0)
+                        .Where(r => r.TotalUnites > 0)
                         .ToList();
                 }
                 else
                 {
                     residences = residences
-                        .Where(r => r.UnitesDisponibles == 0)
+                        .Where(r => r.TotalUnites == 0)
                         .ToList();
                 }
             }

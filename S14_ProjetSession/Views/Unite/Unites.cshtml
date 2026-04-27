@@ -9,7 +9,7 @@
 @{
     bool compact = Model.Count >= 10;
     bool afficherPagination = ViewBag.TotalPages > 1;
-    bool estFiltrer = ViewBag.Disponible != null || ViewBag.Capacite != null || ViewBag.Numero != null || ViewBag.MobiliteReduite != null;
+    bool estFiltrer = ViewBag.Capacite != null || ViewBag.Numero != null || ViewBag.MobiliteReduite != null;
 }
 
 <div class="container">
@@ -41,35 +41,23 @@
         <span>@ViewBag.Adresse</span>
     </div>
 
-    <div class="mt-3 ms-3">
+    <div class="mt-3 ms-3 mb-4">
         <div>
-            <strong>Unités totales :</strong>
-            <span>@(ViewBag.NombreTotal ?? 0)</span>
-        </div>
+            <strong>@(ViewBag.NombreTotal > 1 ? "Unités totales :" : "Unité totale :")</strong>
 
-        <div>
-            <strong>
-                @(ViewBag.TotalPlacesDisponibles > 1 ? "Places disponibles :" : "Place disponible :")
-            </strong>
-            <span>@(ViewBag.TotalPlacesDisponibles ?? 0)</span>
+            @if ((ViewBag.NombreTotal ?? 0) == 0)
+            {
+                <span class="badge bg-danger fs-6">0 unité.</span>
+            }
+            else if (ViewBag.NombreTotal == 1)
+            {
+                <span class="badge bg-success fs-6">1 unité</span>
+            }
+            else
+            {
+                <span class="badge bg-success fs-6">@((ViewBag.NombreTotal ?? 0)) unités</span>
+            }
         </div>
-    </div>
-
-    <div class="mb-4 mt-3 d-flex align-items-center ms-3">
-        <strong class="me-2">Unités disponibles :</strong>
-        @if (ViewBag.NombreUnites == 0)
-        {
-            <span class="badge bg-danger fs-6">Aucune unité disponible</span>
-        }
-        else if (ViewBag.NombreUnites == 1)
-        {
-            <span class="badge bg-success fs-6">1 unité disponible</span>
-        }
-        else
-        {
-            <span class="badge bg-success fs-6">@ViewBag.NombreUnites unités disponibles</span>
-        }
-      
     </div>
 
       @if ((await AuthorizationService.AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded)
@@ -84,16 +72,6 @@
         <input type="hidden" name="id" value="@ViewBag.ResidenceId" />
 
         <div class="row g-2">
-            <div class="col">
-                <label for="disponible" class="form-label small text-muted mb-1">
-                    Disponibilité
-                </label>
-                <select id="disponible" name="disponible" class="form-select form-select-sm">
-                    <option value="">Toutes</option>
-                    <option value="true" selected="@(ViewBag.Disponible?.ToString() == "True")">Disponible</option>
-                    <option value="false" selected="@(ViewBag.Disponible?.ToString() == "False")">Non disponible</option>
-                </select>
-            </div>
 
             <div class="col">
                 <label for="capacite" class="form-label small text-muted mb-1">
@@ -194,7 +172,7 @@
                         Aucune unité
                     </h2>
                     <p class="text-muted fs-5">
-                        Il y a actuellement aucune unité.
+                        Il y a actuellement aucune unité dans cette résidence.
                     </p>
 
                     <p class="text-muted fs-5">
@@ -207,9 +185,7 @@
         {
             @foreach (Unite unite in Model)
             {
-                <div class="list-group-item unite-row @(compact ? "unite-compact" : "") 
-                        @(unite.EstDisponible ? "" : "unite-full") d-flex justify-content-between align-items-center">
-
+                <div class="list-group-item unite-row @(compact ? "unite-compact" : "") d-flex justify-content-between align-items-center">
                     <div class="flex-grow-1 min-w-0">
                         <h2 class="mb-1">Unité #@unite.Numero</h2>
 
@@ -240,30 +216,6 @@
 
                         <small class="text-muted d-block">
                             <strong>Capacité :</strong> @unite.Capacite étudiants
-                        </small>
-
-                       <small class="d-block">
-                            @if (!unite.EstDisponible)
-                            {
-                                <span class="text-danger">
-                                    <strong>Complet</strong>
-                                </span>
-                            }
-                            else
-                            {
-                                @if (unite.PlacesDisponibles == 1)
-                                {
-                                    <span class="text-success">
-                                        <strong>1 place disponible</strong>
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="text-success">
-                                        <strong>@unite.PlacesDisponibles places disponibles</strong>
-                                    </span>
-                                }
-                            }
                         </small>
                     </div>
                

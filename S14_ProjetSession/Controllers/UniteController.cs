@@ -67,8 +67,6 @@ namespace S14_ProjetSession.Controllers
             ViewBag.ResidenceId = id;
             ViewBag.Adresse = id.HasValue ? _residenceRepository.GetById(id.Value)?.AdresseComplete : "N/A";
             ViewBag.NombreTotal = totalUnites.Count;
-            ViewBag.NombreUnites = totalUnites.Count(u => u.EstDisponible);
-            ViewBag.TotalPlacesDisponibles = totalUnites.Sum(u => u.PlacesDisponibles);
             ViewBag.PageActuelle = page;
             ViewBag.TotalPages = (int)Math.Ceiling((double)unitesFiltrer.Count / nbPage);
             ViewBag.ModeToutesLesUnites = !id.HasValue || id.Value <= 0;
@@ -110,7 +108,6 @@ namespace S14_ProjetSession.Controllers
             Unite unite = new Unite
             {
                 ResidenceId = residenceId ?? 0,
-                PlacesOccupees = 0
             };
 
             return View(unite);
@@ -170,7 +167,6 @@ namespace S14_ProjetSession.Controllers
                     Capacite = unite.Capacite,
                     AdapteePourMobiliteReduite = unite.AdapteePourMobiliteReduite,
                     ResidenceId = unite.ResidenceId,
-                    PlacesOccupees = 0,
                     Numero = numeroSuivant
                 };
 

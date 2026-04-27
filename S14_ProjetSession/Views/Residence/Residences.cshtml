@@ -177,7 +177,7 @@
         @foreach (Residence residence in Model)
         {
             <div class="col-md-6 mb-5">
-                <div class="carte h-100 mt-3">
+                <div class="carte h-100 mt-3 @(residence.TotalUnites == 0 ? "carte-non-disponible" : "")">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <h2 class="card-title mb-0 text-truncate width">
@@ -188,24 +188,20 @@
                             </a>
                         </div>
 
-                        <p class="card-text mb-1 text-nowrap overflow-hidden text-truncate">@residence.AdresseComplete</p>
+                        <p class="card-text mb-2 text-nowrap overflow-hidden text-truncate">@residence.AdresseComplete</p>
 
-                        <p class="dispo mb-4">
-                            @if (residence.UnitesDisponibles == 0)
-                            {
-                                <span class="dispo-none">Aucune unité disponible</span>
-                            }
-                            else
-                            {
-                                <span class="dispo-ok">
-                                    @residence.UnitesDisponibles @(residence.UnitesDisponibles > 1 ? "unités disponibles" : "unité disponible")
-                                </span>
-                            }
-                        </p>
+                        @if(residence.TotalUnites == 0)
+                        {
+                            <p class="card-text text-danger mb-4">Il y a actuellement aucune unité dans cette résidence.</p>
+                        }
+                        else
+                        {
+                                <p class="card-text mb-4 invisible">La résidence est disponible</p>
+                        }
 
                         @if (!User.IsInRole("Admin") && !User.IsInRole("Gestionnaire"))
                         {
-                            if (residence.UnitesDisponibles == 0)
+                            if (residence.TotalUnites == 0)
                                 {
                                     <div class="text-center mt-5">
                                         <button class="btn btn-outline-secondary btn-lg px-5" type="button" data-dialog-open="@($"modalIndisponible_{residence.Id}")">
@@ -235,36 +231,36 @@
                             }
                             else
                             {
-                                    if (!SignInManager.IsSignedIn(User))
-                                    {
-                                        <div class="text-center mt-5">
-                                            <button class="btn btn-outline-primary btn-lg px-5" type="button" data-dialog-open="modalConnexion">
-                                                Faire une demande
-                                            </button>
-                                        </div>
-                                    }
-                                    else if ((await AuthorizationService.AuthorizeAsync(User, "EstEtudiant")).Succeeded)
-                                    {
-                                        <div class="text-center mt-5">
-                                            <a class="btn btn-outline-primary btn-lg px-5" asp-controller="Demande" asp-action="Creer">
-                                                Faire une demande
-                                            </a>
-                                        </div>
-                                    }
-                                    else
-                                    {
-                                        <div class="text-center mt-5">
-                                            <button class="btn btn-outline-primary btn-lg px-5" type="button" data-dialog-open="modalEtudiant">
-                                                Faire une demande
-                                            </button>
-                                        </div>
-                                    }
+                                if (!SignInManager.IsSignedIn(User))
+                                {
+                                    <div class="text-center mt-5">
+                                        <button class="btn btn-outline-primary btn-lg px-5" type="button" data-dialog-open="modalConnexion">
+                                            Faire une demande
+                                        </button>
+                                    </div>
+                                }
+                                else if ((await AuthorizationService.AuthorizeAsync(User, "EstEtudiant")).Succeeded)
+                                {
+                                    <div class="text-center mt-5">
+                                        <a class="btn btn-outline-primary btn-lg px-5" asp-controller="Demande" asp-action="Creer">
+                                            Faire une demande
+                                        </a>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="text-center mt-5">
+                                        <button class="btn btn-outline-primary btn-lg px-5" type="button" data-dialog-open="modalEtudiant">
+                                            Faire une demande
+                                        </button>
+                                    </div>
+                                }
                             }
                         }
 
                         @if ((await AuthorizationService.AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded)
                         {
-                            <a class="btn btn-outline-primary w-100 mt-2" asp-controller="Unite" asp-action="Index" asp-route-id="@residence.Id">
+                            <a class="btn btn-outline-primary w-100" asp-controller="Unite" asp-action="Index" asp-route-id="@residence.Id">
                                 Voir les unités
                             </a>
 
