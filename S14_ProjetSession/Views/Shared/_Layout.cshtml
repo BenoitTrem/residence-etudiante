@@ -29,27 +29,28 @@
                                 asp-controller="Home" asp-action="Index">Accueil</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link fw-semibold px-3 @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "Residence" ? "active" : "")" 
+                            <a class="nav-link fw-semibold px-3 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Residence" ? "active" : "")"
                                 asp-controller="Residence" asp-action="Index">Résidences</a>
                         </li>
                         @if (User.IsInRole("Admin") || User.IsInRole("Gestionnaire"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link fw-semibold px-3 @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "Unite" ? "active" : "")"
+                                <a class="nav-link fw-semibold px-3 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Unite" ? "active" : "")"
                                     asp-controller="Unite" asp-action="Index">Unités</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link fw-semibold px-3 @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "Commodite" ? "active" : "")" 
+                                <a class="nav-link fw-semibold px-3 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Commodite" ? "active" : "")"
                                     asp-controller="Commodite" asp-action="Index">Commodités</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link fw-semibold px-3" asp-controller="GestionDemande" asp-action="Index">Gestion demandes</a>
+                                <a class="nav-link fw-semibold px-3 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "GestionDemande" ? "active" : "")"
+                                asp-controller="GestionDemande" asp-action="Index">Gestion demandes</a>
                             </li>
                         }
                         @if ((await AuthorizationService.AuthorizeAsync(User, "estEtudiant")).Succeeded)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "Demande" ? "active" : "")"
+                                <a class="nav-link text-dark @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Demande" ? "active" : "")"
                                     asp-controller="Demande" asp-action="Index">demande</a>
                             </li>
                         }
@@ -57,7 +58,7 @@
                         @if (User.Identity?.IsAuthenticated == true)
                         {
                           <li class="nav-item">
-                                <a class="nav-link fw-semibold px-3 @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "Campus" ? "active" : "")" 
+                                <a class="nav-link fw-semibold px-3 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Campus" ? "active" : "")"
                                     asp-controller="Campus" asp-action="Index">Campus</a>
                            </li>
                         }
@@ -66,7 +67,7 @@
                         @if ((await AuthorizationService.AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "Etudiant" ? "active" : "")"
+                                <a class="nav-link text-dark @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Etudiant" ? "active" : "")"
                                     asp-area="" asp-controller="Etudiant" asp-action="Index">Étudiants</a>
                             </li>
                         }
