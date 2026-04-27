@@ -42,26 +42,23 @@
                 <label for="nom" class="form-label small text-muted mb-1">
                     Nom
                 </label>
-                <input id="nom" type="text" name="nom"
-                       class="form-control form-control-sm"
-                       value="@ViewBag.Nom" placeholder="(ex: Résidence...)" />
+                <textarea id="nom" type="text" name="nom" class="form-control form-control-sm textarea-auto"
+                          rows="1" placeholder="(ex: Résidence...)">@ViewBag.Nom</textarea>
             </div>
 
             <div class="col">
                 <label for="adresseLigne" class="form-label small text-muted mb-1">
                     Adresse
                 </label>
-                <input id="adresseLigne" type="text" name="adresseLigne"
-                       class="form-control form-control-sm"
-                       value="@ViewBag.AdresseLigne" placeholder="(ex: 123 rue Sainte-Catherine)" />
+                <textarea id="adresseLigne" name="adresseLigne" class="form-control form-control-sm textarea-auto"
+                          rows="1" placeholder="(ex: 123 rue des Pins)">@ViewBag.AdresseLigne</textarea>
             </div>
             <div class="col">
                 <label for="ville" class="form-label small text-muted mb-1">
                     Ville
                 </label>
-                <input id="ville" type="text" name="ville"
-                       class="form-control form-control-sm"
-                       value="@ViewBag.Ville" placeholder="(ex: Gatineau)" />
+                <textarea id="ville" type="text" name="ville" class="form-control form-control-sm textarea-auto"
+                          rows="1" placeholder="(ex: Gatineau)">@ViewBag.Ville</textarea>
             </div>
             <div class="col">
                 <label for="ascendant" class="form-label small text-muted mb-1">
@@ -176,7 +173,7 @@
 
     else
     {
-    <div class="row mt-5">
+    <div class="row mt-5 mb-5">
         @foreach (Residence residence in Model)
         {
             <div class="col-md-6 mb-5">
@@ -186,7 +183,7 @@
                             <h2 class="card-title mb-0 text-truncate width">
                                 @residence.Nom
                             </h2>
-                            <a class="btn btn-sm btn-outline-primary ms-2 flex-shrink-0" asp-controller="Residence" asp-action="ResidenceDetails" asp-route-id="@residence.Id">
+                            <a class="btn btn-outline-primary ms-2 flex-shrink-0 px-3" asp-controller="Residence" asp-action="ResidenceDetails" asp-route-id="@residence.Id">
                                 Détails
                             </a>
                         </div>
@@ -209,10 +206,12 @@
                         @if (!User.IsInRole("Admin") && !User.IsInRole("Gestionnaire"))
                         {
                             if (residence.UnitesDisponibles == 0)
-                            {
-                                <button class="btn btn-outline-secondary" type="button" data-dialog-open="@($"modalIndisponible_{residence.Id}")">
-                                    Faire une demande
-                                </button>
+                                {
+                                    <div class="text-center mt-5">
+                                        <button class="btn btn-outline-secondary btn-lg px-5" type="button" data-dialog-open="@($"modalIndisponible_{residence.Id}")">
+                                            Faire une demande
+                                        </button>
+                                    </div>
 
                                 <dialog id="@($"modalIndisponible_{residence.Id}")" class="info-modal">
                                     <div class="text-center py-3 px-3">
@@ -236,24 +235,30 @@
                             }
                             else
                             {
-                                if (!SignInManager.IsSignedIn(User))
-                                {
-                                    <button class="btn btn-outline-primary" type="button" data-dialog-open="modalConnexion">
-                                        Faire une demande
-                                    </button>
-                                }
-                                else if ((await AuthorizationService.AuthorizeAsync(User, "EstEtudiant")).Succeeded)
-                                {
-                                    <a class="btn btn-outline-primary" asp-controller="Demande" asp-action="Creer">
-                                        Faire une demande
-                                    </a>
-                                }
-                                else
-                                {
-                                    <button class="btn btn-outline-primary" type="button" data-dialog-open="modalEtudiant">
-                                        Faire une demande
-                                    </button>
-                                }
+                                    if (!SignInManager.IsSignedIn(User))
+                                    {
+                                        <div class="text-center mt-5">
+                                            <button class="btn btn-outline-primary btn-lg px-5" type="button" data-dialog-open="modalConnexion">
+                                                Faire une demande
+                                            </button>
+                                        </div>
+                                    }
+                                    else if ((await AuthorizationService.AuthorizeAsync(User, "EstEtudiant")).Succeeded)
+                                    {
+                                        <div class="text-center mt-5">
+                                            <a class="btn btn-outline-primary btn-lg px-5" asp-controller="Demande" asp-action="Creer">
+                                                Faire une demande
+                                            </a>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="text-center mt-5">
+                                            <button class="btn btn-outline-primary btn-lg px-5" type="button" data-dialog-open="modalEtudiant">
+                                                Faire une demande
+                                            </button>
+                                        </div>
+                                    }
                             }
                         }
 
@@ -352,7 +357,7 @@
 </div>
 @if (afficherPagination)
 {
-    <div class="d-flex justify-content-center mt-5">
+    <div class="d-flex justify-content-center mt-5 mb-5">
 
         @for (int i = 1; i <= ViewBag.TotalPages; i++)
         {

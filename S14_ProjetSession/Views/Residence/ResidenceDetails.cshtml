@@ -8,7 +8,7 @@
 @inject UserManager<ApplicationUser> UserManager
 
 <div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mt-5 mb-5">
+    <div class="d-flex justify-content-between align-items-center mt-5 mb-4">
         <h1>Détails de la résidence</h1>
         <a class="btn btn-outline-dark px-4" asp-controller="Residence" asp-action="Index">Retour</a>
     </div>
@@ -20,42 +20,44 @@
         </div>
 
          <div class="hr"></div>
-        <div class="mb-2">
-            <strong class="fs-6">
-                @(Model.TotalUnites > 1 ? "Unités totales :" : "Unité totale :")
-            </strong>
-            @if (Model.TotalUnites == 0)
-            {
-                <span class="badge bg-danger fs-6">Aucune</span>
-            }
-            else if (Model.TotalUnites == 1)
-            {
-                <span class="badge bg-primary fs-6">1 unité</span>
-            }
-            else
-            {
-                <span class="badge bg-primary fs-6">@Model.TotalUnites unités</span>
-            }
-        </div>
+        @if ((await AuthorizationService.AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded)
+        {
+                <div class="mb-2">  
+                    <strong class="fs-6">
+                        @(Model.TotalUnites > 1 ? "Unités totales :" : "Unité totale :")
+                    </strong>
+                    @if (Model.TotalUnites == 0)
+                    {
+                        <span class="badge bg-danger fs-6">Aucune</span>
+                    }
+                    else if (Model.TotalUnites == 1)
+                    {
+                        <span class="badge bg-primary fs-6">1 unité</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-primary fs-6">@Model.TotalUnites unités</span>
+                    }
+                </div>
 
-        <div class="mb-2">
-            <strong class="fs-6">
-                @(Model.UnitesDisponibles > 1 ? "Unités disponibles :" : "Unité disponible :")
-            </strong>
-            @if (Model.UnitesDisponibles == 0)
-            {
-                <span class="badge bg-danger fs-6">Aucune</span>
+                <div class="mb-2">
+                    <strong class="fs-6">
+                        @(Model.UnitesDisponibles > 1 ? "Unités disponibles :" : "Unité disponible :")
+                    </strong>
+                    @if (Model.UnitesDisponibles == 0)
+                    {
+                        <span class="badge bg-danger fs-6">Aucune</span>
+                    }
+                    else if (Model.UnitesDisponibles == 1)
+                    {
+                    <span class="badge badge-available fs-6">1 unité disponible</span>
+                    }
+                    else
+                    {
+                    <span class="badge badge-available fs-6">@Model.UnitesDisponibles unités disponibles</span>
+                    }
+                </div>
             }
-            else if (Model.UnitesDisponibles == 1)
-            {
-                <span class="badge bg-success fs-6">1 unité disponible</span>
-            }
-            else
-            {
-                <span class="badge bg-success fs-6">@Model.UnitesDisponibles unités disponibles</span>
-            }
-        </div>
-
         <div class="mb-5">
             <strong class="fs-6">
                 @(Model.TotalPlacesDisponibles > 1 ? "Places disponibles :" : "Place disponible :")
@@ -66,11 +68,11 @@
             }
             else if (Model.TotalPlacesDisponibles == 1)
             {
-                <span class="badge badge-available fs-6">1 place disponible</span>
+                <span class="badge bg-success fs-6">1 place disponible</span>
             }
             else
             {
-                <span class="badge badge-available fs-6">@Model.TotalPlacesDisponibles places disponibles</span>
+                <span class="badge bg-success fs-6">@Model.TotalPlacesDisponibles places disponibles</span>
             }
         </div>
          <div class="hr"></div>
@@ -129,7 +131,7 @@
             }
             else
             {
-                <p class="text-muted">Aucune commodité disponible.</p>
+                <p class="text-muted">Cette résidence ne comporte actuellement aucune commodité répertoriée.</p>
             }
         </div>
       
@@ -168,7 +170,7 @@
                 if (!SignInManager.IsSignedIn(User))
                 {
                     <div class="d-flex justify-content-center mb-3">
-                        <button class="btn btn-outline-primary mt-5 px-5" type="button" data-dialog-open="modalConnexion">
+                        <button class="btn btn-outline-primary mt-5 px-5 btn-lg" type="button" data-dialog-open="modalConnexion">
                             Faire une demande
                         </button>
                     </div>
@@ -176,7 +178,7 @@
                 else if ((await AuthorizationService.AuthorizeAsync(User, "EstEtudiant")).Succeeded)
                 {
                     <div class="d-flex justify-content-center mb-3">
-                        <a class="btn btn-outline-primary mt-5" asp-controller="Demande" asp-action="Creer">
+                        <a class="btn btn-outline-primary mt-5 btn-lg" asp-controller="Demande" asp-action="Creer">
                             Faire une demande
                         </a>
                     </div>
@@ -184,7 +186,7 @@
                 else
                 {
                     <div class="d-flex justify-content-center mb-3">
-                        <button class="btn btn-outline-primary mt-5" type="button" data-dialog-open="modalEtudiant">
+                        <button class="btn btn-outline-primary mt-5 btn-lg" type="button" data-dialog-open="modalEtudiant">
                             Faire une demande
                         </button>
                      </div>
@@ -234,32 +236,28 @@
         @if ((await AuthorizationService.AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded)
         {
             <div class="d-flex justify-content-center mt-5">
-                <a class="btn btn-outline-primary w-50"
+                <a class="btn btn-outline-primary w-50 btn-lg"
                    asp-controller="Unite" asp-action="Index" asp-route-id="@Model.Id">
                     Voir les unités
                 </a>
             </div>
 
             <div class="d-flex justify-content-center gap-2 mt-2 flex-wrap w-50 mx-auto mb-3">
-                <a class="btn btn-outline-success flex-fill"
+                <a class="btn btn-outline-success flex-fill btn-lg"
                    asp-controller="Residence" asp-action="ModifierResidence" asp-route-id="@Model.Id">
                     Modifier
                 </a>
 
                 @if ((await AuthorizationService.AuthorizeAsync(User, "AdminUniquement")).Succeeded)
                 {
-                    <button class="btn btn-outline-danger flex-fill"
-                            type="button"
-                            data-dialog-open="modalSupprimer">
+                    <button class="btn btn-outline-danger flex-fill btn-lg" type="button" data-dialog-open="modalSupprimer">
                         Supprimer
                     </button>
                 }
 
                 @if ((await AuthorizationService.AuthorizeAsync(User, "GestionnaireUniquement")).Succeeded)
                 {
-                    <button class="btn btn-outline-danger btn-tooltip flex-fill"
-                            type="button"
-                            data-dialog-open="modalNonAdmin">
+                    <button class="btn btn-outline-danger btn-tooltip flex-fill btn-lg" type="button" data-dialog-open="modalNonAdmin">
                         Supprimer
                         <span class="tooltip-text">
                             Vous devez être Admin pour effectuer cette action
@@ -268,7 +266,6 @@
                 }
             </div>
         
-
             <dialog id="modalSupprimer" class="danger">
                 <h2>Supprimer une résidence</h2>
                 <p class="mt-3">

@@ -64,7 +64,7 @@ namespace S14_ProjetSession.Data
             if (capacite.HasValue)
             {
                 unites = unites
-                    .Where(u => u.Capacite >= capacite.Value)
+                    .Where(u => u.Capacite == capacite.Value)
                     .ToList();
             }
 

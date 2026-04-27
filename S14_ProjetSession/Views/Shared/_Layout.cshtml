@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/S14_ProjetSession.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
     <header>
@@ -24,18 +25,22 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link fw-semibold px-3" asp-controller="Home" asp-action="Index">Accueil</a>
+                            <a class="nav-link fw-semibold px-3 @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")" 
+                                asp-controller="Home" asp-action="Index">Accueil</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link fw-semibold px-3" asp-controller="Residence" asp-action="Index">Résidences</a>                 
+                            <a class="nav-link fw-semibold px-3 @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "Residence" ? "active" : "")" 
+                                asp-controller="Residence" asp-action="Index">Résidences</a>
                         </li>
                         @if (User.IsInRole("Admin") || User.IsInRole("Gestionnaire"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link fw-semibold px-3" asp-controller="Unite" asp-action="Index">Unités</a>
+                                <a class="nav-link fw-semibold px-3 @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "Unite" ? "active" : "")"
+                                    asp-controller="Unite" asp-action="Index">Unités</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link fw-semibold px-3" asp-controller="Commodite" asp-action="Index">Commodités</a>
+                                <a class="nav-link fw-semibold px-3 @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "Commodite" ? "active" : "")" 
+                                    asp-controller="Commodite" asp-action="Index">Commodités</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link fw-semibold px-3" asp-controller="GestionDemande" asp-action="Index">Gestion demandes</a>
@@ -44,14 +49,16 @@
                         @if ((await AuthorizationService.AuthorizeAsync(User, "estEtudiant")).Succeeded)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Demande" asp-action="Index">demande</a>
+                                <a class="nav-link text-dark @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "Demande" ? "active" : "")"
+                                    asp-controller="Demande" asp-action="Index">demande</a>
                             </li>
                         }
 
                         @if (User.Identity?.IsAuthenticated == true)
                         {
                           <li class="nav-item">
-                              <a class="nav-link fw-semibold px-3" asp-controller="Campus" asp-action="Index">Campus</a>
+                                <a class="nav-link fw-semibold px-3 @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "Campus" ? "active" : "")" 
+                                    asp-controller="Campus" asp-action="Index">Campus</a>
                            </li>
                         }
 
@@ -59,7 +66,8 @@
                         @if ((await AuthorizationService.AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Etudiant" asp-action="Index">Étudiants</a>
+                                <a class="nav-link text-dark @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "Etudiant" ? "active" : "")"
+                                    asp-area="" asp-controller="Etudiant" asp-action="Index">Étudiants</a>
                             </li>
                         }
                     </ul>
@@ -75,9 +83,9 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; @DateTime.Now.ToString("dd MMMM yyyy", CultureInfo.CurrentCulture) - Résidences Étudiantes -
+    <footer class="border-top footer text-muted bg-white">
+        <div class="container text-center">
+            &copy; @DateTime.Now.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("fr-CA")) - Résidences Étudiantes -
             <a asp-area="" asp-controller="Home" asp-action="Confidentialite">Confidentialité</a>
         </div>
     </footer>
