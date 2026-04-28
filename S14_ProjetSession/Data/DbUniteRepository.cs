@@ -17,7 +17,7 @@ namespace S14_ProjetSession.Data
         {
             return _context.Unites
                 .Where(u => u.ResidenceId == residenceId)
-                .OrderByDescending(u => u.Capacite > u.PlacesOccupees)
+                .OrderByDescending(u => u.Capacite)
                 .ThenBy(u => u.Numero)
                 .Include(u => u.Residence)
                 .ToList();
@@ -26,7 +26,7 @@ namespace S14_ProjetSession.Data
         public List<Unite> GetDisponibleByResidenceId(int residenceId)
         {
             return _context.Unites
-                .Where(u => u.ResidenceId == residenceId && u.EstDisponible)
+                .Where(u => u.ResidenceId == residenceId)
                 .Include(u => u.Residence)
                 .ToList();
         }
@@ -54,17 +54,11 @@ namespace S14_ProjetSession.Data
                     .ToList();
             }
 
-            if (disponible.HasValue)
-            {
-                unites = unites
-                    .Where(u => u.EstDisponible == disponible.Value)
-                    .ToList();
-            }
 
             if (capacite.HasValue)
             {
                 unites = unites
-                    .Where(u => u.Capacite >= capacite.Value)
+                    .Where(u => u.Capacite == capacite.Value)
                     .ToList();
             }
 

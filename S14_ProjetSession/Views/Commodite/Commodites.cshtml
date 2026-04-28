@@ -40,9 +40,8 @@
                 <label for="nom" class="form-label small text-muted mb-1">
                     Nom
                 </label>
-                <input id="nom" type="text" name="nom"
-                       class="form-control form-control-sm"
-                       value="@ViewBag.Nom" placeholder="(ex: Nom...)" />
+                <textarea id="nom" name="nom" class="form-control form-control-sm textarea-auto"
+                    rows="1" placeholder="(ex: Wi-Fi, buanderie...)">@ViewBag.Nom</textarea>
             </div>
 
             <div class="col">
@@ -134,10 +133,21 @@
                                 <button class="btn btn-outline-success px-3" onclick="ouvreModiferModal(@commodite.Id, '@commodite.Nom')">
                                     Modifier
                                 </button>
-
-                                <button class="btn btn-outline-danger px-3" onclick="ouvreSupprimerModal(@commodite.Id, '@commodite.Nom')">
-                                    Supprimer
-                                </button>
+                                @if ((await AuthorizationService.AuthorizeAsync(User, "AdminUniquement")).Succeeded)
+                                {
+                                    <button class="btn btn-outline-danger px-3" onclick="ouvreSupprimerModal(@commodite.Id, '@commodite.Nom')">
+                                        Supprimer
+                                    </button>
+                                }
+                                @if ((await AuthorizationService.AuthorizeAsync(User, "GestionnaireUniquement")).Succeeded)
+                                {
+                                    <button class="btn btn-outline-danger btn-tooltip flex-fill px-3" type="button" data-dialog-open="modalNonAdmin">
+                                        Supprimer
+                                        <span class="tooltip-text">
+                                            Vous devez être Admin pour effectuer cette action
+                                        </span>
+                                    </button>
+                                }
                             </div>
                         </div>
                     </div>
@@ -148,7 +158,7 @@
 </div>
 @if (afficherPagination)
 {
-    <div class="d-flex justify-content-center mt-5">
+    <div class="d-flex justify-content-center mt-5 mb-5">
 
         @for (int i = 1; i <= ViewBag.TotalPages; i++)
         {
@@ -210,4 +220,11 @@
             <button type="button" class="btn btn-outline-dark px-4" data-dialog-close>Annuler</button>
         </div>
     </form>
+</dialog>
+<dialog id="modalNonAdmin" class="info-modal">
+    <h2>Accès refusé</h2>
+    <p>Vous devez être Admin pour effectuer cette action.</p>
+    <div class="d-flex justify-content-end mt-3">
+        <button class="btn btn-outline-dark px-4" type="button" data-dialog-close>Fermer</button>
+    </div>
 </dialog>

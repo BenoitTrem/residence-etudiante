@@ -89,3 +89,32 @@ document.addEventListener('DOMContentLoaded', function () {
 function loadUnits(residenceId) {
     window.location.href = '/Unite/Index?id=' + residenceId;
 }
+
+// Carrousel d'arrière-plan automatique
+document.addEventListener('DOMContentLoaded', function () {
+    const diapos = document.querySelectorAll('.diapo');
+    const indicateurs = document.querySelectorAll('.indicateur');
+
+    if (!diapos.length) return;
+
+    let indexActuel = 0;
+    const duree = 5000;
+
+    function allerA(index) {
+        diapos[indexActuel].classList.remove('diapo-active');
+        indicateurs[indexActuel].classList.remove('indicateur-actif');
+        indexActuel = (index + diapos.length) % diapos.length;
+        diapos[indexActuel].classList.add('diapo-active');
+        indicateurs[indexActuel].classList.add('indicateur-actif');
+    }
+
+    let minuterie = setInterval(() => allerA(indexActuel + 1), duree);
+
+    indicateurs.forEach((ind, i) => {
+        ind.addEventListener('click', () => {
+            clearInterval(minuterie);
+            allerA(i);
+            minuterie = setInterval(() => allerA(indexActuel + 1), duree);
+        });
+    });
+});

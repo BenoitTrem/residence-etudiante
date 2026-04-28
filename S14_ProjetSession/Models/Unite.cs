@@ -23,13 +23,6 @@ namespace S14_ProjetSession.Models
         [Display(Name = "Capacité")]
         public int Capacite { get; set; }
 
-        public int PlacesOccupees { get; set; }
-
-        /// Calcul du nombre de places disponibles dans l'unité
-        public int PlacesDisponibles => Capacite - PlacesOccupees;
-
-        public bool EstDisponible => Capacite > PlacesOccupees;
-
         [Required(ErrorMessage = "Veuillez indiquer si l'unité est adaptée pour la mobilité réduite.")]
         [Display(Name = "Adaptée pour mobilité réduite")]
         public bool? AdapteePourMobiliteReduite { get; set; }
