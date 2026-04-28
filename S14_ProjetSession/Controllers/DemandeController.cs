@@ -95,7 +95,7 @@ namespace S14_ProjetSession.Controllers
             }
         }
 
-        // ─── Index ───────────────────────────────────────────────────────────────
+        
 
         [Authorize(Policy = "EstEtudiant")]
         public async Task<IActionResult> Index()
@@ -113,7 +113,6 @@ namespace S14_ProjetSession.Controllers
             return View(demandes);
         }
 
-        // ─── Creer GET ───────────────────────────────────────────────────────────
 
         [Authorize(Policy = "EstEtudiant")]
         public IActionResult Creer()
@@ -128,7 +127,7 @@ namespace S14_ProjetSession.Controllers
             return View(vm);
         }
 
-        // ─── Creer POST ──────────────────────────────────────────────────────────
+     
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -229,9 +228,8 @@ namespace S14_ProjetSession.Controllers
             return RedirectToAction("Index");
         }
 
-        // ─── Modifier GET ────────────────────────────────────────────────────────
 
-        [Authorize(Policy = "EstEtudiant")]
+        [Authorize(Policy = "EstProprietaireDemande")]
         public IActionResult Modifier(int id)
         {
             var demande = _demandeRepository.GetDemande(id);
@@ -266,9 +264,11 @@ namespace S14_ProjetSession.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Policy = "EstEtudiant")]
+        [Authorize(Policy = "EstProprietaireDemande")]
         public async Task<IActionResult> Modifier(DemandeCreateViewModel vm)
         {
+            
+            // DOIVENT ETRE IGNORER LORS DE LA MODIFICATION POUR UTILISATEUR
             vm.Genres = _genreRepository.Genres;
             vm.Semestres = _semestreRepository.Semestres;
 
@@ -323,8 +323,8 @@ namespace S14_ProjetSession.Controllers
                 return View(vm);
             }
 
-            // Mise à jour des champs scalaires
-            demandeEnBase.SemestreId = semestre!.Id;
+            // // StatutDemande , DateTraitement , UniteId 
+            demandeEnBase.SemestreId = semestre.Id;
             demandeEnBase.PrefDureeBail = vm.Demande.PrefDureeBail;
             demandeEnBase.AccepteReglements = vm.Demande.AccepteReglements;
             demandeEnBase.AccepteTraitementDonnees = vm.Demande.AccepteTraitementDonnees;
@@ -342,10 +342,13 @@ namespace S14_ProjetSession.Controllers
             demandeEnBase.TelephoneUrgence = vm.Demande.TelephoneUrgence;
             demandeEnBase.DateDebutBail = vm.Demande.DateDebutBail;
             demandeEnBase.DateFinBail = vm.Demande.DateFinBail;
-            demandeEnBase.StatutDemande = vm.Demande.StatutDemande;
-            demandeEnBase.DateTraitement = vm.Demande.DateTraitement;
-            demandeEnBase.UniteId = vm.Demande.UniteId;
 
+            if (User.IsInRole("Admin"))
+            {
+                demandeEnBase.StatutDemande = vm.Demande.StatutDemande;
+                demandeEnBase.DateTraitement = vm.Demande.DateTraitement;
+                demandeEnBase.UniteId = vm.Demande.UniteId;
+            }
             // Mise à jour des genres (relation N-N)
             if (!AppliquerGenres(demandeEnBase, vm.SelectedGenreIds!, out string erreurGenre))
             {
@@ -402,7 +405,7 @@ namespace S14_ProjetSession.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //[Authorize(Policy = "AdminOuGestionnaire")]
+        [Authorize(Policy = "AdminOuGestionnaire")]
         public IActionResult Supprimer(int Id)
         {
             Demande demande = _demandeRepository.GetDemande(Id);

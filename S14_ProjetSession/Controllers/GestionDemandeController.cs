@@ -32,7 +32,7 @@ namespace S14_ProjetSession.Controllers
         [Authorize(Policy = "AdminOuGestionnaire")]
         public IActionResult Index(int? semestreFiltre)
         {
-            var demandes = _demandeRepository.Demandes
+            List<Demande> demandes = _demandeRepository.Demandes
             .OrderByDescending(d => d.Semestre.DateDebut).ToList();
             // Filtrer par semestre si sélectionné
             if (semestreFiltre.HasValue)
@@ -42,7 +42,7 @@ namespace S14_ProjetSession.Controllers
                      .ToList();
             }
 
-            var vm = new GestionDemandeIndexViewModel
+            GestionDemandeIndexViewModel vm = new GestionDemandeIndexViewModel
             {
                 Demandes = demandes,
                 Unites = _uniteRepository.GetAll(),
@@ -61,7 +61,7 @@ namespace S14_ProjetSession.Controllers
         [Authorize(Policy = "AdminOuGestionnaire")]
         public IActionResult TraiterDemande(int demandeId, StatutDemande statut, int? uniteId)
         {
-            var demande = _demandeRepository.GetDemande(demandeId);
+            Demande demande = _demandeRepository.GetDemande(demandeId);
 
             if (demande == null)
             {
@@ -102,7 +102,9 @@ namespace S14_ProjetSession.Controllers
                     .Where(e => e != null)
                     .ToList();
 
-                int placesAajouter = 1; // Le demandeur lui-même
+
+                // etudiant lui meme
+                int placesAajouter = 1;
                 foreach (var jumelage in demande.Jumelages)
                 {
                     if (!emailsDejaAcceptes.Contains(jumelage.Courriel))
