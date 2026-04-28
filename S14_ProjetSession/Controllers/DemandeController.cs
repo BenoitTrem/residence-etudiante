@@ -134,6 +134,22 @@ namespace S14_ProjetSession.Controllers
         [Authorize(Policy = "EstEtudiant")]
         public async Task<IActionResult> Creer(DemandeCreateViewModel vm)
         {
+            if (vm.Demande.DateDemande.Year < 1950)
+            {
+                ModelState.AddModelError("Demande.DateDemande", "La date doit être après le 1er janvier 1950.");
+                return View(vm);
+            }
+
+
+            if (!vm.Demande.AccepteReglements)
+                ModelState.AddModelError("Demande.AccepteReglements", "Vous devez accepter les règlements.");
+
+            if (!vm.Demande.AccepteTraitementDonnees)
+                ModelState.AddModelError("Demande.AccepteTraitementDonnees", "Vous devez accepter le traitement des données.");
+
+            if (!vm.Demande.ConfirmeSoumission)
+                ModelState.AddModelError("Demande.ConfirmeSoumission", "Vous devez confirmer la soumission.");
+
             vm.Genres = _genreRepository.Genres;
             vm.Semestres = _semestreRepository.Semestres;
             Semestre? semestre = null;
@@ -178,6 +194,8 @@ namespace S14_ProjetSession.Controllers
                 ModelState.AddModelError(string.Empty, "Une demande existe déjà pour cet étudiant et ce semestre.");
                 return View(vm);
             }
+
+
 
             // Jumelages
             foreach (var j in vm.Jumelages)
