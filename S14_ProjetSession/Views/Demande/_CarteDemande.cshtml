@@ -68,56 +68,60 @@
                         </p>
 
                     </div>
+              
+                    @if (User.Identity.IsAuthenticated && 
+    (User.IsInRole("Admin") || User.IsInRole("Gestionnaire")))
+{
+    <div class="card-footer text-end">
 
-                    <div class="card-footer text-end">
-                        <a asp-action="Modifier" asp-route-id="@Model.Id" class="btn btn-primary btn-sm">
-                Modifier
-                        </a>
-                                               <!-- Bouton pour ouvrir le modal -->
-                        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                            Supprimer la demande
+        <a asp-action="Modifier" asp-route-id="@Model.Id" class="btn btn-primary btn-sm">
+            Modifier
+        </a>
+
+        <!-- Bouton modal -->
+        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal-@Model.Id">
+            Supprimer la demande
+        </button>
+
+        <!-- Modal UNIQUE -->
+        <div class="modal fade" id="deleteModal-@Model.Id" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirmer la suppression</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        Êtes-vous certain de vouloir supprimer cette demande ?
+                        <br />
+                        Cette action est irréversible.
+                    </div>
+
+                    <div class="modal-footer">
+
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Annuler
                         </button>
 
-                        <!-- Modal -->
-                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
+                        <form asp-action="Supprimer"
+                              asp-route-id="@Model.Id"
+                              method="post">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-danger">
+                                Supprimer
+                            </button>
+                        </form>
 
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">
-                                            Confirmer la suppression
-                                        </h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                    </div>
+                    </div>
 
-                                    <div class="modal-body">
-                                        Êtes-vous certain de vouloir supprimer cette demande ?
-                                        <br>
-                                        Cette action est irréversible.
-                                    </div>
+                </div>
+            </div>
+        </div>
 
-                                    <div class="modal-footer">
-
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                            Annuler
-                                        </button>
-
-                                        <form asp-action="Supprimer"
-                                              asp-route-id="@Model.Id"
-                                              method="post"
-                                              style="display:inline;">
-                                            @Html.AntiForgeryToken()
-                                            <button type="submit" class="btn btn-danger">
-                                                Supprimer
-                                            </button>
-                                        </form>
-
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-
+    </div>
+}
                     </div>
                 </div>
             </div>
