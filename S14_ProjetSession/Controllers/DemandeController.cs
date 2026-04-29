@@ -66,7 +66,7 @@ namespace S14_ProjetSession.Controllers
             {
                 demande.DemandeGenres.Add(new DemandeGenre
                 {
-                    GenreId = genre!.Id,
+                    GenreId = genre.Id,
                     DemandeId = demande.Id   // 0 lors de la création, EF le résout
                 });
             }
@@ -227,7 +227,7 @@ namespace S14_ProjetSession.Controllers
 
             vm.Demande.Etudiant = etudiant;
             vm.Demande.EtudiantId = etudiant.Id;
-            vm.Demande.SemestreId = semestre!.Id;
+            vm.Demande.SemestreId = semestre.Id;
             vm.Demande.Semestre = semestre;
 
             // Retirer les propriétés de navigation enfants pour éviter les erreurs de validation récursive
@@ -242,7 +242,7 @@ namespace S14_ProjetSession.Controllers
 
             _demandeRepository.Creer(vm.Demande);
 
-            TempData["Succes"] = $"Nouvelle demande ajoutée pour {etudiant.Nom} ({semestre!.NomSemestre})";
+            TempData["Succes"] = $"Nouvelle demande ajoutée pour {etudiant.Nom} ({semestre.NomSemestre})";
             return RedirectToAction("Index");
         }
 
@@ -332,7 +332,7 @@ namespace S14_ProjetSession.Controllers
             bool demandeDoubleExiste = _demandeRepository.Demandes
                 .Any(d => d.Id != demandeEnBase.Id &&
                           d.EtudiantId == etudiant.Id &&
-                          d.SemestreId == semestre!.Id);
+                          d.SemestreId == semestre.Id);
 
             if (demandeDoubleExiste)
             {
@@ -368,7 +368,7 @@ namespace S14_ProjetSession.Controllers
                 demandeEnBase.UniteId = vm.Demande.UniteId;
             }
             // Mise à jour des genres (relation N-N)
-            if (!AppliquerGenres(demandeEnBase, vm.SelectedGenreIds!, out string erreurGenre))
+            if (!AppliquerGenres(demandeEnBase, vm.SelectedGenreIds, out string erreurGenre))
             {
                 ModelState.AddModelError("SelectedGenreIds", erreurGenre);
                 return View(vm);
