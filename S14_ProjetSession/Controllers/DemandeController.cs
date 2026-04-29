@@ -280,13 +280,14 @@ namespace S14_ProjetSession.Controllers
 
         // ─── Modifier POST ───────────────────────────────────────────────────────
 
+
+        // je ne sais pas encore si je donne le droit a un Admin de Modifier TODO Félix
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = "EstProprietaireDemande")]
         public async Task<IActionResult> Modifier(DemandeCreateViewModel vm)
         {
             
-            // DOIVENT ETRE IGNORER LORS DE LA MODIFICATION POUR UTILISATEUR
             vm.Genres = _genreRepository.Genres;
             vm.Semestres = _semestreRepository.Semestres;
 
