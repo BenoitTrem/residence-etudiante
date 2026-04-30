@@ -8,6 +8,8 @@ namespace S14_ProjetSession.Data
         public List<Demande> Demandes { get; }
         
         public Demande? GetDemande(int id);
+
+        public Demande? GetDerniereDemandeParEtudiant(int etudiantId);
         
         public void Creer(Demande demande);
 

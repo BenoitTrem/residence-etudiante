@@ -76,5 +76,10 @@ namespace S14_ProjetSession.Data
         {
             return _unites.Any(u => u.Numero == numero && u.ResidenceId == residenceId && u.Id != id);
         }
+
+        public bool UniteExiste(int numero, int residenceId, int id)
+        {
+            return _unites.Any(u => u.Numero == numero && u.ResidenceId == residenceId && u.Id != id);
+        }
     }
 }

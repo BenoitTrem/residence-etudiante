@@ -315,7 +315,9 @@ namespace S14_ProjetSession.Data
                         { 
                             NomSemestre = $"{saison}-{i}",
                             DateDebut = debut,
-                            DateFin = fin
+                            DateFin = fin,
+                            DebutInscriptionDisponible = debut.AddMonths(-2),
+                            FinInscriptionDisponible = debut.AddDays(-1)
                         });
                     }
                 }

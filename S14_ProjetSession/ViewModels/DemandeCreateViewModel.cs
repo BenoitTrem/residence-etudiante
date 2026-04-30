@@ -18,6 +18,6 @@ public class DemandeCreateViewModel
     public IEnumerable<Semestre> Semestres { get; set; } = new List<Semestre>();
 
     // Sélections choisies
-    public List<int>  SelectedGenreIds { get; set; }
+    public List<int>  SelectedGenreIds { get; set; } = new();
     public int? SelectedSemestreId { get; set; }
 }
