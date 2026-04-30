@@ -29,10 +29,9 @@ namespace S14_ProjetSession.Controllers
 
         /// <summary>
         /// Affiche la liste des campus triés par nom.
-        /// Accessible à tous (y compris les utilisateurs anonymes).
         /// </summary>
         /// <returns>Une vue avec la liste des campus ou une vue d'erreur si un problème survient.</returns>
-       
+        [Authorize(Policy = "AdminOuGestionnaire")]
         public IActionResult Index()
         {
             try
@@ -148,8 +147,6 @@ namespace S14_ProjetSession.Controllers
         /// Redirige vers l'index avec un message de succès,
         /// ou affiche un message d'erreur si le campus est introuvable ou si une erreur survient.
         /// </returns>
-        /**
-         * Je vais finir l'implémentation plus tard (J.Z)
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = "AdminUniquement")]
@@ -176,7 +173,7 @@ namespace S14_ProjetSession.Controllers
             }
         }
 
-        **/
+       
 
         /// <summary>
         /// Méthode privée pour gérer les erreurs et afficher une vue dédiée.

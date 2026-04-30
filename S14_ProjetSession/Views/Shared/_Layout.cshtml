@@ -43,6 +43,10 @@
                                     asp-controller="Commodite" asp-action="Index">Commodités</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link fw-semibold px-3 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Campus" ? "active" : "")"
+                                   asp-controller="Campus" asp-action="Index">Campus</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link fw-semibold px-3 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "GestionDemande" ? "active" : "")"
                                 asp-controller="GestionDemande" asp-action="Index">Gestion demandes</a>
                             </li>
@@ -53,14 +57,6 @@
                                 <a class="nav-link text-dark @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Demande" ? "active" : "")"
                                     asp-controller="Demande" asp-action="Index">demande</a>
                             </li>
-                        }
-
-                        @if (User.Identity?.IsAuthenticated == true)
-                        {
-                          <li class="nav-item">
-                                <a class="nav-link fw-semibold px-3 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Campus" ? "active" : "")"
-                                    asp-controller="Campus" asp-action="Index">Campus</a>
-                           </li>
                         }
 
           

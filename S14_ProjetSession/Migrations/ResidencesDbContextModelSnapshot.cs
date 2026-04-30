@@ -242,6 +242,9 @@ namespace S14_ProjetSession.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int>("Priorite")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("Campuses");
@@ -639,9 +642,6 @@ namespace S14_ProjetSession.Migrations
                         .HasColumnType("int");
 
                     b.Property<int?>("Numero")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlacesOccupees")
                         .HasColumnType("int");
 
                     b.Property<int>("ResidenceId")

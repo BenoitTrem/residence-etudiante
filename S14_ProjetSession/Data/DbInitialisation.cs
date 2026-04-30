@@ -29,11 +29,11 @@ namespace S14_ProjetSession.Data
             // Campus
             var campusList = new Campus[]
             {
-                new Campus{ Nom = "Campus Gabrielle-Roy", Abreviation = "CGR" },
-                new Campus{ Nom = "Campus Félix-Leclerc", Abreviation = "CFL" },
-                new Campus{ Nom = "Campus Louis-Reboul", Abreviation = "CLR" },
-                new Campus{ Nom = "Campus de Papineauville", Abreviation = "CP" },
-                new Campus{ Nom = "Centre de formation continue", Abreviation = "CFC" }
+                new Campus{ Nom = "Campus Gabrielle-Roy", Abreviation = "CGR" , Priorite = 1 }, 
+                new Campus{ Nom = "Campus Félix-Leclerc", Abreviation = "CFL" ,  Priorite = 2 },
+                new Campus{ Nom = "Campus Louis-Reboul", Abreviation = "CLR", Priorite = 3 },
+                new Campus{ Nom = "Campus de Papineauville", Abreviation = "CP" , Priorite = 2 },
+                new Campus{ Nom = "Centre de formation continue", Abreviation = "CFC" ,  Priorite =3 }
             };
 
             foreach (var campus in campusList)

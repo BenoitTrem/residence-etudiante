@@ -7,7 +7,6 @@ using S14_ProjetSession.Areas.Identity.Data;
 using S14_ProjetSession.Authorization;
 using S14_ProjetSession.Data;
 using S14_ProjetSession.Resources;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,8 +42,8 @@ builder.Services
     {
         options.DataAnnotationLocalizerProvider = (type, factory) =>
              factory.Create(typeof(SharedResources));
-        
-    }); 
+
+    });
 
 builder.Services.AddDbContext<ResidencesDbContext>(options =>
 {
@@ -109,47 +108,50 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddScoped<IAuthorizationHandler, ProprietaireDemandeHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, EtudiantHandler>();
 
+// 403 meme apres connection
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.AccessDeniedPath = "/Home/Erreur?statusCode=403";
+});
+
 WebApplication app = builder.Build();
 
-
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
-
-    //gestion erreurs serveur 
-    app.UseExceptionHandler("/Home/Erreur");
-    // gestion erreurs HTTP
-    app.UseStatusCodePagesWithReExecute("/Home/Erreur", "?statusCode={0}");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    app.UseDeveloperExceptionPage();
 }
 else
 {
-    using (IServiceScope scope = app.Services.CreateScope())
-    {
-        // Obtenir DbContext
-        IServiceProvider services = scope.ServiceProvider;
-        ResidencesDbContext context = services.GetRequiredService<ResidencesDbContext>();
-        // Initialiser les donn�es
-
-        // Obtenir UserMangaer
-        UserManager<ApplicationUser> userManager =
-    services.GetRequiredService<UserManager<ApplicationUser>>();
-
-        RoleManager<IdentityRole> roleManager =
-            services.GetRequiredService<RoleManager<IdentityRole>>();
-
-
-        await DbInitialisation.Initialiser(context, userManager, roleManager);
-    }
+    app.UseExceptionHandler("/Home/Erreur");
+    app.UseHsts();
 }
+
+
+using (IServiceScope scope = app.Services.CreateScope())
+{
+    // Obtenir DbContext
+    IServiceProvider services = scope.ServiceProvider;
+    ResidencesDbContext context = services.GetRequiredService<ResidencesDbContext>();
+    // Initialiser les donn�es
+
+    // Obtenir UserMangaer
+    UserManager<ApplicationUser> userManager =
+services.GetRequiredService<UserManager<ApplicationUser>>();
+
+    RoleManager<IdentityRole> roleManager =
+        services.GetRequiredService<RoleManager<IdentityRole>>();
+
+
+    await DbInitialisation.Initialiser(context, userManager, roleManager);
+}
+
 
 app.UseHttpsRedirection();
 
 app.UseRouting();
 
-app.UseExceptionHandler("/Home/Erreur");
-app.UseStatusCodePagesWithReExecute("/Home/Erreur/{0}");
+
+app.UseStatusCodePagesWithReExecute("/Home/Erreur", "?statusCode={0}");
 
 app.UseAuthentication();
 app.UseAuthorization();
