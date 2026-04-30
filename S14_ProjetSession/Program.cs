@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using S14_ProjetSession;
 using S14_ProjetSession.Areas.Identity.Data;
@@ -50,10 +51,21 @@ builder.Services.AddDbContext<ResidencesDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("ApplicationConnectionBD"));
 });
-builder.Services.AddDefaultIdentity<ApplicationUser>()
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<ResidencesDbContext>()
-    .AddErrorDescriber<FRIdentityErrorDescriber>();
+
+// email config 
+builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = true;
+    options.SignIn.RequireConfirmedEmail = true;
+})
+.AddRoles<IdentityRole>()
+.AddEntityFrameworkStores<ResidencesDbContext>()
+.AddErrorDescriber<FRIdentityErrorDescriber>();
+// email config 
+builder.Services.Configure<EmailSettings>(
+    builder.Configuration.GetSection("EmailSettings"));
+// email config 
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 builder.Services.AddScoped<IResidenceRepository, DbResidenceRepository>();
 builder.Services.AddScoped<IUniteRepository, DbUniteRepository>();
