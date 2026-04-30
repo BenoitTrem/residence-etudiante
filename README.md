@@ -16,8 +16,8 @@ Application de gestion des résidences étudiantes.
 
 | Opération              | Étudiant | Gestionnaire | Administrateur |
 |------------------------|:--------:|:------------:|:--------------:|
-| Voir la liste (index)  | ✅       | ✅           | ✅             |
-| Voir les détails       | ✅       | ✅           | ✅             |
+| Voir la liste (index)  | ✅(pas les pages)       | ✅           | ✅             |
+| Voir les détails       | ❌       | ✅           | ✅             |
 | Créer / modifier       | ❌       | ✅           | ✅             |
 | Supprimer              | ❌       | ❌           | ✅             |
 
