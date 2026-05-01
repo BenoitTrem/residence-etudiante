@@ -51,9 +51,8 @@ namespace S14_ProjetSession.Models
         [Display(Name = "No étudiant")]
         public string noEtudiant { get; set; }
 
-        [Required(ErrorMessage = "Le numéro d'admission est obligatoire")]
-        [Display(Name = "No admission")]
-        public string noAdmission { get; set; }
+        [Display(Name = "No admission (si disponible)")]
+        public string? noAdmission { get; set; }
 
         [Display(Name = "Mobilité réduite")]
         public bool MobiliteReduite { get; set; }
