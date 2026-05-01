@@ -127,20 +127,14 @@ else
 }
 
 
-using (IServiceScope scope = app.Services.CreateScope())
+if (!app.Environment.IsEnvironment("Test"))
 {
-    // Obtenir DbContext
+    using IServiceScope scope = app.Services.CreateScope();
     IServiceProvider services = scope.ServiceProvider;
+
     ResidencesDbContext context = services.GetRequiredService<ResidencesDbContext>();
-    // Initialiser les donn�es
-
-    // Obtenir UserMangaer
-    UserManager<ApplicationUser> userManager =
-services.GetRequiredService<UserManager<ApplicationUser>>();
-
-    RoleManager<IdentityRole> roleManager =
-        services.GetRequiredService<RoleManager<IdentityRole>>();
-
+    UserManager<ApplicationUser> userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+    RoleManager<IdentityRole> roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
     await DbInitialisation.Initialiser(context, userManager, roleManager);
 }
