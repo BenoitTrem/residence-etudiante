@@ -14,9 +14,15 @@
     <!-- SEMESTRE -->
     <div class="mb-3">
         <label class="form-label">Semestre *</label>
-        <select asp-for="SelectedSemestreId" class="form-control"
-                asp-items="@(new SelectList(Model.Semestres, "Id", "NomSemestre"))">
+        <select asp-for="SelectedSemestreId" class="form-control">
             <option value="">-- Choisir --</option>
+            @foreach (var semestre in Model.Semestres)
+            {
+                string etat = semestre.InscriptionOuverte ? "ouverte" : "fermée";
+                <option value="@semestre.Id" disabled="@(!semestre.InscriptionOuverte)">
+                    @semestre.NomSemestre - inscription @etat
+                </option>
+            }
         </select>
         <span asp-validation-for="SelectedSemestreId" class="text-danger"></span>
     </div>

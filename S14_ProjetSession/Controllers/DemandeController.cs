@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using S14_ProjetSession.Data;
 using S14_ProjetSession.Models;
@@ -95,6 +95,15 @@ namespace S14_ProjetSession.Controllers
             }
         }
 
+        public async Task<Demande?> GetDemandeAvecUserId()
+        {
+            String userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Etudiant etudiantActuelle = await _etudiantRepository.GetByUserIdAsync(userId);
+
+            // avec etudiant get une demande
+            return _demandeRepository.Demandes.FirstOrDefault(D => D.EtudiantId == etudiantActuelle.Id);
+        }
+
         
 
         [Authorize(Policy = "EstEtudiant")]
@@ -115,16 +124,34 @@ namespace S14_ProjetSession.Controllers
 
 
         [Authorize(Policy = "EstEtudiant")]
-        public IActionResult Creer()
+        [HttpGet]
+        public async Task<IActionResult> Creer(int? id)
         {
-            var vm = new DemandeCreateViewModel
-            {
-                Genres = _genreRepository.Genres,
-                Semestres = _semestreRepository.Semestres,
-                SelectedGenreIds = new List<int>()
-            };
 
-            return View(vm);
+          
+            if (id != null)
+            {
+                Demande? demandeRecu =  await GetDemandeAvecUserId();
+                DemandeCreateViewModel vm = new DemandeCreateViewModel
+                {
+                    Demande = demandeRecu,
+                    Genres = _genreRepository.Genres,
+                    Semestres = _semestreRepository.Semestres,
+                    SelectedGenreIds = new List<int>()
+                };
+                return View(vm);
+            }
+            else
+            {
+                DemandeCreateViewModel vm = new DemandeCreateViewModel
+                {
+                    Genres = _genreRepository.Genres,
+                    Semestres = _semestreRepository.Semestres,
+                    SelectedGenreIds = new List<int>()
+
+                };
+                return View(vm);
+            }
         }
 
      
@@ -134,13 +161,14 @@ namespace S14_ProjetSession.Controllers
         [Authorize(Policy = "EstEtudiant")]
         public async Task<IActionResult> Creer(DemandeCreateViewModel vm)
         {
-            if (vm.Demande.DateDemande.Year < 1950)
+            // j'ai mis apres les chance quel qu'elle qu'un soit né apres 1900 trop vieux la date semble irréaliste
+            if (vm.Demande.DateDemande.Year < 1900)
             {
                 ModelState.AddModelError("Demande.DateDemande", "La date doit être après le 1er janvier 1950.");
                 return View(vm);
             }
 
-
+            // regarde que il a accepter les regle
             if (!vm.Demande.AccepteReglements)
                 ModelState.AddModelError("Demande.AccepteReglements", "Vous devez accepter les règlements.");
 
@@ -150,14 +178,14 @@ namespace S14_ProjetSession.Controllers
             if (!vm.Demande.ConfirmeSoumission)
                 ModelState.AddModelError("Demande.ConfirmeSoumission", "Vous devez confirmer la soumission.");
 
+
             vm.Genres = _genreRepository.Genres;
             vm.Semestres = _semestreRepository.Semestres;
             Semestre? semestre = null;
 
-            // Propriétés de navigation assignées côté serveur
-            ModelState.Remove("Demande.Etudiant");
+             ModelState.Remove("Demande.Etudiant");
 
-            // Étudiant connecté
+            // etudiant connecté
             string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
@@ -171,20 +199,33 @@ namespace S14_ProjetSession.Controllers
                 return View(vm);
             }
 
-            // Valider semestre
+            // regaerde que il a un semestre
             if (!vm.SelectedSemestreId.HasValue)
+            {
                 ModelState.AddModelError("SelectedSemestreId", "Le semestre est requis.");
+            }
             else
             {
                 semestre = _semestreRepository.GetSemestreParId(vm.SelectedSemestreId.Value);
                 if (semestre == null)
+                {
                     ModelState.AddModelError("SelectedSemestreId", "Semestre invalide.");
+                }
+                // l'inscription au semestre est fermé bah dommage pour lui 
+                else if (!semestre.InscriptionOuverte)
+                {
+                    ModelState.AddModelError("SelectedSemestreId", "La période d'inscription est fermée pour ce semestre.");
+                }
             }
 
-            // Valider genres (plusieurs)
+            // les genres 
             if (vm.SelectedGenreIds == null || !vm.SelectedGenreIds.Any())
                 ModelState.AddModelError("SelectedGenreIds", "Au moins un genre préféré est requis.");
 
+            if (!ModelState.IsValid)
+                return View(vm);
+
+            
             // Doublon
             bool demandeExiste = semestre != null && _demandeRepository.Demandes
                 .Any(d => d.EtudiantId == etudiant.Id && d.SemestreId == semestre.Id);
@@ -225,12 +266,14 @@ namespace S14_ProjetSession.Controllers
                 return View(vm);
             }
 
+
+            // ajout des propriété pour que Validate fonctionne
             vm.Demande.Etudiant = etudiant;
             vm.Demande.EtudiantId = etudiant.Id;
             vm.Demande.SemestreId = semestre.Id;
             vm.Demande.Semestre = semestre;
 
-            // Retirer les propriétés de navigation enfants pour éviter les erreurs de validation récursive
+            // Propriété problematique a supprimer pour que le modelState fonctionne
             ModelState.Remove("Demande.DemandeGenres");
             ModelState.Remove("Demande.Jumelages");
             ModelState.Remove("Demande.Semestre");

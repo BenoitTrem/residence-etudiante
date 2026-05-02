@@ -615,6 +615,9 @@ namespace S14_ProjetSession.Migrations
                     b.Property<DateTime>("DateFin")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("InscriptionOuverte")
+                        .HasColumnType("bit");
+
                     b.Property<string>("NomSemestre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -639,9 +642,6 @@ namespace S14_ProjetSession.Migrations
                         .HasColumnType("int");
 
                     b.Property<int?>("Numero")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlacesOccupees")
                         .HasColumnType("int");
 
                     b.Property<int>("ResidenceId")

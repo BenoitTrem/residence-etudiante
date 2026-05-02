@@ -286,7 +286,8 @@ namespace S14_ProjetSession.Data
                         { 
                             NomSemestre = $"{saison}-{i}",
                             DateDebut = debut,
-                            DateFin = fin
+                            DateFin = fin,
+                            InscriptionOuverte = saison == "printemps" && i == 2026
                         });
                     }
                 }

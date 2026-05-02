@@ -27,7 +27,12 @@ namespace S14_ProjetSession.Data
                 foreach (string saison in saisons)
                 {
                     Compteur += 1;
-                    _context.Add(new Semestre() {Id = Compteur,  NomSemestre = $"{saison}-{i}" });
+                    _context.Add(new Semestre()
+                    {
+                        Id = Compteur,
+                        NomSemestre = $"{saison}-{i}",
+                        InscriptionOuverte = i >= 2026
+                    });
                     
                 }
             }
