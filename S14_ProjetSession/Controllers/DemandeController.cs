@@ -30,11 +30,7 @@ namespace S14_ProjetSession.Controllers
             _demandeRepository = demandeRepository;
         }
 
-        private static bool PeriodeInscriptionOuverte(Semestre? semestre)
-        {
-            return semestre != null && semestre.DebutInscriptionDisponible.Date <= DateTime.Today && semestre.FinInscriptionDisponible.Date >= DateTime.Today;
-        }
-
+        
         private bool ValiderConsentements(Demande demande)
         {
             bool valide = true;
@@ -60,34 +56,32 @@ namespace S14_ProjetSession.Controllers
             return valide;
         }
 
-        private static void CopierDemandeDansViewModel(Demande source, DemandeCreateViewModel vm)
+        
+
+        private bool ValiderSemestreOuvert(int? semestreId, out Semestre? semestre)
         {
-            vm.Demande.PrefDureeBail = source.PrefDureeBail;
-            vm.Demande.AccepteReglements = source.AccepteReglements;
-            vm.Demande.AccepteTraitementDonnees = source.AccepteTraitementDonnees;
-            vm.Demande.ConfirmeSoumission = false;
-            vm.Demande.DateNaissanceGarant = source.DateNaissanceGarant;
-            vm.Demande.NomGarant = source.NomGarant;
-            vm.Demande.PrenomGarant = source.PrenomGarant;
-            vm.Demande.CourrielGarant = source.CourrielGarant;
-            vm.Demande.TelephoneGarant = source.TelephoneGarant;
-            vm.Demande.NomParent = source.NomParent;
-            vm.Demande.CourrielParent = source.CourrielParent;
-            vm.Demande.NomUrgence = source.NomUrgence;
-            vm.Demande.LienParenteUrgence = source.LienParenteUrgence;
-            vm.Demande.TelephoneUrgence = source.TelephoneUrgence;
+            semestre = null;
 
-            vm.SelectedGenreIds = source.DemandeGenres?.Select(dg => dg.GenreId).ToList() ?? new List<int>();
-            vm.Jumelages = source.Jumelages?.Select(j => new JumelageViewModel
+            if (!semestreId.HasValue)
             {
-                Nom = j.Nom,
-                Courriel = j.Courriel
-            }).ToList() ?? new List<JumelageViewModel>();
-
-            while (vm.Jumelages.Count < 3)
-            {
-                vm.Jumelages.Add(new JumelageViewModel());
+                ModelState.AddModelError("SelectedSemestreId", "Le semestre est requis.");
+                return false;
             }
+
+            semestre = _semestreRepository.GetSemestreParId(semestreId.Value);
+            if (semestre == null)
+            {
+                ModelState.AddModelError("SelectedSemestreId", "Semestre invalide.");
+                return false;
+            }
+
+            if (!semestre.InscriptionOuverte)
+            {
+                ModelState.AddModelError("SelectedSemestreId", "La période d'inscription est fermée pour ce semestre.");
+                return false;
+            }
+
+            return true;
         }
 
       
@@ -222,7 +216,7 @@ namespace S14_ProjetSession.Controllers
         public async Task<IActionResult> Creer(DemandeCreateViewModel vm)
         {
             // j'ai mis apres les chance quel qu'elle qu'un soit né apres 1900 trop vieux la date semble irréaliste
-            if (vm.Demande.DateDemande.Year < 1900)
+            if (vm.Demande.DateNaissanceGarant.Value.Year < 1900)
             {
                 ModelState.AddModelError("Demande.DateDemande", "La date doit être après le 1er janvier 1950.");
                 return View(vm);
@@ -259,31 +253,14 @@ namespace S14_ProjetSession.Controllers
                 return View(vm);
             }
 
-            // regaerde que il a un semestre
-            if (!vm.SelectedSemestreId.HasValue)
-            {
-                ModelState.AddModelError("SelectedSemestreId", "Le semestre est requis.");
-            }
-            else
-            {
-                semestre = _semestreRepository.GetSemestreParId(vm.SelectedSemestreId.Value);
-                if (semestre == null)
-                {
-                    ModelState.AddModelError("SelectedSemestreId", "Semestre invalide.");
-                }
-                // l'inscription au semestre est fermé bah dommage pour lui 
-                else if (!semestre.InscriptionOuverte)
-                {
-                    ModelState.AddModelError("SelectedSemestreId", "La période d'inscription est fermée pour ce semestre.");
-                }
-            }
+            ValiderSemestreOuvert(vm.SelectedSemestreId, out semestre);
 
             // les genres 
             if (vm.SelectedGenreIds == null || !vm.SelectedGenreIds.Any())
                 ModelState.AddModelError("SelectedGenreIds", "Au moins un genre préféré est requis.");
 
-            if (!ModelState.IsValid)
-                return View(vm);
+            // demande genre ne fonctionne pas ici 
+            
 
             
             // Doublon
@@ -417,19 +394,14 @@ namespace S14_ProjetSession.Controllers
                 return View(vm);
             }
 
-            // Valider semestre
-            if (!vm.SelectedSemestreId.HasValue)
-                ModelState.AddModelError("SelectedSemestreId", "Le semestre est requis.");
-
-            var semestre = _semestreRepository.GetSemestreParId(vm.SelectedSemestreId ?? 0);
-            if (semestre == null)
-                ModelState.AddModelError("SelectedSemestreId", "Semestre invalide.");
-            else if (!PeriodeInscriptionOuverte(semestre))
-                ModelState.AddModelError("SelectedSemestreId", "La période d'inscription est fermée pour ce semestre.");
+            ValiderSemestreOuvert(vm.SelectedSemestreId, out Semestre? semestre);
 
             // Valider genres
             if (vm.SelectedGenreIds == null || !vm.SelectedGenreIds.Any())
                 ModelState.AddModelError("SelectedGenreIds", "Au moins un genre préféré est requis.");
+
+            if (!ModelState.IsValid)
+                return View(vm);
 
            
 
