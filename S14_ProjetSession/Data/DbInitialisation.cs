@@ -29,8 +29,11 @@ namespace S14_ProjetSession.Data
             // Campus
             var campusList = new Campus[]
             {
-                new Campus{ Nom = "Campus Gabrielle-Roy", Abreviation = "CGR" },
-                new Campus{ Nom = "Campus Félix-Leclerc", Abreviation = "CFL" }
+                new Campus{ Nom = "Campus Gabrielle-Roy", Abreviation = "CGR" , Priorite = 1 }, 
+                new Campus{ Nom = "Campus Félix-Leclerc", Abreviation = "CFL" ,  Priorite = 2 },
+                new Campus{ Nom = "Campus Louis-Reboul", Abreviation = "CLR", Priorite = 3 },
+                new Campus{ Nom = "Campus de Papineauville", Abreviation = "CP" , Priorite = 2 },
+                new Campus{ Nom = "Centre de formation continue", Abreviation = "CFC" ,  Priorite =3 }
             };
 
             foreach (var campus in campusList)
@@ -62,6 +65,30 @@ namespace S14_ProjetSession.Data
                     Ville = "Gatineau",
                     Province = "QC",
                     CodePostal = "J8X 2B2"
+                },
+                new Residence
+                {
+                    Nom = "Résidence Pine",
+                    AdresseLigne = "300 Rue Pine",
+                    Ville = "Gatineau",
+                    Province = "QC",
+                    CodePostal = "J8X 3C3"
+                },
+                new Residence
+                {
+                    Nom = "Résidence Cedar",
+                    AdresseLigne = "400 Rue Cedar",
+                    Ville = "Gatineau",
+                    Province = "QC",
+                    CodePostal = "J8X 4D4"
+                },
+                new Residence
+                {
+                    Nom = "Résidence Birch",
+                    AdresseLigne = "500 Rue Birch",
+                    Ville = "Gatineau",
+                    Province = "QC",
+                    CodePostal = "J8X 5E5"
                 }
             };
 
@@ -122,7 +149,8 @@ namespace S14_ProjetSession.Data
                 new Genre{ Nom = "Homme" },
                 new Genre{ Nom = "Femme" },
                 new Genre{ Nom = "Non-binaire" },
-                new Genre{ Nom = "Autre" }
+                new Genre{ Nom = "Autre" },
+                new Genre{ Nom = "Préfère ne pas répondre" }
             };
 
             foreach (var genre in genres)
@@ -142,7 +170,8 @@ namespace S14_ProjetSession.Data
                 new Programme{ Nom = "Techniques de l'informatique", Code = "420.A0", CampusId = campusDb[0].Id },
                 new Programme{ Nom = "Sciences de la nature", Code = "200.B0", CampusId = campusDb[0].Id },
                 new Programme{ Nom = "Administration des affaires", Code = "410.B0", CampusId = campusDb[1].Id },
-                new Programme{ Nom = "Techniques de génie logiciel", Code = "420.B1", CampusId = campusDb[1].Id }
+                new Programme{ Nom = "Techniques de génie logiciel", Code = "420.B1", CampusId = campusDb[1].Id },
+                new Programme{ Nom = "Sciences humaines", Code = "300.A0", CampusId = campusDb[2].Id }
             };
 
             foreach (var programme in programmes)

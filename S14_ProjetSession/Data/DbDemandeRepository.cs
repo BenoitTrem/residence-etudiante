@@ -40,15 +40,40 @@ namespace S14_ProjetSession.Data
                 .FirstOrDefault(d => d.Id == id);
         }
 
+        public Demande? GetDerniereDemandeParEtudiant(int etudiantId)
+        {
+            return _context.Demandes
+                .Include(d => d.Etudiant)
+                .Include(d => d.Semestre)
+                .Include(d => d.Jumelages)
+                .Include(d => d.DemandeGenres)
+                    .ThenInclude(dg => dg.Genre)
+                .Include(d => d.Unite)
+                    .ThenInclude(u => u.Residence)
+                .Where(d => d.EtudiantId == etudiantId)
+                .OrderByDescending(d => d.DateDemande)
+                .ThenByDescending(d => d.Id)
+                .FirstOrDefault();
+        }
+
         public void Supprimer(Demande demande)
         {
             List<Jumelage> jumelages = _context.Set<Jumelage>()
                 .Where(j => EF.Property<int?>(j, "DemandeId") == demande.Id)
                 .ToList();
 
+            List<DemandeGenre> demandeGenres = _context.Set<DemandeGenre>()
+                .Where(dg => dg.DemandeId == demande.Id)
+                .ToList();
+
             if (jumelages.Count > 0)
             {
                 _context.RemoveRange(jumelages);
+            }
+
+            if (demandeGenres.Count > 0)
+            {
+                _context.RemoveRange(demandeGenres);
             }
 
             _context.Demandes.Remove(demande);

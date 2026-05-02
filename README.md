@@ -1,5 +1,7 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/o2gylyDK)
 
+
+#Cette config appartient à John https://github.com/420-4P7-H26-ASP-NET/s14-projet-de-session-felix-john-benoit/blob/main/.github/workflows/main_residences.yml
 # Projet de session — Résidences Étudiantes
 
 ## Description du projet
@@ -14,8 +16,8 @@ Application de gestion des résidences étudiantes.
 
 | Opération              | Étudiant | Gestionnaire | Administrateur |
 |------------------------|:--------:|:------------:|:--------------:|
-| Voir la liste (index)  | ✅       | ✅           | ✅             |
-| Voir les détails       | ✅       | ✅           | ✅             |
+| Voir la liste (index)  | ✅(pas les pages)       | ✅           | ✅             |
+| Voir les détails       | ❌       | ✅           | ✅             |
 | Créer / modifier       | ❌       | ✅           | ✅             |
 | Supprimer              | ❌       | ❌           | ✅             |
 

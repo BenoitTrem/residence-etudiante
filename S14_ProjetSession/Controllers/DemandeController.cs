@@ -30,6 +30,66 @@ namespace S14_ProjetSession.Controllers
             _demandeRepository = demandeRepository;
         }
 
+        private static bool PeriodeInscriptionOuverte(Semestre? semestre)
+        {
+            return semestre != null && semestre.DebutInscriptionDisponible.Date <= DateTime.Today && semestre.FinInscriptionDisponible.Date >= DateTime.Today;
+        }
+
+        private bool ValiderConsentements(Demande demande)
+        {
+            bool valide = true;
+
+            if (!demande.AccepteReglements)
+            {
+                ModelState.AddModelError("Demande.AccepteReglements", "Vous devez accepter les règlements.");
+                valide = false;
+            }
+
+            if (!demande.AccepteTraitementDonnees)
+            {
+                ModelState.AddModelError("Demande.AccepteTraitementDonnees", "Vous devez accepter le traitement des données.");
+                valide = false;
+            }
+
+            if (!demande.ConfirmeSoumission)
+            {
+                ModelState.AddModelError("Demande.ConfirmeSoumission", "Vous devez confirmer la soumission.");
+                valide = false;
+            }
+
+            return valide;
+        }
+
+        private static void CopierDemandeDansViewModel(Demande source, DemandeCreateViewModel vm)
+        {
+            vm.Demande.PrefDureeBail = source.PrefDureeBail;
+            vm.Demande.AccepteReglements = source.AccepteReglements;
+            vm.Demande.AccepteTraitementDonnees = source.AccepteTraitementDonnees;
+            vm.Demande.ConfirmeSoumission = false;
+            vm.Demande.DateNaissanceGarant = source.DateNaissanceGarant;
+            vm.Demande.NomGarant = source.NomGarant;
+            vm.Demande.PrenomGarant = source.PrenomGarant;
+            vm.Demande.CourrielGarant = source.CourrielGarant;
+            vm.Demande.TelephoneGarant = source.TelephoneGarant;
+            vm.Demande.NomParent = source.NomParent;
+            vm.Demande.CourrielParent = source.CourrielParent;
+            vm.Demande.NomUrgence = source.NomUrgence;
+            vm.Demande.LienParenteUrgence = source.LienParenteUrgence;
+            vm.Demande.TelephoneUrgence = source.TelephoneUrgence;
+
+            vm.SelectedGenreIds = source.DemandeGenres?.Select(dg => dg.GenreId).ToList() ?? new List<int>();
+            vm.Jumelages = source.Jumelages?.Select(j => new JumelageViewModel
+            {
+                Nom = j.Nom,
+                Courriel = j.Courriel
+            }).ToList() ?? new List<JumelageViewModel>();
+
+            while (vm.Jumelages.Count < 3)
+            {
+                vm.Jumelages.Add(new JumelageViewModel());
+            }
+        }
+
       
 
         /// <summary>
@@ -236,8 +296,6 @@ namespace S14_ProjetSession.Controllers
                 return View(vm);
             }
 
-
-
             // Jumelages
             foreach (var j in vm.Jumelages)
             {
@@ -334,6 +392,11 @@ namespace S14_ProjetSession.Controllers
             vm.Genres = _genreRepository.Genres;
             vm.Semestres = _semestreRepository.Semestres;
 
+            if (!ValiderConsentements(vm.Demande))
+            {
+                return View(vm);
+            }
+
             // Propriétés de navigation assignées côté serveur
             ModelState.Remove("Demande.Etudiant");
             ModelState.Remove("Demande.Semestre");
@@ -361,6 +424,8 @@ namespace S14_ProjetSession.Controllers
             var semestre = _semestreRepository.GetSemestreParId(vm.SelectedSemestreId ?? 0);
             if (semestre == null)
                 ModelState.AddModelError("SelectedSemestreId", "Semestre invalide.");
+            else if (!PeriodeInscriptionOuverte(semestre))
+                ModelState.AddModelError("SelectedSemestreId", "La période d'inscription est fermée pour ce semestre.");
 
             // Valider genres
             if (vm.SelectedGenreIds == null || !vm.SelectedGenreIds.Any())
@@ -391,7 +456,6 @@ namespace S14_ProjetSession.Controllers
             demandeEnBase.AccepteReglements = vm.Demande.AccepteReglements;
             demandeEnBase.AccepteTraitementDonnees = vm.Demande.AccepteTraitementDonnees;
             demandeEnBase.ConfirmeSoumission = vm.Demande.ConfirmeSoumission;
-            demandeEnBase.DateDemande = vm.Demande.DateDemande;
             demandeEnBase.NomGarant = vm.Demande.NomGarant;
             demandeEnBase.PrenomGarant = vm.Demande.PrenomGarant;
             demandeEnBase.DateNaissanceGarant = vm.Demande.DateNaissanceGarant;

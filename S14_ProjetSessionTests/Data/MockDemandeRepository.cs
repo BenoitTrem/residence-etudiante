@@ -15,6 +15,8 @@ namespace S14_ProjetSession.Data
             _genres.Add(new Genre { Id = 1, Nom = "Homme" });
             _genres.Add(new Genre { Id = 2, Nom = "Femme" });
 
+            DateTime today = DateTime.Today;
+
             _demandes.Add(new Demande
             {
                 Id = 1,
@@ -42,7 +44,11 @@ namespace S14_ProjetSession.Data
                 Semestre = new Semestre()
                 {
                     Id = 1,
-                    NomSemestre = "hivers-2025"
+                    NomSemestre = "Hiver test",
+                    DateDebut = today.AddDays(-5),
+                    DateFin = today.AddDays(5),
+                    DebutInscriptionDisponible = today.AddDays(-10),
+                    FinInscriptionDisponible = today.AddDays(10)
                 },
 
                 AccepteReglements = true,
@@ -86,7 +92,11 @@ namespace S14_ProjetSession.Data
                 Semestre = new Semestre()
                 {
                     Id = 2,
-                    NomSemestre = "hivers-2025"
+                    NomSemestre = "Été test",
+                    DateDebut = today.AddDays(-2),
+                    DateFin = today.AddDays(10),
+                    DebutInscriptionDisponible = today.AddDays(-1),
+                    FinInscriptionDisponible = today.AddDays(15)
                 },
 
                 Etudiant = new Etudiant
@@ -121,6 +131,15 @@ namespace S14_ProjetSession.Data
         public Demande? GetDemande(int id)
         {
             return _demandes.FirstOrDefault(x => x.Id == id);
+        }
+
+        public Demande? GetDerniereDemandeParEtudiant(int etudiantId)
+        {
+            return _demandes
+                .Where(d => d.EtudiantId == etudiantId)
+                .OrderByDescending(d => d.DateDemande)
+                .ThenByDescending(d => d.Id)
+                .FirstOrDefault();
         }
 
         public void Creer(Demande demande)
