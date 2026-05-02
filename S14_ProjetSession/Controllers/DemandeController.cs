@@ -56,7 +56,7 @@ namespace S14_ProjetSession.Controllers
             return valide;
         }
 
-        
+
 
         private bool ValiderSemestreOuvert(int? semestreId, out Semestre? semestre)
         {
@@ -151,11 +151,50 @@ namespace S14_ProjetSession.Controllers
 
         public async Task<Demande?> GetDemandeAvecUserId()
         {
-            String userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            Etudiant etudiantActuelle = await _etudiantRepository.GetByUserIdAsync(userId);
+            string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return null;
+
+            Etudiant? etudiantActuelle = await _etudiantRepository.GetByUserIdAsync(userId);
+            if (etudiantActuelle == null) return null;
 
             // avec etudiant get une demande
-            return _demandeRepository.Demandes.FirstOrDefault(D => D.EtudiantId == etudiantActuelle.Id);
+            Demande? demande = _demandeRepository.Demandes.FirstOrDefault(D => D.EtudiantId == etudiantActuelle.Id);
+
+            if (demande != null)
+            {
+                Demande CopieDemande = new Demande()
+                {
+                    PrefDureeBail = demande.PrefDureeBail,
+                    AccepteReglements = demande.AccepteReglements,
+                    AccepteTraitementDonnees = demande.AccepteTraitementDonnees,
+                    ConfirmeSoumission = false,
+                    DateDemande = DateTime.Today,
+                    NomGarant = demande.NomGarant,
+                    PrenomGarant = demande.PrenomGarant,
+                    DateNaissanceGarant = demande.DateNaissanceGarant,
+                    CourrielGarant = demande.CourrielGarant,
+                    TelephoneGarant = demande.TelephoneGarant,
+                    NomParent = demande.NomParent,
+                    CourrielParent = demande.CourrielParent,
+                    NomUrgence = demande.NomUrgence,
+                    LienParenteUrgence = demande.LienParenteUrgence,
+                    TelephoneUrgence = demande.TelephoneUrgence,
+                    DateDebutBail = demande.DateDebutBail,
+                    DateFinBail = demande.DateFinBail,
+                    Jumelages = demande.Jumelages?
+                        .Select(j => new Jumelage
+                        {
+                            Nom = j.Nom,
+                            Courriel = j.Courriel
+                        })
+                        .ToList() ?? new List<Jumelage>(),
+                    DemandeGenres = demande.DemandeGenres
+                };
+                
+
+                return CopieDemande;
+            }
+            return null;
         }
 
         
@@ -181,19 +220,30 @@ namespace S14_ProjetSession.Controllers
         [HttpGet]
         public async Task<IActionResult> Creer(int? id)
         {
-
-          
             if (id != null)
             {
-                Demande? demandeRecu =  await GetDemandeAvecUserId();
+                Demande demande = await GetDemandeAvecUserId();
+                List<int> GenreChoisieAnciens = demande.DemandeGenres.Select(dg => dg.GenreId).ToList();
+                
+                // recréation de jumelages
+                List<JumelageViewModel> listeJumelages = new();
+                foreach (Jumelage jumelage in demande.Jumelages) 
+                {
+                    listeJumelages.Add(new JumelageViewModel() { Courriel = jumelage.Courriel, Nom = jumelage.Nom });
+                }
+
+               
                 DemandeCreateViewModel vm = new DemandeCreateViewModel
                 {
-                    Demande = demandeRecu,
+                    Demande = demande,
                     Genres = _genreRepository.Genres,
                     Semestres = _semestreRepository.Semestres,
-                    SelectedGenreIds = new List<int>()
+                    SelectedGenreIds = GenreChoisieAnciens,
+                    Jumelages = listeJumelages
+                    
                 };
                 return View(vm);
+
             }
             else
             {
@@ -202,7 +252,6 @@ namespace S14_ProjetSession.Controllers
                     Genres = _genreRepository.Genres,
                     Semestres = _semestreRepository.Semestres,
                     SelectedGenreIds = new List<int>()
-
                 };
                 return View(vm);
             }
