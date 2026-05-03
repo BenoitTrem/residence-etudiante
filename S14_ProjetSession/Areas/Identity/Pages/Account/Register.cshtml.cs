@@ -126,7 +126,8 @@ namespace S14_ProjetSession.Areas.Identity.Pages.Account
                     await _userManager.AddToRoleAsync(user, "Utilisateur");
                     _logger.LogInformation("Un utilisateur a créé un nouveau compte avec mot de passe.");
 
-                    user.EmailConfirmed = true;
+                    // par defaut etait vrai mais devrais etre false
+                    user.EmailConfirmed = false;
                     await _userManager.UpdateAsync(user);
 
                     var userId = await _userManager.GetUserIdAsync(user);

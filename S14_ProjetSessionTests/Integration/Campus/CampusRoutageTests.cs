@@ -43,7 +43,11 @@ namespace S14_ProjetSessionTests.Integration.CampusTests
                 builder.UseEnvironment("Test");
             });
 
-            _client = _factory.CreateClient();
+            _client = _factory.CreateClient(new WebApplicationFactoryClientOptions
+            {
+                // doit etre mis pour que le test fonctionne
+                AllowAutoRedirect = false
+            });
 
             _currentUser = _admin;
         }
@@ -73,22 +77,22 @@ namespace S14_ProjetSessionTests.Integration.CampusTests
 
         // ── Autorisation : non connecté ────────────────────────────────────────
 
-        // Vérifie que /Campus retourne 401 pour un utilisateur non connecté
+        // Vérifie que /Campus redirige un utilisateur non connecté vers la connexion
         [Fact(DisplayName = "Route /Campus refuse un utilisateur non connecté")]
         public async Task Index_RefuseNonConnecte()
         {
             _currentUser = null;
             HttpResponseMessage response = await _client.GetAsync("/Campus", TestContext.Current.CancellationToken);
-            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+            Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
         }
 
-        // Vérifie que /Campus est accessible à un utlisateur connecté
-        [Fact(DisplayName = "Route /Campus accessible à un utilisateur connecté")]
-        public async Task Index_AccessibleConnecte()
+        // Vérifie que /Campus refuse un étudiant, car la page est réservée aux admins et gestionnaires
+        [Fact(DisplayName = "Route /Campus refusée à un étudiant")]
+        public async Task Index_RefuseEtudiant()
         {
             _currentUser = _etudiant;
             HttpResponseMessage response = await _client.GetAsync("/Campus", TestContext.Current.CancellationToken);
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
         }
 
         // ── Autorisation : rôle AdminOuGestionnaire (Creer) ───────────────────

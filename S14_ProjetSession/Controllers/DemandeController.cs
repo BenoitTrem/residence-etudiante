@@ -84,6 +84,15 @@ namespace S14_ProjetSession.Controllers
             return true;
         }
 
+        private async Task<bool> EstProprietaireConnecte(Demande demande)
+        {
+            string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return false;
+
+            Etudiant? etudiant = await _etudiantRepository.GetByUserIdAsync(userId);
+            return etudiant != null && demande.EtudiantId == etudiant.Id;
+        }
+
       
 
         /// <summary>
@@ -402,15 +411,19 @@ namespace S14_ProjetSession.Controllers
             return RedirectToAction("Index");
         }
 
-
-        [Authorize(Policy = "EstProprietaireDemande")]
-        public IActionResult Modifier(int id)
+        [Authorize]
+        public async Task<IActionResult> Modifier(int id)
         {
             var demande = _demandeRepository.GetDemande(id);
             if (demande == null)
             {
                 TempData["Erreur"] = "Demande introuvable.";
                 return RedirectToAction("Index");
+            }
+
+            if (!await EstProprietaireConnecte(demande))
+            {
+                return Forbid();
             }
 
             var vm = new DemandeCreateViewModel
@@ -440,12 +453,21 @@ namespace S14_ProjetSession.Controllers
         // je ne sais pas encore si je donne le droit a un Admin de Modifier TODO Félix
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Policy = "EstProprietaireDemande")]
+        [Authorize]
         public async Task<IActionResult> Modifier(DemandeCreateViewModel vm)
         {
             
             vm.Genres = _genreRepository.Genres;
             vm.Semestres = _semestreRepository.Semestres;
+
+            // Demande existante
+            var demandeEnBase = _demandeRepository.GetDemande(vm.Demande.Id);
+            if (demandeEnBase == null) return NotFound();
+
+            if (!await EstProprietaireConnecte(demandeEnBase))
+            {
+                return Forbid();
+            }
 
             if (!ValiderConsentements(vm.Demande))
             {
@@ -482,11 +504,6 @@ namespace S14_ProjetSession.Controllers
                 return View(vm);
 
            
-
-            // Demande existante
-            var demandeEnBase = _demandeRepository.GetDemande(vm.Demande.Id);
-            if (demandeEnBase == null) return NotFound();
-
             // Doublon (hors demande courante)
             bool demandeDoubleExiste = _demandeRepository.Demandes
                 .Any(d => d.Id != demandeEnBase.Id &&
@@ -581,14 +598,26 @@ namespace S14_ProjetSession.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Policy = "AdminOuGestionnaire")]
-        public IActionResult Supprimer(int Id)
+        [Authorize]
+        public async Task<IActionResult> Supprimer(int Id)
         {
             Demande demande = _demandeRepository.GetDemande(Id);
             if (demande != null)
             {
+                if (!User.IsInRole("Admin") && !await EstProprietaireConnecte(demande))
+                {
+                    return Forbid();
+                }
+
                 _demandeRepository.Supprimer(demande);
                 TempData["succes"] = "Demande supprimée avec succès.";
+
+                if (User.IsInRole("Admin"))
+                {
+                    return RedirectToAction("Demandes");
+                }
+
+                return RedirectToAction("Index");
             }
 
             ViewBag.Demandes = _demandeRepository.Demandes;
