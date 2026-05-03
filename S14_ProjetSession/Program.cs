@@ -68,13 +68,13 @@ builder.Services.Configure<EmailSettings>(
 builder.Services.Configure<AzureEmailSettings>(
     builder.Configuration.GetSection("AzureEmailSettings"));
 
-if (builder.Environment.IsProduction())
+if (builder.Environment.IsEnvironment("Test"))
 {
-    builder.Services.AddTransient<IEmailSender, AzureEmailSender>();
+    builder.Services.AddTransient<IEmailSender, EmailSender>();
 }
 else
 {
-    builder.Services.AddTransient<IEmailSender, EmailSender>();
+    builder.Services.AddTransient<IEmailSender, AzureEmailSender>();
 }
 
 builder.Services.AddScoped<IResidenceRepository, DbResidenceRepository>();
