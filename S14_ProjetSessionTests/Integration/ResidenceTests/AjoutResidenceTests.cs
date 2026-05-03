@@ -22,7 +22,7 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
      * configuration du WebApplicationFactory et de l’authentification simulée)
      * ci-dessous a été réalisée avec l’aide de ChatGPT.
      */
-    public class AjoutResidenceTest : IClassFixture<WebApplicationFactory<Program>>
+    public class AjoutResidenceTests : IClassFixture<WebApplicationFactory<Program>>
     {
         // Factory permettant de créer un serveur de test ASP.NET
         private readonly WebApplicationFactory<Program> _factory;
@@ -59,7 +59,7 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
         }
 
         // Constructeur : configure l’environnement de test et les dépendances
-        public AjoutResidenceTest(WebApplicationFactory<Program> factory)
+        public AjoutResidenceTests(WebApplicationFactory<Program> factory)
         {
             _campusRepo.Setup(c => c.Campus).Returns(new List<Campus>
             {
@@ -123,6 +123,7 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
 
+
         // Vérifie qu'une création valide ajoute une résidence
         [Fact(DisplayName = "Création valide redirige")]
         public async Task CreerValide()
@@ -159,6 +160,29 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
                 { "Ville", "Gatineau" },
                 { "Province", "QC" },
                 { "CodePostal", "J1J1J1" }
+            };
+
+            HttpContent form = await GetForm(data);
+
+            await _client.PostAsync("/Residence/Creer", form);
+
+            Assert.Equal(initial, _residenceRepository.GetAll().Count);
+        }
+
+        [Fact(DisplayName = "Création refusée si non connecté")]
+        public async Task CreationRefuseNonAdmin()
+        {
+            _utilisateurActuel = null;
+
+            int initial = _residenceRepository.GetAll().Count;
+
+            Dictionary<string, string> data = new Dictionary<string, string>
+            {
+                { "Nom", "Test" },
+                { "AdresseLigne", "123 rue" },
+                { "Ville", "Ville" },
+                { "Province", "QC" },
+                { "CodePostal", "H0H0H0" }
             };
 
             HttpContent form = await GetForm(data);

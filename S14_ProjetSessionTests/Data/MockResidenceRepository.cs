@@ -87,7 +87,7 @@ namespace S14_ProjetSession.Data
                 {
                     existing.ResidenceCommodites.Add(new ResidenceCommodite
                     {
-                        CommoditeId = rc.CommoditeId,
+                        CommoditeId = rc.CommoditeId != 0 ? rc.CommoditeId : rc.Commodite?.Id ?? 0,
                         Description = rc.Description,
                         Residence = existing
                     });
