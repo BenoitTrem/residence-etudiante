@@ -62,11 +62,20 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 .AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<ResidencesDbContext>()
 .AddErrorDescriber<FRIdentityErrorDescriber>();
-// email config 
+// email config
 builder.Services.Configure<EmailSettings>(
     builder.Configuration.GetSection("EmailSettings"));
-// email config 
-builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.Configure<AzureEmailSettings>(
+    builder.Configuration.GetSection("AzureEmailSettings"));
+
+if (builder.Environment.IsProduction())
+{
+    builder.Services.AddTransient<IEmailSender, AzureEmailSender>();
+}
+else
+{
+    builder.Services.AddTransient<IEmailSender, EmailSender>();
+}
 
 builder.Services.AddScoped<IResidenceRepository, DbResidenceRepository>();
 builder.Services.AddScoped<IUniteRepository, DbUniteRepository>();
