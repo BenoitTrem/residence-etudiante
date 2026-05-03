@@ -7,8 +7,10 @@ using S14_ProjetSession.Areas.Identity.Data;
 using S14_ProjetSession.Authorization;
 using S14_ProjetSession.Data;
 using S14_ProjetSession.Resources;
+using QuestPDF.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+QuestPDF.Settings.License = LicenseType.Community;
 
 if (!builder.Environment.IsEnvironment("Test"))
 {

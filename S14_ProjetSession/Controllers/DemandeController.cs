@@ -215,6 +215,35 @@ namespace S14_ProjetSession.Controllers
             return View(demandes);
         }
 
+        [Authorize]
+        public async Task<IActionResult> ExporterPdf(int id)
+        {
+            Demande? demande = _demandeRepository.GetDemande(id);
+            if (demande == null)
+            {
+                TempData["Erreur"] = "Demande introuvable.";
+                return RedirectToAction("Index");
+            }
+
+            if (!User.IsInRole("Admin") && !User.IsInRole("Gestionnaire"))
+            {
+                string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                Etudiant? etudiant = string.IsNullOrEmpty(userId)
+                    ? null
+                    : await _etudiantRepository.GetByUserIdAsync(userId);
+
+                if (etudiant == null || demande.EtudiantId != etudiant.Id)
+                {
+                    return Forbid();
+                }
+            }
+
+            byte[] pdf = DemandePdf.Generate(demande);
+            string nomFichier = $"demande-{demande.Id}.pdf";
+
+            return File(pdf, "application/pdf", nomFichier);
+        }
+
 
         [Authorize(Policy = "EstEtudiant")]
         [HttpGet]

@@ -1,127 +1,125 @@
 ﻿@model Demande
 
 <div class="col-md-4 mb-4">
-                <div class="card shadow-sm h-100">
-                    
-                    <div class="card-body">
-                        
-                        <!-- Étudiant -->
-                        <h5 class="card-title">
-                            @Model.Etudiant.Prenom @Model.Etudiant.Nom
-                        </h5>
+    <div class="card shadow-sm h-100">
+        <div class="card-body">
+            <!-- Étudiant -->
+            <h5 class="card-title">
+                @Model.Etudiant.Prenom @Model.Etudiant.Nom
+            </h5>
 
-                        <!-- Infos principales -->
-                        <p class="card-text">
-                            <strong>Semestre :</strong> @Model.Semestre.NomSemestre <br />
-                            <strong>Date :</strong> @Model.DateDemande.ToShortDateString() <br />
-                            <strong>Durée bail :</strong> @Model.PrefDureeBail jours
-                        </p>
+            <!-- Infos principales -->
+            <p class="card-text">
+                <strong>Semestre :</strong> @Model.Semestre.NomSemestre <br />
+                <strong>Date :</strong> @Model.DateDemande.ToShortDateString() <br />
+                <strong>Durée bail :</strong> @Model.PrefDureeBail jours
+            </p>
 
-                        <!-- Garant -->
-                        <p class="card-text">
-                            <strong>Garant :</strong> @Model.NomGarant @Model.PrenomGarant <br />
-                            <strong>Téléphone :</strong> @Model.TelephoneGarant
-                        </p>
+            <!-- Garant -->
+            <p class="card-text">
+                <strong>Garant :</strong> @Model.NomGarant @Model.PrenomGarant <br />
+                <strong>Téléphone :</strong> @Model.TelephoneGarant
+            </p>
 
-                        <!-- Urgence -->
-                        <p class="card-text">
-                            <strong>Urgence :</strong> @Model.NomUrgence <br />
-                            <strong>Lien :</strong> @Model.LienParenteUrgence
-                        </p>
-                        <!-- Genres -->
-                        @if (Model.DemandeGenres != null && Model.DemandeGenres.Any())
+            <!-- Urgence -->
+            <p class="card-text">
+                <strong>Urgence :</strong> @Model.NomUrgence <br />
+                <strong>Lien :</strong> @Model.LienParenteUrgence
+            </p>
+
+            <!-- Genres -->
+            @if (Model.DemandeGenres != null && Model.DemandeGenres.Any())
+            {
+                <p class="card-text"><strong>Genres :</strong></p>
+                <ul>
+                    @foreach (var dg in Model.DemandeGenres)
+                    {
+                        @if (dg.Genre != null)
                         {
-                            <p class="card-text"><strong>Genres :</strong></p>
-                            <ul>
-                                @foreach (var dg in Model.DemandeGenres)
-                                {
-                                    @if (dg.Genre != null)
-                                    {
-                                        <li>@dg.Genre.Nom</li>
-                                    }
-                                }
-                            </ul>
+                            <li>@dg.Genre.Nom</li>
                         }
+                    }
+                </ul>
+            }
 
-                        <!-- Jumelage -->
-                        @if (Model.Jumelages != null && Model.Jumelages.Any())
-                        {
-                            <p class="card-text"><strong>Jumelages :</strong></p>
-                            <ul>
-                                @foreach (var jumelage in Model.Jumelages)
-                                {
-                                    <li>@jumelage.Nom — @jumelage.Courriel</li>
-                                }
-                            </ul>
-                        }
+            <!-- Jumelage -->
+            @if (Model.Jumelages != null && Model.Jumelages.Any())
+            {
+                <p class="card-text"><strong>Jumelages :</strong></p>
+                <ul>
+                    @foreach (var jumelage in Model.Jumelages)
+                    {
+                        <li>@jumelage.Nom — @jumelage.Courriel</li>
+                    }
+                </ul>
+            }
 
-                        <!-- Statut -->
-                        <p>
-                            @if (Model.ConfirmeSoumission)
-                            {
-                                <span class="badge bg-success">Confirmée</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-warning text-dark">En attente</span>
-                            }
-                        </p>
-
-                    </div>
-              
-                    @if (User.Identity.IsAuthenticated && 
-    (User.IsInRole("Admin") || User.IsInRole("Gestionnaire")))
-{
-    <div class="card-footer text-end">
-
-        <a asp-action="Modifier" asp-route-id="@Model.Id" class="btn btn-primary btn-sm">
-            Modifier
-        </a>
-
-        <!-- Bouton modal -->
-        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal-@Model.Id">
-            Supprimer la demande
-        </button>
-
-        <!-- Modal UNIQUE -->
-        <div class="modal fade" id="deleteModal-@Model.Id" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-
-                    <div class="modal-header">
-                        <h5 class="modal-title">Confirmer la suppression</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-
-                    <div class="modal-body">
-                        Êtes-vous certain de vouloir supprimer cette demande ?
-                        <br />
-                        Cette action est irréversible.
-                    </div>
-
-                    <div class="modal-footer">
-
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            Annuler
-                        </button>
-
-                        <form asp-action="Supprimer"
-                              asp-route-id="@Model.Id"
-                              method="post">
-                            @Html.AntiForgeryToken()
-                            <button type="submit" class="btn btn-danger">
-                                Supprimer
-                            </button>
-                        </form>
-
-                    </div>
-
-                </div>
-            </div>
+            <!-- Statut -->
+            <p>
+                @if (Model.ConfirmeSoumission)
+                {
+                    <span class="badge bg-success">Confirmée</span>
+                }
+                else
+                {
+                    <span class="badge bg-warning text-dark">En attente</span>
+                }
+            </p>
         </div>
 
-    </div>
-}
+        <div class="card-footer text-end">
+            <a asp-controller="Demande"
+               asp-action="ExporterPdf"
+               asp-route-id="@Model.Id"
+               class="btn btn-outline-secondary btn-sm">
+                Exporter PDF
+            </a>
+        </div>
+
+        @if (User.Identity.IsAuthenticated &&
+            (User.IsInRole("Admin") || User.IsInRole("Gestionnaire")))
+        {
+            <div class="card-footer text-end">
+                <a asp-action="Modifier" asp-route-id="@Model.Id" class="btn btn-primary btn-sm">
+                    Modifier
+                </a>
+
+                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal-@Model.Id">
+                    Supprimer la demande
+                </button>
+
+                <div class="modal fade" id="deleteModal-@Model.Id" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Confirmer la suppression</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                Êtes-vous certain de vouloir supprimer cette demande ?
+                                <br />
+                                Cette action est irréversible.
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    Annuler
+                                </button>
+
+                                <form asp-action="Supprimer"
+                                      asp-route-id="@Model.Id"
+                                      method="post">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-danger">
+                                        Supprimer
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+        }
+    </div>
+</div>
