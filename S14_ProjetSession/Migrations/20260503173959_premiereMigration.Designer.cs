@@ -12,8 +12,8 @@ using S14_ProjetSession.Data;
 namespace S14_ProjetSession.Migrations
 {
     [DbContext(typeof(ResidencesDbContext))]
-    [Migration("20260502185445_aj")]
-    partial class aj
+    [Migration("20260503173959_premiereMigration")]
+    partial class premiereMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -245,6 +245,9 @@ namespace S14_ProjetSession.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int>("Priorite")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("Campuses");
@@ -444,7 +447,6 @@ namespace S14_ProjetSession.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("noAdmission")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("noEtudiant")

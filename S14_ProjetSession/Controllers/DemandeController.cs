@@ -177,7 +177,6 @@ namespace S14_ProjetSession.Controllers
                     AccepteReglements = demande.AccepteReglements,
                     AccepteTraitementDonnees = demande.AccepteTraitementDonnees,
                     ConfirmeSoumission = false,
-                    DateDemande = DateTime.Today,
                     NomGarant = demande.NomGarant,
                     PrenomGarant = demande.PrenomGarant,
                     DateNaissanceGarant = demande.DateNaissanceGarant,
@@ -389,12 +388,14 @@ namespace S14_ProjetSession.Controllers
             }
 
 
+
             // ajout des propriété pour que Validate fonctionne
+            vm.Demande.StatutDemande = StatutDemande.EnAttente;
             vm.Demande.Etudiant = etudiant;
             vm.Demande.EtudiantId = etudiant.Id;
             vm.Demande.SemestreId = semestre.Id;
             vm.Demande.Semestre = semestre;
-
+            
             // Propriété problematique a supprimer pour que le modelState fonctionne
             ModelState.Remove("Demande.DemandeGenres");
             ModelState.Remove("Demande.Jumelages");
@@ -518,6 +519,7 @@ namespace S14_ProjetSession.Controllers
             }
 
             // // StatutDemande , DateTraitement , UniteId 
+            
             demandeEnBase.SemestreId = semestre.Id;
             demandeEnBase.PrefDureeBail = vm.Demande.PrefDureeBail;
             demandeEnBase.AccepteReglements = vm.Demande.AccepteReglements;

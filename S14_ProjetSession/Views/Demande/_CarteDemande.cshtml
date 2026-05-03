@@ -55,15 +55,27 @@
             }
 
             <!-- Statut -->
-            <p>
-                @if (Model.ConfirmeSoumission)
+            @{
+                string statutClasse = Model.StatutDemande switch
                 {
-                    <span class="badge bg-success">Confirmée</span>
-                }
-                else
+                    StatutDemande.Acceptee => "bg-success",
+                    StatutDemande.Refusee => "bg-danger",
+                    StatutDemande.EnAttente => "bg-warning text-dark",
+                    _ => "bg-secondary"
+                };
+
+                string statutTexte = Model.StatutDemande switch
                 {
-                    <span class="badge bg-warning text-dark">En attente</span>
-                }
+                    StatutDemande.Acceptee => "Acceptée",
+                    StatutDemande.Refusee => "Refusée",
+                    StatutDemande.EnAttente => "En attente",
+                    _ => Model.StatutDemande.ToString()
+                };
+            }
+
+            <p class="card-text mb-0">
+                <strong>Statut :</strong>
+                <span class="badge @statutClasse">@statutTexte</span>
             </p>
         </div>
 

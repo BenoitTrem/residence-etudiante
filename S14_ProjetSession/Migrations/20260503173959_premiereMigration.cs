@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace S14_ProjetSession.Migrations
 {
     /// <inheritdoc />
-    public partial class aj : Migration
+    public partial class premiereMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -57,7 +57,8 @@ namespace S14_ProjetSession.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nom = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Abreviation = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false)
+                    Abreviation = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    Priorite = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -316,7 +317,7 @@ namespace S14_ProjetSession.Migrations
                     ProgrammeId = table.Column<int>(type: "int", nullable: false),
                     CampusId = table.Column<int>(type: "int", nullable: false),
                     noEtudiant = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    noAdmission = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    noAdmission = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     MobiliteReduite = table.Column<bool>(type: "bit", nullable: false),
                     AdressePermanente = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Telephone = table.Column<string>(type: "nvarchar(max)", nullable: false),

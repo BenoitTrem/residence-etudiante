@@ -444,7 +444,6 @@ namespace S14_ProjetSession.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("noAdmission")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("noEtudiant")
