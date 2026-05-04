@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<Campus>
-
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
 
 @*
     Vue : Index.cshtml
@@ -8,136 +9,121 @@
 *@
 
 @{
-    var isAdmin = (await AuthorizationService
-        .AuthorizeAsync(User, "AdminUniquement")).Succeeded;
-
-    var isAdminOrGestionnaire = (await AuthorizationService
-        .AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded;
+    var isAdmin = (await AuthorizationService.AuthorizeAsync(User, "AdminUniquement")).Succeeded;
+    var isAdminOrGestionnaire = (await AuthorizationService.AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded;
 }
 
-<div class="container mt-4">
+<div class="container">
+    <h1 class="mb-5 mt-5">Liste des campus</h1>
 
-    <h1 class="mb-4">Liste des campus</h1>
-
-    <div class="row">
-
-        @foreach (var c in Model)
-        {
-            <div class="col-md-6 mb-3">
-
-                <div class="card shadow-sm">
-
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            @c.Nom
-                        </h5>
-
-                        <p class="text-muted mb-0">
-                            Abréviation : @c.Abreviation
-                        </p>
-                    </div>
-
-                    @if (isAdminOrGestionnaire)
-                    {
-                        <div class="card-footer d-flex justify-content-between">
-
-                            <a asp-controller="Campus"
-                               asp-action="Modifier"
-                               asp-route-id="@c.Id"
-                               class="btn btn-primary btn-sm">
-                                Modifier
-                            </a>
-                            @*
-
-                            @if (isAdmin)
-                            {
-                                <button type="button"
-                                        class="btn btn-danger btn-sm"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#supprimerModal-@c.Id">
-                                    Supprimer
-                                </button>
-                            }
-                            *@
-
-                        </div>
-                    }
-
-                </div>
-
-            </div>
-
-
-
-            @* Modal seulement pour Admin 
-            @if (isAdmin)
-            {
-                <div class="modal fade"
-                     id="supprimerModal-@c.Id"
-                     tabindex="-1">
-
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-
-                            <div class="modal-header">
-                                <h5 class="modal-title">
-                                    Supprimer campus
-                                </h5>
-
-                                <button type="button"
-                                        class="btn-close"
-                                        data-bs-dismiss="modal">
-                                </button>
-                            </div>
-
-                            <div class="modal-body">
-                                Voulez-vous supprimer
-                                <strong>@c.Nom</strong> ?
-                            </div>
-
-                            <div class="modal-footer">
-
-                                <button type="button"
-                                        class="btn btn-secondary"
-                                        data-bs-dismiss="modal">
-                                    Annuler
-                                </button>
-
-                                <form asp-controller="Campus"
-                                      asp-action="Supprimer"
-                                      method="post">
-
-                                    <input type="hidden"
-                                           name="id"
-                                           value="@c.Id" />
-
-                                    <button type="submit"
-                                            class="btn btn-danger">
-                                        Supprimer
-                                    </button>
-
-                                </form>
-
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-                *@
-            
-        }
-
-    </div>
-
-    
     @if (isAdminOrGestionnaire)
     {
-        <div class="mt-4">
-            <a asp-controller="Campus" asp-action="Creer"
-               class="btn btn-success">
-                Ajouter un campus
-            </a>
-        </div>
+        <a class="btn btn-primary mb-4 w-100 p-2"
+           asp-controller="Campus"
+           asp-action="Creer">
+            Ajouter un campus
+        </a>
     }
 
+    <div class="row mt-5 mb-5">
+        @foreach (var c in Model)
+        {
+            <div class="col-md-6 mb-5">
+                <div class="carte h-100 mt-3">
+
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h2 class="card-title mb-0 text-truncate">
+                                @c.Nom
+                            </h2>
+                        </div>
+
+                        <p class="card-text text-muted mb-4">
+                            Abréviation : @c.Abreviation
+                        </p>
+
+                        @if (isAdminOrGestionnaire)
+                        {
+                            <div class="d-flex gap-2 mt-4">
+
+                                <a class="btn btn-outline-success flex-fill"
+                                   asp-controller="Campus"
+                                   asp-action="Modifier"
+                                   asp-route-id="@c.Id">
+                                    Modifier
+                                </a>
+
+                                @if (isAdmin)
+                                {
+                                    <button class="btn btn-outline-danger flex-fill"
+                                            type="button"
+                                            data-dialog-open="@($"modalSupprimer_{c.Id}")">
+                                        Supprimer
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-outline-danger flex-fill btn-tooltip"
+                                            type="button"
+                                            data-dialog-open="modalNonAdmin">
+                                        Supprimer
+                                        <span class="tooltip-text">
+                                            Vous devez être Admin pour effectuer cette action
+                                        </span>
+                                    </button>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            @* Modal suppression *@
+            @if (isAdmin)
+            {
+                <dialog id="@($"modalSupprimer_{c.Id}")" class="danger">
+                    <h2>Suppression d'un campus</h2>
+
+                    <p class="mt-3">
+                        Êtes-vous sûr de vouloir supprimer
+                        <strong>@c.Nom</strong> ?
+                    </p>
+
+                    <form asp-controller="Campus"
+                          asp-action="Supprimer"
+                          method="post">
+
+                        <input type="hidden" name="id" value="@c.Id" />
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="submit"
+                                    class="btn btn-outline-danger px-4">
+                                Supprimer
+                            </button>
+
+                            <button type="button"
+                                    class="btn btn-outline-dark px-4"
+                                    data-dialog-close>
+                                Annuler
+                            </button>
+                        </div>
+                    </form>
+                </dialog>
+            }
+        }
+    </div>
+
+    @* Modal accès refusé *@
+    <dialog id="modalNonAdmin" class="info-modal">
+        <h2>Accès refusé</h2>
+        <p>Vous devez être Admin pour effectuer cette action.</p>
+
+        <div class="d-flex justify-content-end mt-3">
+            <button class="btn btn-outline-dark px-4"
+                    type="button"
+                    data-dialog-close>
+                Fermer
+            </button>
+        </div>
+    </dialog>
 </div>
