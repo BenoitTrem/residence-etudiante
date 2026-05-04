@@ -21,26 +21,54 @@ namespace S14_ProjetSession.Controllers
         }
 
         /// <summary>
-        /// Affiche la liste de toutes les commodités.
+        /// Affiche la liste paginée des commodités avec filtre et tri.
         /// </summary>
-        /// <returns>Vue Commodites avec la liste complète des commodités</returns>
+        /// <returns>Vue "Commodites" avec la liste des commodités filtrées et paginées</returns>
         public IActionResult Index(int? id, int page = 1, string? nom = null, bool ascendant = true)
         {
+            // Récupère les commodités selon les critères de filtrage et de tri
             List<Commodite> commoditesFiltrer =
                _commoditeRepository.GetCommoditeFiltrer(nom, ascendant)
                ?? new List<Commodite>();
 
-            // Pagination
-            int nbPage = 10;
+            int nbPage = 10; // Nombre d'éléments par page
+
+            // Calcul du nombre total d'éléments et de pages
+            int itemsTotal = commoditesFiltrer.Count;
+            int pagesTotal = (int)Math.Ceiling((double)itemsTotal / nbPage);
+
+            // S'assure que la page est au minimum 1
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            // S'assure qu'il y a au moins une page
+            if (pagesTotal == 0)
+            {
+                pagesTotal = 1;
+            }
+
+            // empêche de dépasser le nombre total de pages
+            if (page > pagesTotal)
+            {
+                page = pagesTotal;
+            }
+
+            // Pagination : sélection des commodités de la page courante
             List<Commodite> commodites = commoditesFiltrer
                 .Skip((page - 1) * nbPage)
                 .Take(nbPage)
                 .ToList();
 
+            // Passage des paramètres à la vue
             ViewBag.Nom = nom;
             ViewBag.Ascendant = ascendant;
+
+            // Informations de pagination
             ViewBag.PageActuelle = page;
-            ViewBag.TotalPages = (int)Math.Ceiling((double)commoditesFiltrer.Count / nbPage);
+            ViewBag.TotalPages = pagesTotal;
+
             ViewData["Title"] = "Commodités";
             return View("Commodites", commodites);
         }

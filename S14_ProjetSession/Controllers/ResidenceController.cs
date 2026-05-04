@@ -57,32 +57,66 @@ namespace S14_ProjetSession.Controllers
         }
 
         /// <summary>
-        /// Affiche la liste de toutes les résidences.
+        /// Affiche une liste paginée des résidences avec possibilité de filtrage et de tri.
         /// </summary>
-        /// <returns>Vue "Residences" avec la liste complète des résidences</returns>
+        /// <param name="id">Identifiant optionnel (non utilisé actuellement).</param>
+        /// <param name="page">Numéro de la page à afficher (par défaut : 1).</param>
+        /// <param name="disponible">Filtre sur la disponibilité des résidences.</param>
+        /// <param name="nom">Filtre sur le nom de la résidence.</param>
+        /// <param name="adresseLigne">Filtre sur l'adresse.</param>
+        /// <param name="ville">Filtre sur la ville.</param>
+        /// <param name="ascendant">Indique si le tri est ascendant (true) ou descendant (false).</param>
+        /// <returns>
+        /// Vue "Residences" contenant la liste paginée des résidences correspondant aux critères.
+        /// </returns>
         [AllowAnonymous]
         public IActionResult Index(int? id, int page = 1, bool? disponible = null, string? nom = null, string? adresseLigne = null, string? ville = null, bool ascendant = true)
         {
             ViewData["Title"] = "Résidences";
 
+            // Récupère les résidences selon les critères de filtrage
             List<Residence> residencesFiltrer =
                 _residenceRepository.GetResidenceFiltrer(disponible, nom, adresseLigne, ville, ascendant)
                 ?? new List<Residence>();
 
-            // Pagination
-            int nbPage = 10;
+            int nbPage = 10; // Nombre d'éléments par page
+
+            // Calcul du nombre total d'éléments et de pages
+            int itemsTotal = residencesFiltrer.Count;
+            int pagesTotal = (int)Math.Ceiling((double)itemsTotal / nbPage);
+
+            // S'assure que la page est au minimum 1
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            // S'assure qu'il y a au moins une page
+            if (pagesTotal == 0)
+            {
+                pagesTotal = 1;
+            }
+
+            // empêche de dépasser le nombre total de pages
+            if (page > pagesTotal)
+            {
+                page = pagesTotal;
+            }
+
+            // Pagination : sélectionne uniquement les éléments de la page courante
             List<Residence> residences = residencesFiltrer
-                .Skip((page - 1) * nbPage)
-                .Take(nbPage)
+                .Skip((page - 1) * nbPage) // Ignore les éléments des pages précédentes
+                .Take(nbPage)  // Prend seulement les éléments de la page courante
                 .ToList();
 
+            // Passage des paramètres à la vue pour conserver les filtres et la pagination
             ViewBag.Disponible = disponible;
             ViewBag.Nom = nom;
             ViewBag.AdresseLigne = adresseLigne;
             ViewBag.Ville = ville;
             ViewBag.Ascendant = ascendant;
             ViewBag.PageActuelle = page;
-            ViewBag.TotalPages = (int)Math.Ceiling((double)residencesFiltrer.Count / nbPage);
+            ViewBag.TotalPages = pagesTotal;
 
             return View("Residences", residences);
         }
