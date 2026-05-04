@@ -83,7 +83,7 @@ namespace S14_ProjetSessionTests.Integration.CampusTests
         {
             _currentUser = null;
             HttpResponseMessage response = await _client.GetAsync("/Campus", TestContext.Current.CancellationToken);
-            Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
         // Vérifie que /Campus refuse un étudiant, car la page est réservée aux admins et gestionnaires
