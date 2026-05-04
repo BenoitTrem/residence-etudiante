@@ -107,30 +107,36 @@ namespace S14_ProjetSession.Data
             var unites = new List<Unite>();
             var random = new Random();
 
-            int numero = 1;
-            for (int i = 0; i < 15; i++)
+            // Nombre d’unités par résidence 
+            var nbUnitesParResidence = new Dictionary<int, int>
             {
-                unites.Add(new Unite
+                { 0, 15 }, // Résidence Maple
+                { 1, 5 },  // Résidence Oak
+                { 2, 8 },  // Résidence Pine
+                { 3, 6 },  // Résidence Cedar
+                { 4, 10 }  // Résidence Birch
+            };
+
+            foreach (var entry in nbUnitesParResidence)
+            {
+                int index = entry.Key;
+                int nbUnites = entry.Value;
+
+                int numero = 1;
+
+                for (int i = 0; i < nbUnites; i++)
                 {
-                    Numero = numero++,
-                    Capacite = random.Next(1, 6),
-                    ResidenceId = residencesDb[0].Id,
-                    AdapteePourMobiliteReduite = random.Next(0, 5) == 0
-                });
+                    unites.Add(new Unite
+                    {
+                        Numero = numero++,
+                        Capacite = random.Next(1, 6),
+                        ResidenceId = residencesDb[index].Id,
+                        AdapteePourMobiliteReduite = random.Next(0, 5) == 0
+                    });
+                }
             }
 
-            numero = 1;
-            for (int i = 0; i < 5; i++)
-            {
-                unites.Add(new Unite
-                {
-                    Numero = numero++,
-                    Capacite = random.Next(1, 6),
-                    ResidenceId = residencesDb[1].Id,
-                    AdapteePourMobiliteReduite = random.Next(0, 5) == 0
-                });
-            }
-
+            // Ajout en base (évite les doublons)
             foreach (var unite in unites)
             {
                 if (!context.Unites.Any(u =>
@@ -141,25 +147,6 @@ namespace S14_ProjetSession.Data
                 }
             }
 
-            context.SaveChanges();
-
-            // Genres
-            var genres = new Genre[]
-            {
-                new Genre{ Nom = "Homme" },
-                new Genre{ Nom = "Femme" },
-                new Genre{ Nom = "Non-binaire" },
-                new Genre{ Nom = "Autre" },
-                new Genre{ Nom = "Préfère ne pas répondre" }
-            };
-
-            foreach (var genre in genres)
-            {
-                if (!context.Genres.Any(g => g.Nom == genre.Nom))
-                {
-                    context.Genres.Add(genre);
-                }
-            }
             context.SaveChanges();
 
             var genreDb = context.Genres.ToList();

@@ -17,7 +17,7 @@ namespace S14_ProjetSession.Models
         public int CommoditeId { get; set; }
         public Commodite Commodite { get; set; }
 
-        /// Description optionnelle spécifique à la résidence pour cette commodité
+        // Description optionnelle spécifique à la résidence pour cette commodité
         [StringLength(250, ErrorMessage = "La description ne peut pas dépasser 250 caractères.")]
         public string? Description { get; set; }
     }

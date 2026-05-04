@@ -16,7 +16,7 @@ using System.Security.Claims;
  */
 namespace S14_ProjetSessionTests.Integration.ResidenceTests
 {
-    public class SupprimerResidenceTest : IClassFixture<WebApplicationFactory<Program>>
+    public class SupprimerResidenceTests : IClassFixture<WebApplicationFactory<Program>>
     {
         private readonly WebApplicationFactory<Program> _factory;
         private readonly HttpClient _client;
@@ -43,7 +43,7 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
             return form;
         }
 
-        public SupprimerResidenceTest(WebApplicationFactory<Program> factory)
+        public SupprimerResidenceTests(WebApplicationFactory<Program> factory)
         {
             _campusRepo.Setup(c => c.Campus).Returns(new List<Campus>
             {
@@ -97,6 +97,25 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
 
             // Vérifie qu'une résidence a été supprimée
             Assert.Equal(initial - 1, _residenceRepository.GetAll().Count);
+        }
+
+        [Fact(DisplayName = "Suppression refusée si non admin")]
+        public async Task SuppressionRefuseNonAdmin()
+        {
+            _utilisateurActuel = null;
+
+            int initial = _residenceRepository.GetAll().Count;
+
+            Dictionary<string, string> data = new Dictionary<string, string>
+            {
+                { "id", "1" }
+            };
+
+            HttpContent form = await GetForm(data);
+
+            await _client.PostAsync("/Residence/Supprimer", form);
+
+            Assert.Equal(initial, _residenceRepository.GetAll().Count);
         }
     }
 }

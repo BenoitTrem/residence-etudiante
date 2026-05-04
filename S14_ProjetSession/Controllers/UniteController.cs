@@ -26,51 +26,101 @@ namespace S14_ProjetSession.Controllers
         }
 
         /// <summary>
-        /// Affiche la liste des unités disponibles pour une résidence donnée.
+        /// Affiche la liste paginée des unités, avec filtres optionnels, 
+        /// pour une résidence spécifique ou pour l’ensemble des résidences.
         /// </summary>
-        /// <param name="id">Identifiant de la résidence</param>
-        /// <returns>Vue Unites avec la liste des unités disponibles de la résidence</returns>
+        /// <param name="id">
+        /// Identifiant de la résidence. Si null ou invalide, toutes les unités sont affichées.
+        /// </param>
+        /// <param name="page">Numéro de la page courante (pagination).</param>
+        /// <param name="disponible">Filtre sur la disponibilité des unités.</param>
+        /// <param name="capacite">Filtre sur la capacité des unités.</param>
+        /// <param name="numero">Filtre sur le numéro de l’unité.</param>
+        /// <param name="ascendant">Indique si le tri est ascendant.</param>
+        /// <param name="mobiliteReduite">Filtre sur l’accessibilité (mobilité réduite).</param>
+        /// <returns>
+        /// Vue "Unites" contenant la liste des unités filtrées et paginées.
+        /// </returns>
         [Authorize(Policy = "AdminOuGestionnaire")]
         public IActionResult Index(int? id, int page = 1, bool? disponible = null, int? capacite = null, int? numero = null, bool? ascendant = true, bool? mobiliteReduite = null)
         {
-            List<Residence> residences = _residenceRepository.GetAll(); 
+            // Récupère toutes les résidences (pour affichage/filtre dans la vue)
+            List<Residence> residences = _residenceRepository.GetAll();
 
+            // Si un id de résidence est fourni, filtre par résidence
             List<Unite> totalUnites;
             if (id.HasValue && id.Value > 0)
             {
+                // Récupère la résidence correspondante
                 Residence residence = _residenceRepository.GetById(id.Value);
+
+                // Si la résidence n'existe pas, retourne 404
                 if (residence == null)
                 {
                     return NotFound();
                 }
+                // Récupère toutes les unités de cette résidence
                 totalUnites = _uniteRepository.GetByResidenceId(id.Value);
-                ViewBag.ResidenceName = residence.Nom;
+                ViewBag.ResidenceName = residence.Nom;  // Nom de la résidence pour affichage
             }
             else
             {
+                // Sinon, prend toutes les unités
                 totalUnites = _uniteRepository.GetAll();
                 ViewBag.ResidenceName = "toutes les résidences";
             }
 
+            // Récupère les unités filtrées (avec ou sans résidence)
             List<Unite> unitesFiltrer = _uniteRepository.GetFiltrerByResidenceId(
                 id ?? 0, 
                 disponible, capacite, numero, ascendant ?? true, mobiliteReduite);
 
-            // Pagination
             int nbPage = 10;
+
+            // Calcul du total d'éléments et du nombre de pages
+            int itemsTotal = unitesFiltrer.Count;
+            int pagesTotal = (int)Math.Ceiling((double)itemsTotal / nbPage);
+
+            // S'assure que la page est au minimum 1
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            // S'assurer qu'il y a au moins une page
+            if (pagesTotal == 0)
+            {
+                pagesTotal = 1;
+            }
+
+            // S'assure de ne pas dépasser le nombre total de pages
+            if (page > pagesTotal)
+            {
+                page = pagesTotal;
+            }
+
+            // Pagination : sélection des unités de la page courante
             List<Unite> unites = unitesFiltrer
                 .Skip((page - 1) * nbPage)
                 .Take(nbPage)
                 .ToList();
 
+            // Données envoyées à la vue
             ViewBag.Residences = residences;
             ViewBag.ResidenceId = id;
+
+            // Adresse de la résidence sélectionnée ou N/A
             ViewBag.Adresse = id.HasValue ? _residenceRepository.GetById(id.Value)?.AdresseComplete : "N/A";
             ViewBag.NombreTotal = totalUnites.Count;
+
+            // Infos de pagination
             ViewBag.PageActuelle = page;
-            ViewBag.TotalPages = (int)Math.Ceiling((double)unitesFiltrer.Count / nbPage);
+            ViewBag.TotalPages = pagesTotal;
+
+            // Indique si on est en mode "toutes les unités"
             ViewBag.ModeToutesLesUnites = !id.HasValue || id.Value <= 0;
 
+            // Conservation des filtres dans la vue
             ViewBag.Disponible = disponible;
             ViewBag.Capacite = capacite;
             ViewBag.Numero = numero;

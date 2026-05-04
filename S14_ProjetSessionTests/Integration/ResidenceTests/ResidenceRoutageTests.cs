@@ -8,7 +8,8 @@ using System.Net;
 /*
  * @author Benoit
  * 
- * Description: Tests d'intégrations pour la suppression d'une résidence.
+ * Description: Tests de routage pour les résidences.
+ * vérifie que les URLs retournent les bons codes HTTP et que les vues affichent les données attendues,
  */
 namespace S14_ProjetSessionTests.Integration.ResidenceTests
 {
@@ -56,6 +57,17 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
             
             // Vérifie que la route n'existe pas (code 404)
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        // Vérifie qu'une propriété de l'objet s'affiche dans la vue
+        [Fact(DisplayName = "Vue affiche le nom de la résidence")]
+        public async Task VueAffichePropriete()
+        {
+            HttpResponseMessage response = await _client.GetAsync("/Residence/ResidenceDetails/1");
+            string body = await response.Content.ReadAsStringAsync();
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Contains("R&#xE9;sidence Maple", body);
         }
     }
 }

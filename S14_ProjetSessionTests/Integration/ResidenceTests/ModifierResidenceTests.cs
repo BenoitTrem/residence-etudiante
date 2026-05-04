@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using S14_ProjetSession.Controllers;
 using S14_ProjetSession.Data;
 using S14_ProjetSession.Models;
+using S14_ProjetSession.ViewModels;
 using System.Security.Claims;
 
 /*
@@ -21,7 +24,7 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
      * configuration du WebApplicationFactory et de l’authentification simulée)
      * ci-dessous a été réalisée avec l’aide de ChatGPT.
      */
-    public class ModifierResidenceTest : IClassFixture<WebApplicationFactory<Program>>
+    public class ModifierResidenceTests : IClassFixture<WebApplicationFactory<Program>>
     {
         private readonly WebApplicationFactory<Program> _factory;
         private readonly HttpClient _client;
@@ -48,7 +51,7 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
             return form;
         }
 
-        public ModifierResidenceTest(WebApplicationFactory<Program> factory)
+        public ModifierResidenceTests(WebApplicationFactory<Program> factory)
         {
             _campusRepo.Setup(c => c.Campus).Returns(new List<Campus>
             {
@@ -118,33 +121,29 @@ namespace S14_ProjetSessionTests.Integration.ResidenceTests
             Assert.Equal("H0H0H0", updatedResidence.CodePostal);
         }
 
-        // Vérifie qu'une modification invalide est rejetée
-        [Fact(DisplayName = "Modification invalide est refusée")]
-        public async Task ModifierInvalide()
+   
+        [Fact(DisplayName = "Modification refusée si non admin")]
+        public async Task ModificationRefuseNonAdmin()
         {
-            _utilisateurActuel = _admin;
+            _utilisateurActuel = null;
 
-            Residence residence = _residenceRepository.GetById(1);
-            Assert.NotNull(residence);
+            int initial = _residenceRepository.GetById(1).Nom.GetHashCode();
 
-            // Données invalides (nom vide)
             Dictionary<string, string> data = new Dictionary<string, string>
             {
-                { "Id", residence.Id.ToString() },
-                { "Nom", "" },
-                { "AdresseLigne", residence.AdresseLigne },
-                { "Ville", residence.Ville },
-                { "Province", residence.Province },
-                { "CodePostal", residence.CodePostal }
+                { "Id", "1" },
+                { "Nom", "TentativeHack" },
+                { "AdresseLigne", "123 rue" },
+                { "Ville", "Ville" },
+                { "Province", "QC" },
+                { "CodePostal", "H0H0H0" }
             };
 
             HttpContent form = await GetForm(data);
 
             await _client.PostAsync("/Residence/Modifier", form);
 
-            // Vérifie que la modification n'a pas été appliquée
-            Residence updatedResidence = _residenceRepository.GetById(1);
-            Assert.NotEqual("", updatedResidence.Nom);
+            Assert.NotEqual("TentativeHack", _residenceRepository.GetById(1).Nom);
         }
     }
 }
