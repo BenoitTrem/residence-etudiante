@@ -32,7 +32,7 @@
                             <a class="nav-link fw-semibold px-3 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Residence" ? "active" : "")"
                                 asp-controller="Residence" asp-action="Index">Résidences</a>
                         </li>
-                        @if (User.IsInRole("Admin") || User.IsInRole("Gestionnaire"))
+                        @if ((await AuthorizationService.AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded)
                         {
                             <li class="nav-item">
                                 <a class="nav-link fw-semibold px-3 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Unite" ? "active" : "")"
@@ -50,6 +50,14 @@
                                 <a class="nav-link fw-semibold px-3 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "GestionDemande" ? "active" : "")"
                                 asp-controller="GestionDemande" asp-action="Index">Gestion demandes</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Etudiant" ? "active" : "")"
+                                   asp-area="" asp-controller="Etudiant" asp-action="Index">Étudiants</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Programme" ? "active" : "")"
+                                   asp-area="" asp-controller="Programme" asp-action="Index">Programmes</a>
+                            </li>
                         }
                         @if ((await AuthorizationService.AuthorizeAsync(User, "estEtudiant")).Succeeded)
                         {
@@ -59,14 +67,7 @@
                             </li>
                         }
 
-          
-                        @if ((await AuthorizationService.AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Etudiant" ? "active" : "")"
-                                    asp-area="" asp-controller="Etudiant" asp-action="Index">Étudiants</a>
-                            </li>
-                        }
+        
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

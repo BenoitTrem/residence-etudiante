@@ -3,12 +3,10 @@
 namespace S14_ProjetSession.Models
 {
 
-    /*
-     * @author John
-     * 
-     * Description: 
-     * Modèle Programme
-     */
+    /// <summary>
+    /// Représente un programme académique.
+    /// </summary>
+    /// <author>John Zuleta</author>
     public class Programme
     {
         public int Id { get; set; }

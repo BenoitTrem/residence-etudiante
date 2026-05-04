@@ -53,6 +53,7 @@ namespace S14_ProjetSession.Controllers
         [Authorize(Policy = "AdminOuGestionnaire")]
         public IActionResult Creer()
         {
+            ViewData["Title"] = "Créer un campus";
             return View();
         }
 
@@ -71,7 +72,9 @@ namespace S14_ProjetSession.Controllers
         {
             try
             {
+                ViewData["Title"] = "Créer un campus";
                 if (!ModelState.IsValid)
+
                     return View(campus);
 
                 _repo.Creer(campus);
@@ -97,6 +100,7 @@ namespace S14_ProjetSession.Controllers
         {
             try
             {
+                ViewData["Title"] = "Modifier un campus";
                 var campus = _repo.GetById(id);
 
                 if (campus == null)
@@ -125,6 +129,7 @@ namespace S14_ProjetSession.Controllers
         {
             try
             {
+                ViewData["Title"] = "Modifier un campus";
                 if (!ModelState.IsValid)
                     return View(campus);
 

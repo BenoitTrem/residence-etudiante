@@ -55,7 +55,7 @@ namespace S14_ProjetSession.Controllers
         {
             try
             {
-                ViewData["Title"] = "Etudiant";
+               
 
                 var etudiants = _etudiantRepository.Etudiants
                     .OrderBy(e => e.Nom)
@@ -80,6 +80,7 @@ namespace S14_ProjetSession.Controllers
         {
             try
             {
+                ViewData["Title"] = "Créer un étudiant";
                 var user = await _userManager.GetUserAsync(User);
                 if (user == null)
                     return Challenge();
@@ -118,6 +119,7 @@ namespace S14_ProjetSession.Controllers
         {
             try
             {
+                ViewData["Title"] = "Créer un étudiant";
                 if (!ModelState.IsValid)
                 {
                     ViewBag.Genres = _genresRepository.Genres;
@@ -172,6 +174,7 @@ namespace S14_ProjetSession.Controllers
         {
             try
             {
+                ViewData["Title"] = "Modifier un étudiant";
                 var user = await _userManager.GetUserAsync(User);
                 if (user == null)
                     return Challenge();
@@ -212,7 +215,7 @@ namespace S14_ProjetSession.Controllers
             try
             {
 
-               
+                ViewData["Title"] = "Modifier un étudiant";
                 var user = await _userManager.GetUserAsync(User);
                 if (user == null)
                     return Challenge();

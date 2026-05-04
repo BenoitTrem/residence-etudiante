@@ -18,7 +18,7 @@ namespace S14_ProjetSession.Data
             _context = contexte;
         }
 
-        public IEnumerable<Programme> Programmes => _context.Programmes;
+        public IEnumerable<Programme> Programmes => _context.Programmes.Include(p => p.Campus);
 
         public Programme? GetProgramme(int? id)
         {

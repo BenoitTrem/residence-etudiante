@@ -19,28 +19,30 @@
 
             <div class="row g-3">
 
-                <!-- Prénom -->
+                <!-- PRÉNOM -->
                 <div class="col-md-6">
                     <label asp-for="Prenom" class="form-label required"></label>
-                    <input asp-for="Prenom" class="form-control" placeholder="Entrez le prénom..." />
+                    <input asp-for="Prenom" class="form-control"
+                           placeholder="Entrez le prénom..." />
                     <span asp-validation-for="Prenom" class="text-danger"></span>
                 </div>
 
-                <!-- Nom -->
+                <!-- NOM -->
                 <div class="col-md-6">
                     <label asp-for="Nom" class="form-label required"></label>
-                    <input asp-for="Nom" class="form-control" placeholder="Entrez le nom..." />
+                    <input asp-for="Nom" class="form-control"
+                           placeholder="Entrez le nom..." />
                     <span asp-validation-for="Nom" class="text-danger"></span>
                 </div>
 
-                <!-- Date -->
+                <!-- DATE NAISSANCE -->
                 <div class="col-md-6">
                     <label asp-for="DateNaissance" class="form-label required"></label>
                     <input asp-for="DateNaissance" type="date" class="form-control" />
                     <span asp-validation-for="DateNaissance" class="text-danger"></span>
                 </div>
 
-                <!-- Genre -->
+                <!-- GENRE -->
                 <div class="col-md-6">
                     <label class="form-label required">Genre</label>
                     <select asp-for="GenreId"
@@ -51,61 +53,67 @@
                     <span asp-validation-for="GenreId" class="text-danger"></span>
                 </div>
 
-                <!-- Mobilité -->
+                <!-- MOBILITÉ -->
                 <div class="col-12">
                     <div class="form-check mt-2">
                         <input asp-for="MobiliteReduite" class="form-check-input" />
-                        <label class="form-check-label">Mobilité réduite</label>
+                        <label class="form-check-label">
+                            Mobilité réduite
+                        </label>
                     </div>
                 </div>
 
-                <!-- Adresse -->
+                <!-- ADRESSE -->
                 <div class="col-12">
                     <label asp-for="AdressePermanente" class="form-label required"></label>
-                    <input asp-for="AdressePermanente" class="form-control" placeholder="Adresse complète..." />
+                    <input asp-for="AdressePermanente" class="form-control"
+                           placeholder="Adresse complète..." />
                     <span asp-validation-for="AdressePermanente" class="text-danger"></span>
                 </div>
 
-                <!-- Code postal -->
+                <!-- CODE POSTAL -->
                 <div class="col-md-6">
                     <label class="form-label required">Code postal</label>
-                    <input name="CodePostal" class="form-control" placeholder="Ex: J8X 3X2" />
+                    <input name="CodePostal" class="form-control"
+                           placeholder="Ex: J8X 3X2" />
                 </div>
 
-                <!-- Téléphone -->
+                <!-- TÉLÉPHONE -->
                 <div class="col-md-6">
                     <label asp-for="Telephone" class="form-label required"></label>
                     <input asp-for="Telephone" class="form-control" />
                     <span asp-validation-for="Telephone" class="text-danger"></span>
                 </div>
 
-                <!-- Courriel institutionnel -->
+                <!-- COURRIEL INSTITUTIONNEL -->
                 <div class="col-md-6">
                     <label asp-for="CourrielInstitutionnel" class="form-label"></label>
                     <input asp-for="CourrielInstitutionnel" class="form-control" />
                     <span asp-validation-for="CourrielInstitutionnel" class="text-danger"></span>
                 </div>
 
-                <!-- Courriel personnel -->
+                <!-- COURRIEL PERSONNEL -->
                 <div class="col-md-6">
                     <label asp-for="CourrielPersonnel" class="form-label"></label>
-                    <input asp-for="CourrielPersonnel" class="form-control" value="@ViewBag.EmailPerso" />
+                    <input asp-for="CourrielPersonnel" class="form-control"
+                           value="@ViewBag.EmailPerso" />
                     <span asp-validation-for="CourrielPersonnel" class="text-danger"></span>
                 </div>
 
-                <!-- Numéros -->
+                <!-- NO ÉTUDIANT -->
                 <div class="col-md-6">
                     <label asp-for="noEtudiant" class="form-label required"></label>
                     <input asp-for="noEtudiant" class="form-control" />
                     <span asp-validation-for="noEtudiant" class="text-danger"></span>
                 </div>
 
+                <!-- NO ADMISSION -->
                 <div class="col-md-6">
                     <label asp-for="noAdmission" class="form-label"></label>
                     <input asp-for="noAdmission" class="form-control" />
                 </div>
 
-                <!-- Programme -->
+                <!-- PROGRAMME -->
                 <div class="col-md-6">
                     <label class="form-label required">Programme</label>
                     <select asp-for="ProgrammeId"
@@ -116,7 +124,7 @@
                     <span asp-validation-for="ProgrammeId" class="text-danger"></span>
                 </div>
 
-                <!-- Campus -->
+                <!-- CAMPUS -->
                 <div class="col-md-6">
                     <label class="form-label required">Campus</label>
                     <select asp-for="CampusId"
@@ -129,13 +137,14 @@
 
             </div>
 
-            <!-- Buttons -->
+            <!-- BUTTONS -->
             <div class="text-center mt-5 mb-3">
                 <button type="submit" class="btn btn-outline-primary w-25">
                     Créer
                 </button>
 
-                <a asp-action="Index" class="btn btn-outline-dark ms-2 w-25">
+                <a asp-action="Index"
+                   class="btn btn-outline-dark ms-2 w-25">
                     Annuler
                 </a>
             </div>
