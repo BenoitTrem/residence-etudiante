@@ -444,7 +444,6 @@ namespace S14_ProjetSession.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("noAdmission")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("noEtudiant")
@@ -617,6 +616,9 @@ namespace S14_ProjetSession.Migrations
 
                     b.Property<DateTime>("DateFin")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("InscriptionOuverte")
+                        .HasColumnType("bit");
 
                     b.Property<string>("NomSemestre")
                         .IsRequired()

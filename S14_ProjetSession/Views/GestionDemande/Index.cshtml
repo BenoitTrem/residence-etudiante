@@ -43,6 +43,14 @@
             <div class="col-md-2">
                 <button type="submit" class="btn btn-primary w-100">Filtrer</button>
             </div>
+            <div class="col-md-3">
+                <a asp-controller="GestionDemande"
+                   asp-action="ExporterToutesPdf"
+                   asp-route-semestreFiltre="@Model.SemestreFiltre"
+                   class="btn btn-outline-secondary w-100">
+                    Exporter toutes les demandes PDF
+                </a>
+            </div>
         </form>
     </div>
 </div>

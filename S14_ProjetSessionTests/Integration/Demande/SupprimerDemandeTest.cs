@@ -24,7 +24,7 @@ namespace S14_ProjetSessionTests.Integration
         private IEtudiantRepository _etudiantRepository = new MockEtudiantRepository();
         private IGenresRepository _genresRepository = new MockGenreRepository();
         private ClaimsPrincipal? _currentUser;
-        private ClaimsPrincipal _utilisateur = AuthUtilities.CreerGestionnaire();
+        private ClaimsPrincipal _utilisateur = AuthUtilities.CreerAdmin();
 
 
         public SupprimerDemandeTest(WebApplicationFactory<Program> factory)

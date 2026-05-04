@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace S14_ProjetSession.Migrations
 {
     /// <inheritdoc />
-    public partial class test : Migration
+    public partial class premiereMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -57,7 +57,8 @@ namespace S14_ProjetSession.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nom = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Abreviation = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false)
+                    Abreviation = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    Priorite = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -96,7 +97,10 @@ namespace S14_ProjetSession.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NomSemestre = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    NomSemestre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateDebut = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateFin = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    InscriptionOuverte = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -237,11 +241,11 @@ namespace S14_ProjetSession.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nom = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Adresse_AdresseString = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
-                    Adresse_Ville = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Adresse_Province = table.Column<string>(type: "nvarchar(2)", maxLength: 2, nullable: false),
-                    Adresse_CodePostal = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CampusId = table.Column<int>(type: "int", nullable: false)
+                    AdresseLigne = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Ville = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Province = table.Column<string>(type: "nvarchar(2)", maxLength: 2, nullable: false),
+                    CodePostal = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CampusId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -250,8 +254,7 @@ namespace S14_ProjetSession.Migrations
                         name: "FK_Residences_Campuses_CampusId",
                         column: x => x.CampusId,
                         principalTable: "Campuses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -285,9 +288,8 @@ namespace S14_ProjetSession.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Numero = table.Column<int>(type: "int", nullable: false),
+                    Numero = table.Column<int>(type: "int", nullable: true),
                     Capacite = table.Column<int>(type: "int", nullable: false),
-                    PlacesOccupees = table.Column<int>(type: "int", nullable: false),
                     AdapteePourMobiliteReduite = table.Column<bool>(type: "bit", nullable: false),
                     ResidenceId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -315,7 +317,7 @@ namespace S14_ProjetSession.Migrations
                     ProgrammeId = table.Column<int>(type: "int", nullable: false),
                     CampusId = table.Column<int>(type: "int", nullable: false),
                     noEtudiant = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    noAdmission = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    noAdmission = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     MobiliteReduite = table.Column<bool>(type: "bit", nullable: false),
                     AdressePermanente = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Telephone = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -574,7 +576,8 @@ namespace S14_ProjetSession.Migrations
                 name: "IX_Unites_Numero_ResidenceId",
                 table: "Unites",
                 columns: new[] { "Numero", "ResidenceId" },
-                unique: true);
+                unique: true,
+                filter: "[Numero] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Unites_ResidenceId",

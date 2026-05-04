@@ -12,15 +12,15 @@ using S14_ProjetSession.Data;
 namespace S14_ProjetSession.Migrations
 {
     [DbContext(typeof(ResidencesDbContext))]
-    [Migration("20260411224607_test")]
-    partial class test
+    [Migration("20260503173959_premiereMigration")]
+    partial class premiereMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.5")
+                .HasAnnotation("ProductVersion", "10.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -245,6 +245,9 @@ namespace S14_ProjetSession.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int>("Priorite")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("Campuses");
@@ -444,7 +447,6 @@ namespace S14_ProjetSession.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("noAdmission")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("noEtudiant")
@@ -548,13 +550,32 @@ namespace S14_ProjetSession.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CampusId")
+                    b.Property<string>("AdresseLigne")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<int?>("CampusId")
                         .HasColumnType("int");
+
+                    b.Property<string>("CodePostal")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nom")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Province")
+                        .IsRequired()
+                        .HasMaxLength(2)
+                        .HasColumnType("nvarchar(2)");
+
+                    b.Property<string>("Ville")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -593,6 +614,15 @@ namespace S14_ProjetSession.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("DateDebut")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateFin")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("InscriptionOuverte")
+                        .HasColumnType("bit");
+
                     b.Property<string>("NomSemestre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -616,10 +646,7 @@ namespace S14_ProjetSession.Migrations
                     b.Property<int>("Capacite")
                         .HasColumnType("int");
 
-                    b.Property<int>("Numero")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlacesOccupees")
+                    b.Property<int?>("Numero")
                         .HasColumnType("int");
 
                     b.Property<int>("ResidenceId")
@@ -630,7 +657,8 @@ namespace S14_ProjetSession.Migrations
                     b.HasIndex("ResidenceId");
 
                     b.HasIndex("Numero", "ResidenceId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[Numero] IS NOT NULL");
 
                     b.ToTable("Unites");
                 });
@@ -790,48 +818,9 @@ namespace S14_ProjetSession.Migrations
 
             modelBuilder.Entity("S14_ProjetSession.Models.Residence", b =>
                 {
-                    b.HasOne("S14_ProjetSession.Models.Campus", "Campus")
+                    b.HasOne("S14_ProjetSession.Models.Campus", null)
                         .WithMany("Residences")
-                        .HasForeignKey("CampusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.OwnsOne("S14_ProjetSession.Models.Adresse", "Adresse", b1 =>
-                        {
-                            b1.Property<int>("ResidenceId")
-                                .HasColumnType("int");
-
-                            b1.Property<string>("AdresseString")
-                                .IsRequired()
-                                .HasMaxLength(150)
-                                .HasColumnType("nvarchar(150)");
-
-                            b1.Property<string>("CodePostal")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("Province")
-                                .IsRequired()
-                                .HasMaxLength(2)
-                                .HasColumnType("nvarchar(2)");
-
-                            b1.Property<string>("Ville")
-                                .IsRequired()
-                                .HasMaxLength(50)
-                                .HasColumnType("nvarchar(50)");
-
-                            b1.HasKey("ResidenceId");
-
-                            b1.ToTable("Residences");
-
-                            b1.WithOwner()
-                                .HasForeignKey("ResidenceId");
-                        });
-
-                    b.Navigation("Adresse")
-                        .IsRequired();
-
-                    b.Navigation("Campus");
+                        .HasForeignKey("CampusId");
                 });
 
             modelBuilder.Entity("S14_ProjetSession.Models.ResidenceCommodite", b =>

@@ -303,8 +303,7 @@ namespace S14_ProjetSession.Data
                             NomSemestre = $"{saison}-{i}",
                             DateDebut = debut,
                             DateFin = fin,
-                            DebutInscriptionDisponible = debut.AddMonths(-2),
-                            FinInscriptionDisponible = debut.AddDays(-1)
+                            InscriptionOuverte = saison == "printemps" && i == 2026
                         });
                     }
                 }

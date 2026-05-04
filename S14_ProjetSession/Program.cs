@@ -7,8 +7,10 @@ using S14_ProjetSession.Areas.Identity.Data;
 using S14_ProjetSession.Authorization;
 using S14_ProjetSession.Data;
 using S14_ProjetSession.Resources;
+using QuestPDF.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+QuestPDF.Settings.License = LicenseType.Community;
 
 if (!builder.Environment.IsEnvironment("Test"))
 {
@@ -60,11 +62,20 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 .AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<ResidencesDbContext>()
 .AddErrorDescriber<FRIdentityErrorDescriber>();
-// email config 
+// email config
 builder.Services.Configure<EmailSettings>(
     builder.Configuration.GetSection("EmailSettings"));
-// email config 
-builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.Configure<AzureEmailSettings>(
+    builder.Configuration.GetSection("AzureEmailSettings"));
+
+if (builder.Environment.IsEnvironment("Test"))
+{
+    builder.Services.AddTransient<IEmailSender, EmailSender>();
+}
+else
+{
+    builder.Services.AddTransient<IEmailSender, AzureEmailSender>();
+}
 
 builder.Services.AddScoped<IResidenceRepository, DbResidenceRepository>();
 builder.Services.AddScoped<IUniteRepository, DbUniteRepository>();

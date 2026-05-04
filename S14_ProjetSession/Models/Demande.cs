@@ -32,8 +32,8 @@ namespace S14_ProjetSession.Models
 
         public bool ConfirmeSoumission { get; set; }
 
-        [Required(ErrorMessage = "La date de la demande est obligatoire.")]
-        public DateTime DateDemande { get; set; }
+        //[Required(ErrorMessage = "La date de la demande est obligatoire.")]
+        public DateTime DateDemande { get; set; } = DateTime.Now;
 
         public List<Jumelage> Jumelages { get; set; } = new List<Jumelage>();
 

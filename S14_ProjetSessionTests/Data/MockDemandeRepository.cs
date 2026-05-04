@@ -1,4 +1,4 @@
-﻿using S14_ProjetSession.Models;
+using S14_ProjetSession.Models;
 
 namespace S14_ProjetSession.Data
 {
@@ -47,8 +47,7 @@ namespace S14_ProjetSession.Data
                     NomSemestre = "Hiver test",
                     DateDebut = today.AddDays(-5),
                     DateFin = today.AddDays(5),
-                    DebutInscriptionDisponible = today.AddDays(-10),
-                    FinInscriptionDisponible = today.AddDays(10)
+                    InscriptionOuverte = true
                 },
 
                 AccepteReglements = true,
@@ -95,8 +94,7 @@ namespace S14_ProjetSession.Data
                     NomSemestre = "Été test",
                     DateDebut = today.AddDays(-2),
                     DateFin = today.AddDays(10),
-                    DebutInscriptionDisponible = today.AddDays(-1),
-                    FinInscriptionDisponible = today.AddDays(15)
+                    InscriptionOuverte = true
                 },
 
                 Etudiant = new Etudiant

@@ -53,6 +53,26 @@ namespace S14_ProjetSession.Controllers
             return View(vm);
         }
 
+        [Authorize(Policy = "AdminOuGestionnaire")]
+        public IActionResult ExporterToutesPdf(int? semestreFiltre)
+        {
+            List<Demande> demandes = _demandeRepository.Demandes
+                .OrderByDescending(d => d.Semestre.DateDebut)
+                .ToList();
+
+            if (semestreFiltre.HasValue)
+            {
+                demandes = demandes
+                    .Where(d => d.SemestreId == semestreFiltre.Value)
+                    .ToList();
+            }
+
+            byte[] pdf = DemandePdf.GenerateToutes(demandes);
+            string suffixe = semestreFiltre.HasValue ? $"-semestre-{semestreFiltre.Value}" : string.Empty;
+
+            return File(pdf, "application/pdf", $"demandes{suffixe}.pdf");
+        }
+
         /// <summary>
         /// Change le statut d'une demande et optionnellement assigne une unité.
         /// </summary>

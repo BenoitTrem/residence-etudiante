@@ -13,14 +13,29 @@ namespace S14_ProjetSession.Data
 
         public MockSemestreRepository()
         {
-            DateTime today = DateTime.Today;
-            _context = new List<Semestre>
+            _context = new List<Semestre>();
+            List<string> saisons = new List<string>
+                {
+                    "printemps",
+                    "été",
+                    "automne",
+                    "hiver"
+                };
+            int Compteur = 0;
+            for (int i = 2025; i < 2035; i++)
             {
-                new Semestre { Id = 1, NomSemestre = "Hiver test", DateDebut = today.AddDays(-5), DateFin = today.AddDays(5), DebutInscriptionDisponible = today.AddDays(-10), FinInscriptionDisponible = today.AddDays(10) },
-                new Semestre { Id = 2, NomSemestre = "Printemps fermé", DateDebut = today.AddMonths(-3), DateFin = today.AddMonths(-2), DebutInscriptionDisponible = today.AddMonths(-4), FinInscriptionDisponible = today.AddMonths(-3) },
-                new Semestre { Id = 3, NomSemestre = "Été test", DateDebut = today.AddDays(-2), DateFin = today.AddDays(10), DebutInscriptionDisponible = today.AddDays(-1), FinInscriptionDisponible = today.AddDays(15) },
-                new Semestre { Id = 4, NomSemestre = "Automne fermé", DateDebut = today.AddMonths(-6), DateFin = today.AddMonths(-5), DebutInscriptionDisponible = today.AddMonths(-7), FinInscriptionDisponible = today.AddMonths(-6) }
-            };
+                foreach (string saison in saisons)
+                {
+                    Compteur += 1;
+                    _context.Add(new Semestre()
+                    {
+                        Id = Compteur,
+                        NomSemestre = $"{saison}-{i}",
+                        InscriptionOuverte = i >= 2026
+                    });
+                    
+                }
+            }
 
         }
 

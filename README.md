@@ -46,16 +46,21 @@ Application de gestion des résidences étudiantes.
 
 ### Demandes de résidence
 
-| Opération                        | Étudiant              | Gestionnaire | Administrateur |
-|----------------------------------|:---------------------:|:------------:|:--------------:|
-| Créer sa demande                 | ✅                    | ❌           | ✅             |
-| Voir sa propre demande           | ✅                    | ❌           | ✅             |
-| Voir toutes les demandes         | ❌                    | ✅           | ✅             |
-| Modifier sa demande              | ✅ (avant validation) | ❌           | ✅             |
-| Soumettre sa demande             | ✅                    | ❌           | ✅             |
-| Valider / refuser une demande    | ❌                    | ✅           | ✅             |
-| Supprimer sa propre demande      | ✅                    | ❌           | ✅             |
-| Supprimer la demande d'un autre  | ❌                    | ❌           | ✅             |
+| Opération                        | Étudiant propriétaire | Autre étudiant | Gestionnaire | Administrateur |
+|----------------------------------|:---------------------:|:--------------:|:------------:|:--------------:|
+| Créer une demande                | ✅                    | ✅             | ❌           | ❌             |
+| Voir sa propre demande           | ✅                    | N/A            | ❌           | ❌             |
+| Voir toutes les demandes         | ❌                    | ❌             | ✅           | ✅             |
+| Modifier sa demande              | ✅                    | ❌             | ❌           | ❌             |
+| Supprimer sa propre demande      | ✅                    | ❌             | ❌           | ✅             |
+| Supprimer la demande d'un autre  | ❌                    | ❌             | ❌           | ✅             |
+
+### Gestion des demandes
+
+| Opération                        | Étudiant propriétaire | Autre étudiant | Gestionnaire | Administrateur |
+|----------------------------------|:---------------------:|:--------------:|:------------:|:--------------:|
+| Accéder à la gestion             | ❌                    | ❌             | ✅           | ✅             |
+| Traiter une demande              | ❌                    | ❌             | ✅           | ✅             |
 
 ### Gestion des résidences
 
