@@ -140,10 +140,24 @@ namespace S14_ProjetSession.Areas.Identity.Pages.Account
                         protocol: Request.Scheme);
 
                     await _emailSender.SendEmailAsync(
-                            Input.Email,
-                            "Confirmez votre courriel",
-                            $"Veuillez confirmer votre compte en <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>cliquant ici</a>."
-                        );
+                      Input.Email,
+                      "Confirmez votre courriel",
+                      $@"
+                    <p>Bonjour,</p>
+
+                    <p>L’équipe de Résidences Étudiantes vous souhaite la bienvenue.</p>
+
+                    <p>Veuillez confirmer votre adresse courriel en cliquant ci-dessous :</p>
+
+                    <p>
+                        <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>
+                            👉 Confirmer mon courriel
+                        </a>
+                    </p>
+
+                    <p>Merci,<br/>L’équipe de Résidences Étudiantes</p>
+                    "
+                  );
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
