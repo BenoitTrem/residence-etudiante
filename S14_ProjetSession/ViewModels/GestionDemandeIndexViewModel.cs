@@ -2,6 +2,7 @@ using S14_ProjetSession.Models;
 
 namespace S14_ProjetSession.ViewModels
 {
+    /// <author>Felix</author>
     public class GestionDemandeIndexViewModel
     {
         public List<Demande> Demandes { get; set; } = new();

@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 
 /// <author>Felix</author>
-/// <author>John Zuleta (logique genres - demandes plusieurs à plusieurs ) </author>
+/// <author>John Zuleta (logique genres - demandes plusieurs à plusieurs)</author>
 namespace S14_ProjetSession.Controllers
 {
     public class DemandeController : Controller
@@ -304,7 +304,7 @@ namespace S14_ProjetSession.Controllers
         [Authorize(Policy = "EstEtudiant")]
         public async Task<IActionResult> Creer(DemandeCreateViewModel vm)
         {
-            // j'ai mis apres les chance quel qu'elle qu'un soit né apres 1900 trop vieux la date semble irréaliste
+            // Date trop ancienne: avant 1900, la date semble irréaliste.
             if (vm.Demande.DateNaissanceGarant.Value.Year < 1900)
             {
                 ModelState.AddModelError("Demande.DateDemande", "La date doit être après le 1er janvier 1950.");
@@ -328,7 +328,7 @@ namespace S14_ProjetSession.Controllers
 
              ModelState.Remove("Demande.Etudiant");
 
-            // etudiant connecté
+            // Étudiant connecté
             string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
@@ -392,14 +392,14 @@ namespace S14_ProjetSession.Controllers
 
 
 
-            // ajout des propriété pour que Validate fonctionne
+            // Ajout des propriétés pour que Validate fonctionne.
             vm.Demande.StatutDemande = StatutDemande.EnAttente;
             vm.Demande.Etudiant = etudiant;
             vm.Demande.EtudiantId = etudiant.Id;
             vm.Demande.SemestreId = semestre.Id;
             vm.Demande.Semestre = semestre;
             
-            // Propriété problematique a supprimer pour que le modelState fonctionne
+            // Propriété problématique à supprimer pour que le ModelState fonctionne.
             ModelState.Remove("Demande.DemandeGenres");
             ModelState.Remove("Demande.Jumelages");
             ModelState.Remove("Demande.Semestre");
@@ -454,7 +454,7 @@ namespace S14_ProjetSession.Controllers
         // ─── Modifier POST ───────────────────────────────────────────────────────
 
 
-        // je ne sais pas encore si je donne le droit a un Admin de Modifier TODO Félix
+        // je ne sais pas encore si je donne le droit à un Admin de modifier. TODO Félix
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -521,7 +521,7 @@ namespace S14_ProjetSession.Controllers
                 return View(vm);
             }
 
-            // // StatutDemande , DateTraitement , UniteId 
+            // StatutDemande, DateTraitement, UniteId
             
             demandeEnBase.SemestreId = semestre.Id;
             demandeEnBase.PrefDureeBail = vm.Demande.PrefDureeBail;
@@ -615,7 +615,7 @@ namespace S14_ProjetSession.Controllers
                 }
 
                 _demandeRepository.Supprimer(demande);
-                TempData["succes"] = "Demande supprimée avec succès.";
+                TempData["Succes"] = "Demande supprimée avec succès.";
 
                 if (User.IsInRole("Admin"))
                 {

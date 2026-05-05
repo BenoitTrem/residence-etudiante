@@ -1,8 +1,9 @@
-﻿using S14_ProjetSession.Models;
+using S14_ProjetSession.Models;
 
 
 namespace S14_ProjetSession.Data
 {
+    /// <author>Felix</author>
     public interface ISemestreRepository
     {
 

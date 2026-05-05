@@ -1,7 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace S14_ProjetSession.Models
 {
+    /// <summary>
+    /// <author>Felix</author>
+    /// Représente une demande de résidence soumise par un étudiant.
+    /// </summary>
     public class Demande
     {
         public int Id { get; set; }
@@ -20,7 +24,7 @@ namespace S14_ProjetSession.Models
         
 
        //@author John
-       //Ajout de la realtion genre - demande
+       // Ajout de la relation genre - demande
        public List<DemandeGenre> DemandeGenres { get; set; }
         
         // simplement le nombre de jours pour le moment
@@ -78,7 +82,7 @@ namespace S14_ProjetSession.Models
         [StringLength(20, ErrorMessage = "Le téléphone du contact d'urgence ne peut pas dépasser 20 caractères.")]
         public string TelephoneUrgence { get; set; } = string.Empty;
 
-        // admin gere c'est attribut
+        // L'administrateur gère ces attributs.
         public DateTime? DateDebutBail { get; set; }
 
         public DateTime? DateFinBail { get; set; }
@@ -87,7 +91,7 @@ namespace S14_ProjetSession.Models
 
         public DateTime? DateTraitement { get; set; }
 
-        // attribuer des place a une personne Avec unité dans demande
+        // Attribuer une unité à la demande.
 
         public int? UniteId { get; set; }
         public Unite? Unite { get; set; }

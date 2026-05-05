@@ -1,7 +1,8 @@
-﻿using S14_ProjetSession.Models;
+using S14_ProjetSession.Models;
 
 namespace S14_ProjetSession.ViewModels;
 
+/// <author>Felix</author>
 public class DemandeCreateViewModel
 {
     public Demande Demande { get; set; } = new();

@@ -4,6 +4,7 @@ using S14_ProjetSession.Data;
 using S14_ProjetSession.Models;
 using S14_ProjetSession.ViewModels;
 
+/// <author>Felix</author>
 namespace S14_ProjetSession.Controllers
 {
     public class GestionDemandeController : Controller
@@ -102,7 +103,7 @@ namespace S14_ProjetSession.Controllers
                 return RedirectToAction("Index");
             }
                 
-            // Si on accepte, il faut une unité
+            // Si on accepte, il faut une unité.
             if (statut == StatutDemande.Acceptee)
             {
                 if (!uniteId.HasValue)
