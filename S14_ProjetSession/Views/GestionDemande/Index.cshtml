@@ -196,17 +196,14 @@ else
                                 </div>
                             </div>
 
-                            @* Genres *@
+                            @* Genres : DemandeGenres est maintenant List<Genre> directement, plus de .Genre intermédiaire *@
                             @if (demande.DemandeGenres != null && demande.DemandeGenres.Any())
                             {
                                 <p>
                                     <strong>Genres préférés :</strong>
-                                    @foreach (var dg in demande.DemandeGenres)
+                                    @foreach (var genre in demande.DemandeGenres)
                                     {
-                                        if (dg.Genre != null)
-                                        {
-                                            <span class="badge bg-secondary me-1">@dg.Genre.Nom</span>
-                                        }
+                                        <span class="badge bg-secondary me-1">@genre.Nom</span>
                                     }
                                 </p>
                             }
@@ -261,19 +258,19 @@ else
                                             {
                                                 @* Calculer places occupées pour ce semestre *@
                                                 var demandesDejaAcceptees = Model.Demandes
-                                                    .Where(d => d.UniteId == unite.Id
-                                                             && d.SemestreId == semestreId
-                                                             && d.StatutDemande == StatutDemande.Acceptee
-                                                             && d.Id != demande.Id)
-                                                    .ToList();
+                                                .Where(d => d.UniteId == unite.Id
+                                                && d.SemestreId == semestreId
+                                                && d.StatutDemande == StatutDemande.Acceptee
+                                                && d.Id != demande.Id)
+                                                .ToList();
 
                                                 int occupees = demandesDejaAcceptees.Count;
 
                                                 // Éviter de compter en double les colocataires déjà acceptés
                                                 var emailsDejaAcceptes = demandesDejaAcceptees
-                                                    .Select(d => d.Etudiant?.CourrielInstitutionnel)
-                                                    .Where(e => e != null)
-                                                    .ToList();
+                                                .Select(d => d.Etudiant?.CourrielInstitutionnel)
+                                                .Where(e => e != null)
+                                                .ToList();
 
                                                 int placesRequises = 1;
                                                 foreach (var jum in demande.Jumelages ?? Enumerable.Empty<Jumelage>())
@@ -310,59 +307,59 @@ else
             </div>
         }
     </div>
-     @* pagination fonctionnelle  *@
 
-@if (Model.TotalPages > 1)
-{
-    <nav aria-label="Pagination des demandes">
-        <ul class="pagination justify-content-center mt-4">
+    @* pagination fonctionnelle *@
+    @if (Model.TotalPages > 1)
+    {
+        <nav aria-label="Pagination des demandes">
+            <ul class="pagination justify-content-center mt-4">
 
-            <!-- Bouton Précédent -->
-            <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
-                <a class="page-link"
-                   asp-action="Index"
-                   asp-route-page="@(Model.CurrentPage - 1)"
-                   asp-route-semestreFiltre="@Model.SemestreFiltre">
-                    Précédent
-                </a>
-            </li>
-
-            <!-- Pages -->
-            @{
-                int start = Math.Max(1, Model.CurrentPage - 2);
-                int end = Math.Min(Model.TotalPages, Model.CurrentPage + 2);
-            }
-
-            @for (int i = start; i <= end; i++)
-            {
-                <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                <!-- Bouton Précédent -->
+                <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
                     <a class="page-link"
                        asp-action="Index"
-                       asp-route-page="@i"
+                       asp-route-page="@(Model.CurrentPage - 1)"
                        asp-route-semestreFiltre="@Model.SemestreFiltre">
-                        @i
+                        Précédent
                     </a>
                 </li>
-            }
 
-            <!-- Bouton Suivant -->
-            <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
-                <a class="page-link"
-                   asp-action="Index"
-                   asp-route-page="@(Model.CurrentPage + 1)"
-                   asp-route-semestreFiltre="@Model.SemestreFiltre">
-                    Suivant
-                </a>
-            </li>
+                <!-- Pages -->
+                @{
+                    int start = Math.Max(1, Model.CurrentPage - 2);
+                    int end = Math.Min(Model.TotalPages, Model.CurrentPage + 2);
+                }
 
-        </ul>
-    </nav>
+                @for (int i = start; i <= end; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a class="page-link"
+                           asp-action="Index"
+                           asp-route-page="@i"
+                           asp-route-semestreFiltre="@Model.SemestreFiltre">
+                            @i
+                        </a>
+                    </li>
+                }
 
-    <!-- Info page -->
-    <p class="text-center text-muted">
-        Page @Model.CurrentPage sur @Model.TotalPages
-    </p>
-}
+                <!-- Bouton Suivant -->
+                <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-page="@(Model.CurrentPage + 1)"
+                       asp-route-semestreFiltre="@Model.SemestreFiltre">
+                        Suivant
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+
+        <!-- Info page -->
+        <p class="text-center text-muted">
+            Page @Model.CurrentPage sur @Model.TotalPages
+        </p>
+    }
 }
 
 @section Scripts {

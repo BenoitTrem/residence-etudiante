@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace S14_ProjetSession.Migrations
 {
     /// <inheritdoc />
-    public partial class premiereMigration : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -219,7 +219,7 @@ namespace S14_ProjetSession.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nom = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Nom = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     Code = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     CampusId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -316,7 +316,7 @@ namespace S14_ProjetSession.Migrations
                     GenreId = table.Column<int>(type: "int", nullable: false),
                     ProgrammeId = table.Column<int>(type: "int", nullable: false),
                     CampusId = table.Column<int>(type: "int", nullable: false),
-                    noEtudiant = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    noEtudiant = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     noAdmission = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     MobiliteReduite = table.Column<bool>(type: "bit", nullable: false),
                     AdressePermanente = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -412,27 +412,27 @@ namespace S14_ProjetSession.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DemandeGenres",
+                name: "DemandeGenre",
                 columns: table => new
                 {
-                    DemandeId = table.Column<int>(type: "int", nullable: false),
-                    GenreId = table.Column<int>(type: "int", nullable: false)
+                    DemandeGenresId = table.Column<int>(type: "int", nullable: false),
+                    DemandeGenresId1 = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DemandeGenres", x => new { x.DemandeId, x.GenreId });
+                    table.PrimaryKey("PK_DemandeGenre", x => new { x.DemandeGenresId, x.DemandeGenresId1 });
                     table.ForeignKey(
-                        name: "FK_DemandeGenres_Demandes_DemandeId",
-                        column: x => x.DemandeId,
+                        name: "FK_DemandeGenre_Demandes_DemandeGenresId",
+                        column: x => x.DemandeGenresId,
                         principalTable: "Demandes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_DemandeGenres_Genres_GenreId",
-                        column: x => x.GenreId,
+                        name: "FK_DemandeGenre_Genres_DemandeGenresId1",
+                        column: x => x.DemandeGenresId1,
                         principalTable: "Genres",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -501,9 +501,9 @@ namespace S14_ProjetSession.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_DemandeGenres_GenreId",
-                table: "DemandeGenres",
-                column: "GenreId");
+                name: "IX_DemandeGenre_DemandeGenresId1",
+                table: "DemandeGenre",
+                column: "DemandeGenresId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Demandes_EtudiantId_SemestreId",
@@ -604,7 +604,7 @@ namespace S14_ProjetSession.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "DemandeGenres");
+                name: "DemandeGenre");
 
             migrationBuilder.DropTable(
                 name: "Jumelage");

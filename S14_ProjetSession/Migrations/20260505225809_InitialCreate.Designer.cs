@@ -12,8 +12,8 @@ using S14_ProjetSession.Data;
 namespace S14_ProjetSession.Migrations
 {
     [DbContext(typeof(ResidencesDbContext))]
-    [Migration("20260505204747_AugmenterNomProgramme")]
-    partial class AugmenterNomProgramme
+    [Migration("20260505225809_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,21 @@ namespace S14_ProjetSession.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("DemandeGenre", b =>
+                {
+                    b.Property<int>("DemandeGenresId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DemandeGenresId1")
+                        .HasColumnType("int");
+
+                    b.HasKey("DemandeGenresId", "DemandeGenresId1");
+
+                    b.HasIndex("DemandeGenresId1");
+
+                    b.ToTable("DemandeGenre");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -376,21 +391,6 @@ namespace S14_ProjetSession.Migrations
                     b.ToTable("Demandes");
                 });
 
-            modelBuilder.Entity("S14_ProjetSession.Models.DemandeGenre", b =>
-                {
-                    b.Property<int>("DemandeId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GenreId")
-                        .HasColumnType("int");
-
-                    b.HasKey("DemandeId", "GenreId");
-
-                    b.HasIndex("GenreId");
-
-                    b.ToTable("DemandeGenres");
-                });
-
             modelBuilder.Entity("S14_ProjetSession.Models.Etudiant", b =>
                 {
                     b.Property<int>("Id")
@@ -450,7 +450,6 @@ namespace S14_ProjetSession.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("noEtudiant")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -663,6 +662,21 @@ namespace S14_ProjetSession.Migrations
                     b.ToTable("Unites");
                 });
 
+            modelBuilder.Entity("DemandeGenre", b =>
+                {
+                    b.HasOne("S14_ProjetSession.Models.Demande", null)
+                        .WithMany()
+                        .HasForeignKey("DemandeGenresId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("S14_ProjetSession.Models.Genre", null)
+                        .WithMany()
+                        .HasForeignKey("DemandeGenresId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -737,25 +751,6 @@ namespace S14_ProjetSession.Migrations
                     b.Navigation("Semestre");
 
                     b.Navigation("Unite");
-                });
-
-            modelBuilder.Entity("S14_ProjetSession.Models.DemandeGenre", b =>
-                {
-                    b.HasOne("S14_ProjetSession.Models.Demande", "Demande")
-                        .WithMany("DemandeGenres")
-                        .HasForeignKey("DemandeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("S14_ProjetSession.Models.Genre", "Genre")
-                        .WithMany("DemandeGenres")
-                        .HasForeignKey("GenreId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Demande");
-
-                    b.Navigation("Genre");
                 });
 
             modelBuilder.Entity("S14_ProjetSession.Models.Etudiant", b =>
@@ -869,8 +864,6 @@ namespace S14_ProjetSession.Migrations
 
             modelBuilder.Entity("S14_ProjetSession.Models.Demande", b =>
                 {
-                    b.Navigation("DemandeGenres");
-
                     b.Navigation("Jumelages");
                 });
 
@@ -881,8 +874,6 @@ namespace S14_ProjetSession.Migrations
 
             modelBuilder.Entity("S14_ProjetSession.Models.Genre", b =>
                 {
-                    b.Navigation("DemandeGenres");
-
                     b.Navigation("Etudiants");
                 });
 

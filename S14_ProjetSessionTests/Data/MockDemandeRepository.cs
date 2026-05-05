@@ -23,9 +23,9 @@ namespace S14_ProjetSession.Data
                 SemestreId = 1,
                 EtudiantId = 1,
 
-                DemandeGenres = new List<DemandeGenre>
+                DemandeGenres = new List<Genre>
                 {
-                    new DemandeGenre { DemandeId = 1, GenreId = 1, Genre = _genres[0] }
+                     _genres[0] 
                 },
 
                 Etudiant = new Etudiant
@@ -77,9 +77,9 @@ namespace S14_ProjetSession.Data
                 SemestreId = 2,
                 EtudiantId = 2,
 
-                DemandeGenres = new List<DemandeGenre>
+                DemandeGenres = new List<Genre>
                 {
-                    new DemandeGenre { DemandeId = 2, GenreId = 2, Genre = _genres[1] }
+                     _genres[1] 
                 },
 
                 PrefDureeBail = 90,
@@ -174,7 +174,7 @@ namespace S14_ProjetSession.Data
                 demandeExistante.Jumelages = demande.Jumelages ?? new List<Jumelage>();
 
                 // Sync DemandeGenres
-                demandeExistante.DemandeGenres = demande.DemandeGenres ?? new List<DemandeGenre>();
+                demandeExistante.DemandeGenres = demande.DemandeGenres ?? new List<Genre>();
             }
         }
 

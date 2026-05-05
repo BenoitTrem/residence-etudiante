@@ -1,18 +1,18 @@
 using Microsoft.EntityFrameworkCore;
 using S14_ProjetSession.Models;
-
 namespace S14_ProjetSession.Data
 {
     /// <author>Felix</author>
     public class DbDemandeRepository : IDemandeRepository
     {
         private ResidencesDbContext _context;
+
+        // DemandeGenres est maintenant une relation N-N implicite (List<Genre>), donc plus de ThenInclude sur une table de jointure
         public List<Demande> Demandes => _context.Demandes
             .Include(d => d.Etudiant)
             .Include(d => d.Semestre)
             .Include(d => d.Jumelages)
             .Include(d => d.DemandeGenres)
-                .ThenInclude(dg => dg.Genre)
             .Include(d => d.Unite)
                 .ThenInclude(u => u.Residence)
             .ToList();
@@ -35,7 +35,6 @@ namespace S14_ProjetSession.Data
                 .Include(d => d.Semestre)
                 .Include(d => d.Jumelages)
                 .Include(d => d.DemandeGenres)
-                    .ThenInclude(dg => dg.Genre)
                 .Include(d => d.Unite)
                     .ThenInclude(u => u.Residence)
                 .FirstOrDefault(d => d.Id == id);
@@ -48,7 +47,6 @@ namespace S14_ProjetSession.Data
                 .Include(d => d.Semestre)
                 .Include(d => d.Jumelages)
                 .Include(d => d.DemandeGenres)
-                    .ThenInclude(dg => dg.Genre)
                 .Include(d => d.Unite)
                     .ThenInclude(u => u.Residence)
                 .Where(d => d.EtudiantId == etudiantId)
@@ -63,20 +61,13 @@ namespace S14_ProjetSession.Data
                 .Where(j => EF.Property<int?>(j, "DemandeId") == demande.Id)
                 .ToList();
 
-            List<DemandeGenre> demandeGenres = _context.Set<DemandeGenre>()
-                .Where(dg => dg.DemandeId == demande.Id)
-                .ToList();
-
             if (jumelages.Count > 0)
             {
                 _context.RemoveRange(jumelages);
             }
 
-            if (demandeGenres.Count > 0)
-            {
-                _context.RemoveRange(demandeGenres);
-            }
-
+            // DemandeGenres est maintenant géré automatiquement par EF Core (N-N implicite),
+            // la suppression de la demande nettoie la table de jointure en cascade
             _context.Demandes.Remove(demande);
             _context.SaveChanges();
         }
