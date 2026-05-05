@@ -30,24 +30,37 @@ namespace S14_ProjetSession.Controllers
         }
 
         [Authorize(Policy = "AdminOuGestionnaire")]
-        public IActionResult Index(int? semestreFiltre)
+        public IActionResult Index(int? semestreFiltre, int page = 1)
         {
+            int pageSize = 6;
+
             List<Demande> demandes = _demandeRepository.Demandes
-            .OrderByDescending(d => d.Semestre.DateDebut).ToList();
-            // Filtrer par semestre si sélectionné
+                .OrderByDescending(d => d.Semestre.DateDebut)
+                .ToList();
+
             if (semestreFiltre.HasValue)
             {
                 demandes = demandes
-                     .Where(d => d.SemestreId == semestreFiltre.Value)
-                     .ToList();
+                    .Where(d => d.SemestreId == semestreFiltre.Value)
+                    .ToList();
             }
+
+            int totalDemandes = demandes.Count;
+            int totalPages = (int)Math.Ceiling((double)totalDemandes / pageSize);
+
+            demandes = demandes
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
 
             GestionDemandeIndexViewModel vm = new GestionDemandeIndexViewModel
             {
                 Demandes = demandes,
                 Unites = _uniteRepository.GetAll(),
                 Semestres = _semestreRepository.Semestres.ToList(),
-                SemestreFiltre = semestreFiltre
+                SemestreFiltre = semestreFiltre,
+                CurrentPage = page,
+                TotalPages = totalPages
             };
 
             return View(vm);

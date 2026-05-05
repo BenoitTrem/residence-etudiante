@@ -306,6 +306,59 @@ else
             </div>
         }
     </div>
+     @* pagination fonctionnelle  *@
+
+@if (Model.TotalPages > 1)
+{
+    <nav aria-label="Pagination des demandes">
+        <ul class="pagination justify-content-center mt-4">
+
+            <!-- Bouton Précédent -->
+            <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-page="@(Model.CurrentPage - 1)"
+                   asp-route-semestreFiltre="@Model.SemestreFiltre">
+                    Précédent
+                </a>
+            </li>
+
+            <!-- Pages -->
+            @{
+                int start = Math.Max(1, Model.CurrentPage - 2);
+                int end = Math.Min(Model.TotalPages, Model.CurrentPage + 2);
+            }
+
+            @for (int i = start; i <= end; i++)
+            {
+                <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-page="@i"
+                       asp-route-semestreFiltre="@Model.SemestreFiltre">
+                        @i
+                    </a>
+                </li>
+            }
+
+            <!-- Bouton Suivant -->
+            <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-page="@(Model.CurrentPage + 1)"
+                   asp-route-semestreFiltre="@Model.SemestreFiltre">
+                    Suivant
+                </a>
+            </li>
+
+        </ul>
+    </nav>
+
+    <!-- Info page -->
+    <p class="text-center text-muted">
+        Page @Model.CurrentPage sur @Model.TotalPages
+    </p>
+}
 }
 
 @section Scripts {

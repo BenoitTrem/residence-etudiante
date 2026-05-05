@@ -10,5 +10,10 @@ namespace S14_ProjetSession.ViewModels
 
         /// Semestre sélectionné pour le filtre (nullable = tous)
         public int? SemestreFiltre { get; set; }
+
+
+        // pour la Pagination
+        public int CurrentPage { get; set; }
+        public int TotalPages { get; set; }
     }
 }

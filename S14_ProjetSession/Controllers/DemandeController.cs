@@ -220,6 +220,9 @@ namespace S14_ProjetSession.Controllers
                 .Where(d => d.EtudiantId == etudiantConnecte.Id)
                 .ToList();
 
+            ViewBag.PeriodeInscriptionOuverte = _semestreRepository.Semestres
+                .Any(s => s.InscriptionOuverte);
+
             return View(demandes);
         }
 
