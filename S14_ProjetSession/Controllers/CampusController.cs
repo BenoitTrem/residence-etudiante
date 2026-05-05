@@ -36,7 +36,7 @@ namespace S14_ProjetSession.Controllers
         {
             try
             {
-                var campus = _repo.Campus.OrderBy(c => c.Nom).ToList();
+                List<Campus> campus = _repo.Campus.OrderBy(c => c.Nom).ToList();
                 return View(campus);
             }
             catch
@@ -101,7 +101,7 @@ namespace S14_ProjetSession.Controllers
             try
             {
                 ViewData["Title"] = "Modifier un campus";
-                var campus = _repo.GetById(id);
+                Campus campus = _repo.GetById(id);
 
                 if (campus == null)
                     return Erreur(404, "Campus introuvable.");
@@ -159,7 +159,7 @@ namespace S14_ProjetSession.Controllers
         {
             try
             {
-                var campus = _repo.GetById(id);
+                Campus campus = _repo.GetById(id);
 
                 if (campus == null)
                 {

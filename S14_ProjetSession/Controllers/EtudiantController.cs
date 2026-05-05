@@ -57,7 +57,7 @@ namespace S14_ProjetSession.Controllers
             {
                
 
-                var etudiants = _etudiantRepository.Etudiants
+                List<Etudiant> etudiants = _etudiantRepository.Etudiants
                     .OrderBy(e => e.Nom)
                     .ThenBy(e => e.Prenom)
                     .ToList();
@@ -81,13 +81,13 @@ namespace S14_ProjetSession.Controllers
             try
             {
                 ViewData["Title"] = "Créer un étudiant";
-                var user = await _userManager.GetUserAsync(User);
+                ApplicationUser user = await _userManager.GetUserAsync(User);
                 if (user == null)
                     return Challenge();
 
                 if (User.IsInRole("Utilisateur"))
                 {
-                    var etudiant = await _etudiantRepository.GetByUserIdAsync(user.Id);
+                    Etudiant etudiant = await _etudiantRepository.GetByUserIdAsync(user.Id);
                     if (etudiant != null)
                         return Forbid();
                 }
@@ -128,13 +128,13 @@ namespace S14_ProjetSession.Controllers
                     return View(etudiant);
                 }
 
-                var user = await _userManager.GetUserAsync(User);
+                ApplicationUser user = await _userManager.GetUserAsync(User);
                 if (user == null)
                     return Challenge();
 
                 if (User.IsInRole("Utilisateur"))
                 {
-                    var existe = await _etudiantRepository.GetByUserIdAsync(user.Id);
+                    Etudiant existe = await _etudiantRepository.GetByUserIdAsync(user.Id);
                     if (existe != null)
                         return Forbid();
                 }
@@ -175,11 +175,11 @@ namespace S14_ProjetSession.Controllers
             try
             {
                 ViewData["Title"] = "Modifier un étudiant";
-                var user = await _userManager.GetUserAsync(User);
+                ApplicationUser user = await _userManager.GetUserAsync(User);
                 if (user == null)
                     return Challenge();
 
-                var etudiant = _etudiantRepository.GetEtudiant(id);
+                Etudiant etudiant = _etudiantRepository.GetEtudiant(id);
                 if (etudiant == null)
                     return Erreur(404, "Étudiant introuvable");
 
@@ -216,7 +216,7 @@ namespace S14_ProjetSession.Controllers
             {
 
                 ViewData["Title"] = "Modifier un étudiant";
-                var user = await _userManager.GetUserAsync(User);
+                ApplicationUser user = await _userManager.GetUserAsync(User);
                 if (user == null)
                     return Challenge();
 
@@ -269,7 +269,7 @@ namespace S14_ProjetSession.Controllers
         {
             try
             {
-                var etudiant = _etudiantRepository.GetEtudiant(Id);
+                Etudiant etudiant = _etudiantRepository.GetEtudiant(Id);
 
                 if (etudiant == null)
                     return Erreur(404, "Étudiant introuvable");
@@ -296,11 +296,11 @@ namespace S14_ProjetSession.Controllers
         {
             try
             {
-                var user = await _userManager.GetUserAsync(User);
+                ApplicationUser user = await _userManager.GetUserAsync(User);
                 if (user == null)
                     return Challenge();
 
-                var etudiant = await _etudiantRepository.GetByUserIdAsync(user.Id);
+                Etudiant etudiant = await _etudiantRepository.GetByUserIdAsync(user.Id);
            
 
                 return View(etudiant);

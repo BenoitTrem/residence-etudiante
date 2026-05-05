@@ -35,7 +35,7 @@ namespace S14_ProjetSession.Controllers
             try
             {
               
-                var programmes = _programmesRepository.Programmes
+                List<Programme> programmes = _programmesRepository.Programmes
                     .OrderBy(p => p.Nom)
                     .ToList();
 
@@ -105,7 +105,7 @@ namespace S14_ProjetSession.Controllers
             try
             {
                 ViewData["Title"] = "Modifier un programme";
-                var programme = _programmesRepository.GetProgramme(id);
+                Programme programme = _programmesRepository.GetProgramme(id);
 
                 if (programme == null)
                     return Erreur(404, "Programme introuvable");
@@ -161,7 +161,7 @@ namespace S14_ProjetSession.Controllers
         {
             try
             {
-                var programme = _programmesRepository.GetProgramme(id);
+                Programme programme = _programmesRepository.GetProgramme(id);
 
                 if (programme == null)
                     return Erreur(404, "Programme introuvable");

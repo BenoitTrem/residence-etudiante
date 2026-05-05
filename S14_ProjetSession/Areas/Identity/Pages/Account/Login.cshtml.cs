@@ -112,7 +112,7 @@ namespace S14_ProjetSession.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var user = await _signInManager.UserManager.FindByEmailAsync(Input.Email);
+                ApplicationUser user = await _signInManager.UserManager.FindByEmailAsync(Input.Email);
 
                 if (user == null)
                 {

@@ -37,7 +37,7 @@ namespace S14_ProjetSession.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Erreur(int? statusCode = null, string message = null)
         {
-            var model = new ErreurViewModel
+            ErreurViewModel model = new ErreurViewModel
             {
                 StatusCode = statusCode ?? 500,
                 Message = message ?? statusCode switch

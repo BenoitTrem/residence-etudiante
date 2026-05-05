@@ -44,7 +44,7 @@ namespace S14_ProjetSession.Data
 
         public void SupprimerParID(int id)
         {
-            var genre = GetGenre(id);
+            Genre genre = GetGenre(id);
             if (genre != null)
             {
                 Supprimer(genre);

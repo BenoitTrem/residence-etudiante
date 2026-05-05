@@ -45,7 +45,7 @@ namespace S14_ProjetSession.Data
 
         public void SupprimerParID(int id)
         {
-            var programme = GetProgramme(id);
+            Programme programme = GetProgramme(id);
             if (programme != null)
             {
                 Supprimer(programme);

@@ -10,7 +10,7 @@
 *@
 
 @{
-    var isAdmin = (await AuthorizationService.AuthorizeAsync(User, "AdminUniquement")).Succeeded;
+    bool isAdmin = (await AuthorizationService.AuthorizeAsync(User, "AdminUniquement")).Succeeded;
 }
 
 <div class="container">

@@ -109,7 +109,7 @@ namespace S14_ProjetSession.Controllers
             }
 
             // Valider que tous les IDs existent
-            var genres = selectedGenreIds
+            List<Genre> genres = selectedGenreIds
                 .Select(id => _genreRepository.GetGenre(id))
                 .ToList();
 
