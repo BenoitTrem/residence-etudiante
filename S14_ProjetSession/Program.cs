@@ -68,7 +68,7 @@ builder.Services.Configure<EmailSettings>(
 builder.Services.Configure<AzureEmailSettings>(
     builder.Configuration.GetSection("AzureEmailSettings"));
 
-if (builder.Environment.IsEnvironment("Test"))
+if (builder.Environment.IsEnvironment("Test") || builder.Environment.IsDevelopment())
 {
     builder.Services.AddTransient<IEmailSender, EmailSender>();
 }

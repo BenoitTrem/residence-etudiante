@@ -41,16 +41,16 @@ namespace S14_ProjetSession.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required(ErrorMessage = "Required")]
-            [EmailAddress]
+            [Required(ErrorMessage = "Le courriel est obligatoire.")]
+            [EmailAddress(ErrorMessage = "L'adresse courriel n'est pas valide.")]
             public string Email { get; set; }
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required(ErrorMessage = "Required")]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [Required(ErrorMessage = "Le mot de passe est obligatoire.")]
+            [StringLength(100, ErrorMessage = "Le {0} doit contenir au moins {2} et au plus {1} caractères.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
@@ -59,15 +59,15 @@ namespace S14_ProjetSession.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Display(Name = "Confirmer le mot de passe")]
+            [Compare("Password", ErrorMessage = "Le mot de passe et sa confirmation ne correspondent pas.")]
             public string ConfirmPassword { get; set; }
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required(ErrorMessage = "Required")]
+            [Required(ErrorMessage = "Le code est obligatoire.")]
             public string Code { get; set; }
 
         }
@@ -76,7 +76,7 @@ namespace S14_ProjetSession.Areas.Identity.Pages.Account
         {
             if (code == null)
             {
-                return BadRequest("A code must be supplied for password reset.");
+                return BadRequest("Un code est requis pour réinitialiser le mot de passe.");
             }
             else
             {

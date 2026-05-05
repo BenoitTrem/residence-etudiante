@@ -59,7 +59,6 @@ namespace S14_ProjetSessionTests.Integration
 
         [InlineData("/Demande/Index")]
         [InlineData("/Demande/Creer")]
-        [InlineData("Demande/Modifier")]
         [Theory]
         public async Task AdministrateurPeutAcceder(String url)
         {

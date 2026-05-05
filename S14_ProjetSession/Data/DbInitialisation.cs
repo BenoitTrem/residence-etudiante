@@ -149,10 +149,12 @@ namespace S14_ProjetSession.Data
 
             context.SaveChanges();
 
+            // Genres
             var genres = new Genre[]
             {
                 new Genre { Nom = "Homme" },
-                new Genre { Nom = "Femme" }
+                new Genre { Nom = "Femme" },
+                new Genre { Nom = "Autre" }
             };
 
             foreach (var genre in genres)
@@ -162,7 +164,6 @@ namespace S14_ProjetSession.Data
                     context.Genres.Add(genre);
                 }
             }
-
             context.SaveChanges();
 
             var genreDb = context.Genres.ToList();
