@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Components.Routing;
+using Microsoft.EntityFrameworkCore;
+using QuestPDF.Infrastructure;
 using S14_ProjetSession.Models;
 using System.Security.Policy;
 
@@ -36,10 +38,21 @@ namespace S14_ProjetSession.Data
             return _context.Unites.Count(u => u.ResidenceId == residenceId);
         }
 
+        /// <summary>
+        /// Retourne la liste des unités filtrées selon différents critères et triées par numéro.
+        /// </summary>
+        /// <param name="residenceId">Identifiant de la résidence pour filtrer les unités</param>
+        /// <param name="disponible">Indique si l'unité doit être disponible (non utilisé ici)</param>
+        /// <param name="capacite">Capacité recherchée pour filtrer les unités</param>
+        /// <param name="numero">Numéro minimal de l'unité pour filtrer</param>
+        /// <param name="ascendant">Indique si le tri est ascendant (true) ou descendant (false)</param>
+        /// <param name="mobiliteReduite">Indique si l'unité doit être adaptée pour mobilité réduite</param>
+        /// <returns>Liste des unités filtrées et triées</returns>
         public List<Unite> GetFiltrerByResidenceId(int residenceId, bool? disponible, int? capacite, int? numero, bool ascendant = true, bool? mobiliteReduite = null)
         {
             List<Unite> unites;
 
+            // Filtrer par résidence si un identifiant valide est fourni, sinon récupérer toutes les unités
             if (residenceId > 0)
             {
                 unites = _context.Unites
@@ -54,7 +67,7 @@ namespace S14_ProjetSession.Data
                     .ToList();
             }
 
-
+            // Filtre par capacité si une valeur est fournie
             if (capacite.HasValue)
             {
                 unites = unites
@@ -62,14 +75,15 @@ namespace S14_ProjetSession.Data
                     .ToList();
             }
 
+            // Filtre par numéro minimal si une valeur est fournie
             if (numero.HasValue)
             {
                 unites = unites
-                    .Where(u => u.Numero.HasValue &&
-                                u.Numero.Value >= numero.Value)
+                    .Where(u => u.Numero.HasValue && u.Numero.Value >= numero.Value)
                     .ToList();
             }
 
+            // Filtre selon l'adaptation pour mobilité réduite si précisé
             if (mobiliteReduite.HasValue)
             {
                 unites = unites
@@ -77,6 +91,7 @@ namespace S14_ProjetSession.Data
                     .ToList();
             }
 
+            // Trie la liste selon l'ordre demandé (ascendant ou descendant)
             if (ascendant)
             {
                 unites = unites.OrderBy(u => u.Numero).ToList();

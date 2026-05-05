@@ -27,7 +27,7 @@ public class ResidencesDbContext : IdentityDbContext<ApplicationUser>
         public DbSet<ResidenceCommodite> ResidenceCommodites { get; set; }
 
         public DbSet<Campus> Campuses { get; set; }
-    public DbSet<DemandeGenre> DemandeGenres { get; set; }
+        public DbSet<DemandeGenre> DemandeGenres { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -35,17 +35,16 @@ namespace S14_ProjetSession.Controllers
         /// <returns>Vue Error avec modèle</returns>
         /// <author>John Zuleta , Par defaut </author>
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Erreur(int? statusCode = null)
+        public IActionResult Erreur(int? statusCode = null, string message = null)
         {
             var model = new ErreurViewModel
             {
-              
                 StatusCode = statusCode ?? 500,
-                Message = statusCode switch
+                Message = message ?? statusCode switch
                 {
                     404 => "Page introuvable",
                     403 => "Accès refusé",
-                    500 => "Erreur interne du serveur ",
+                    500 => "Erreur interne du serveur",
                     _ => "Une erreur inattendue est survenue"
                 }
             };

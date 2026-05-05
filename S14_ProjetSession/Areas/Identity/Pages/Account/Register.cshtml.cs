@@ -138,73 +138,79 @@ namespace S14_ProjetSession.Areas.Identity.Pages.Account
                         pageHandler: null,
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
+                    try
+                    {
+                        await _emailSender.SendEmailAsync(
+                        Input.Email,
+                        "Confirmez votre courriel – Résidences Étudiantes",
+                        $@"
+                        <!DOCTYPE html>
+                        <html lang='fr'>
+                        <head>
+                            <meta charset='UTF-8'>
+                            <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                        </head>
+                        <body style='margin:0; padding:0; background-color:#f4f4f4; font-family: Arial, sans-serif;'>
 
-                    await _emailSender.SendEmailAsync(
-                    Input.Email,
-                    "Confirmez votre courriel – Résidences Étudiantes",
-                    $@"
-                    <!DOCTYPE html>
-                    <html lang='fr'>
-                    <head>
-                        <meta charset='UTF-8'>
-                        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-                    </head>
-                    <body style='margin:0; padding:0; background-color:#f4f4f4; font-family: Arial, sans-serif;'>
-
-                        <table width='100%' cellpadding='0' cellspacing='0' style='background-color:#f4f4f4; padding: 40px 0;'>
-                            <tr>
-                                <td align='center'>
-                                    <table width='600' cellpadding='0' cellspacing='0' style='background-color:#ffffff; border-radius:8px; overflow:hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);'>
+                            <table width='100%' cellpadding='0' cellspacing='0' style='background-color:#f4f4f4; padding: 40px 0;'>
+                                <tr>
+                                    <td align='center'>
+                                        <table width='600' cellpadding='0' cellspacing='0' style='background-color:#ffffff; border-radius:8px; overflow:hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);'>
                         
-                                        <tr>
-                                            <td align='center' style='background-color:#0d6efd; padding: 32px 40px;'>
-                                                <h1 style='color:#ffffff; margin:0; font-size:24px;'>Résidences Étudiantes</h1>
-                                            </td>
-                                        </tr>
+                                            <tr>
+                                                <td align='center' style='background-color:#0d6efd; padding: 32px 40px;'>
+                                                    <h1 style='color:#ffffff; margin:0; font-size:24px;'>Résidences Étudiantes</h1>
+                                                </td>
+                                            </tr>
 
-                                        <tr>
-                                            <td style='padding: 40px;'>
-                                                <h2 style='color:#212529; margin-top:0;'>Confirmation de votre courriel</h2>
-                                                <p style='color:#495057; line-height:1.6;'>Bonjour,</p>
-                                                <p style='color:#495057; line-height:1.6;'>
-                                                    Merci de vous être inscrit sur la plateforme de <strong>Résidences Étudiantes</strong>. 
-                                                    Pour activer votre compte, veuillez confirmer votre adresse courriel en cliquant sur le bouton ci-dessous.
-                                                </p>
+                                            <tr>
+                                                <td style='padding: 40px;'>
+                                                    <h2 style='color:#212529; margin-top:0;'>Confirmation de votre courriel</h2>
+                                                    <p style='color:#495057; line-height:1.6;'>Bonjour,</p>
+                                                    <p style='color:#495057; line-height:1.6;'>
+                                                        Merci de vous être inscrit sur la plateforme de <strong>Résidences Étudiantes</strong>. 
+                                                        Pour activer votre compte, veuillez confirmer votre adresse courriel en cliquant sur le bouton ci-dessous.
+                                                    </p>
 
-                                                <table cellpadding='0' cellspacing='0' style='margin: 32px auto;'>
-                                                    <tr>
-                                                        <td align='center' style='background-color:#0d6efd; border-radius:6px;'>
-                                                            <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'
-                                                               style='display:inline-block; padding: 14px 32px; color:#ffffff; text-decoration:none; font-size:16px; font-weight:bold;'>
-                                                                 Confirmer mon courriel
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                </table>
+                                                    <table cellpadding='0' cellspacing='0' style='margin: 32px auto;'>
+                                                        <tr>
+                                                            <td align='center' style='background-color:#0d6efd; border-radius:6px;'>
+                                                                <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'
+                                                                   style='display:inline-block; padding: 14px 32px; color:#ffffff; text-decoration:none; font-size:16px; font-weight:bold;'>
+                                                                     Confirmer mon courriel
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
 
-                                                <p style='color:#6c757d; font-size:13px; line-height:1.6;'>
-                                                    Si vous n'avez pas créé de compte, vous pouvez ignorer ce message. 
-                                                    Ce lien expirera sous peu.
-                                                </p>
-                                            </td>
-                                        </tr>
+                                                    <p style='color:#6c757d; font-size:13px; line-height:1.6;'>
+                                                        Si vous n'avez pas créé de compte, vous pouvez ignorer ce message. 
+                                                        Ce lien expirera sous peu.
+                                                    </p>
+                                                </td>
+                                            </tr>
 
-                                        <tr>
-                                            <td align='center' style='background-color:#f8f9fa; padding: 24px 40px; border-top: 1px solid #dee2e6;'>
-                                                <p style='color:#6c757d; font-size:13px; margin:0;'>
-                                                    © {DateTime.Now.Year} Résidences Étudiantes — Tous droits réservés
-                                                </p>
-                                            </td>
-                                        </tr>
+                                            <tr>
+                                                <td align='center' style='background-color:#f8f9fa; padding: 24px 40px; border-top: 1px solid #dee2e6;'>
+                                                    <p style='color:#6c757d; font-size:13px; margin:0;'>
+                                                        © {DateTime.Now.Year} Résidences Étudiantes — Tous droits réservés
+                                                    </p>
+                                                </td>
+                                            </tr>
 
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
-                    </body>
-                    </html>
-                    "
-                );
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </body>
+                        </html>
+                        "
+                    );
+                    }
+                    catch (EmailException ex)
+                    {
+                        return Redirect($"/Home/Erreur?statusCode=500&message={Uri.EscapeDataString(ex.Message)}");
+                    }
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {

@@ -1,6 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using S14_ProjetSession.Models;
 
+/*
+ * @author Benoit 
+ */
 namespace S14_ProjetSession.Data
 {
     public class DbCommoditeRepository : ICommoditeRepository
@@ -23,18 +26,28 @@ namespace S14_ProjetSession.Data
         {
             return _context.Commodites.ToList();
         }
+
+        /// <summary>
+        /// Retourne la liste des commodités avec filtrage par nom et tri (ascendant ou descendant).
+        /// </summary>
+        /// <param name="nom">Nom (ou partie du nom) utilisé pour filtrer les commodités</param>
+        /// <param name="ascendant">Indique si le tri est ascendant (true) ou descendant (false)</param>
+        /// <returns>Liste des commodités filtrées et triées</returns>
         public List<Commodite> GetCommoditeFiltrer(string? nom, bool ascendant = true)
         {
             List<Commodite> commodites = _context.Commodites
             .ToList();
 
+            // Filtre par nom si un nom est fourni
             if (!string.IsNullOrEmpty(nom))
             {
+                // Vérifie que le nom n'est pas nul et contient la valeur recherchée
                 commodites = commodites
-                    .Where(r => r.Nom != null &&
-                                r.Nom.ToLower().Contains(nom.ToLower()))
+                    .Where(r => r.Nom != null && r.Nom.ToLower().Contains(nom.ToLower()))
                     .ToList();
             }
+
+            // Trie la liste selon l'ordre demandé (ascendant ou descendant)
             if (ascendant)
             {
                 commodites = commodites.OrderBy(r => r.Nom).ToList();

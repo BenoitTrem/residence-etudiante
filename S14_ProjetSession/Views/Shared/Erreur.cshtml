@@ -9,34 +9,30 @@
     ViewData["Title"] = "Erreur";
 }
 
-<div class="container d-flex align-items-center justify-content-center" style="min-height: 80vh;">
-    <div class="card shadow-lg border-0 text-center p-4" style="max-width: 500px; width: 100%;">
+<div class="container d-flex align-items-center justify-content-center mt-5">
+    <div class="text-center erreur-container">
 
         <div class="mb-3">
-            <h1 class="display-4 text-danger fw-bold">
+            <i class="bi bi-x-circle-fill text-danger fs-1"></i>
+
+            <h2 class="text-danger fw-bold mt-3">
                 @(Model.StatusCode ?? 500)
-            </h1>
-            <h4 class="text-danger">
+            </h2>
+
+            <h5 class="text-danger mt-2">
                 @(Model.Message ?? "Une erreur inattendue est survenue.")
-            </h4>
+            </h5>
         </div>
 
-   
+        <div class="hr"></div>
 
-        <hr />
-
-        <div class="d-grid gap-2 mt-3">
-     
-            <a asp-area="Identity"
-               asp-page="/Account/Login"
-               class="btn btn-primary btn-lg">
-                Retour à la connexion
+        <div class="d-grid mt-3">
+            <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-outline-primary mt-3 w-100 btn-lg">
+                <i class="bi bi-box-arrow-in-right me-1"></i> Aller à la connexion
             </a>
 
-            <a asp-controller="Home"
-               asp-action="Index"
-               class="btn btn-outline-secondary">
-                Retour à l'accueil
+            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary mt-3 w-100 btn-lg">
+                <i class="bi bi-house-door me-1"></i> Retour à l'accueil
             </a>
         </div>
 
