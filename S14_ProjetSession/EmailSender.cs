@@ -1,4 +1,5 @@
-﻿using MailKit.Net.Smtp;
+using MailKit.Net.Smtp;
+using MailKit.Security;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
 using MimeKit;
@@ -16,21 +17,20 @@ public class EmailSender : IEmailSender
     public async Task SendEmailAsync(string email, string subject, string htmlMessage)
     {
         MimeMessage message = new MimeMessage();
-        message.From.Add(new MailboxAddress("Nom application", _settings.Email));
+        message.From.Add(new MailboxAddress("Residences etudiantes", _settings.Email));
         message.To.Add(new MailboxAddress(email, email));
         message.Subject = subject;
 
-        BodyBuilder builder = new BodyBuilder();
-        builder.HtmlBody = htmlMessage;
-        message.Body = builder.ToMessageBody();
-
-        using (SmtpClient smtp = new SmtpClient())
+        BodyBuilder bodyBuilder = new BodyBuilder
         {
-            await smtp.ConnectAsync(_settings.Host, _settings.Port,
-                MailKit.Security.SecureSocketOptions.StartTls);
-            await smtp.AuthenticateAsync(_settings.Username, _settings.Password);
-            await smtp.SendAsync(message);
-            await smtp.DisconnectAsync(true);
-        }
+            HtmlBody = htmlMessage
+        };
+        message.Body = bodyBuilder.ToMessageBody();
+
+        using SmtpClient smtpClient = new SmtpClient();
+        await smtpClient.ConnectAsync(_settings.Host, _settings.Port, SecureSocketOptions.StartTls);
+        await smtpClient.AuthenticateAsync(_settings.Username, _settings.Password);
+        await smtpClient.SendAsync(message);
+        await smtpClient.DisconnectAsync(true);
     }
 }

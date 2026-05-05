@@ -1,4 +1,4 @@
-﻿namespace S14_ProjetSession
+namespace S14_ProjetSession
 {
     public class EmailSettings
     {
