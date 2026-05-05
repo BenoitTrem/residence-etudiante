@@ -65,11 +65,13 @@
     int refusees = Model.Demandes.Count(d => d.StatutDemande == StatutDemande.Refusee);
 }
 
+<h2 class="visually-hidden">Statistiques des demandes</h2>
+
 <div class="row mb-4">
     <div class="col-md-3">
         <div class="card text-center border-0 shadow-sm">
             <div class="card-body">
-                <h5 class="card-title text-muted">Total</h5>
+                <h3 class="card-title h5 text-muted">Total</h3>
                 <p class="display-6 fw-bold">@total</p>
             </div>
         </div>
@@ -77,7 +79,7 @@
     <div class="col-md-3">
         <div class="card text-center border-0 shadow-sm bg-warning bg-opacity-10">
             <div class="card-body">
-                <h5 class="card-title text-warning">En attente</h5>
+                <h3 class="card-title h5 text-warning">En attente</h3>
                 <p class="display-6 fw-bold text-warning">@enAttente</p>
             </div>
         </div>
@@ -85,7 +87,7 @@
     <div class="col-md-3">
         <div class="card text-center border-0 shadow-sm bg-success bg-opacity-10">
             <div class="card-body">
-                <h5 class="card-title text-success">Acceptées</h5>
+                <h3 class="card-title h5 text-success">Acceptées</h3>
                 <p class="display-6 fw-bold text-success">@acceptees</p>
             </div>
         </div>
@@ -93,7 +95,7 @@
     <div class="col-md-3">
         <div class="card text-center border-0 shadow-sm bg-danger bg-opacity-10">
             <div class="card-body">
-                <h5 class="card-title text-danger">Refusées</h5>
+                <h3 class="card-title h5 text-danger">Refusées</h3>
                 <p class="display-6 fw-bold text-danger">@refusees</p>
             </div>
         </div>
@@ -133,9 +135,9 @@ else
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
                             <div>
-                                <h5 class="card-title mb-1">
+                                <h2 class="card-title h5 mb-1">
                                     @demande.Etudiant?.Prenom @demande.Etudiant?.Nom
-                                </h5>
+                                </h2>
                                 <small class="text-muted">@demande.Semestre?.NomSemestre</small>
                             </div>
                             <span class="badge @statutClasse">@statutTexte</span>
@@ -174,9 +176,9 @@ else
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="modalLabel_@demande.Id">
+                            <h2 class="modal-title h5" id="modalLabel_@demande.Id">
                                 Traiter la demande - @demande.Etudiant?.Prenom @demande.Etudiant?.Nom
-                            </h5>
+                            </h2>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
 

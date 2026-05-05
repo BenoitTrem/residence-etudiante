@@ -6,7 +6,7 @@
     ViewData["Title"] = "Créer une demande";
 }
 
-<h2>Créer une demande</h2>
+<h1>Créer une demande</h1>
 
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -75,7 +75,7 @@
     </div>
 
     <!-- JUMELAGES -->
-    <h5>Jumelage</h5>
+    <h2 class="h5">Jumelage</h2>
     @for (int i = 0; i < Model.Jumelages.Count; i++)
     {
         <div class="mb-3">
@@ -90,7 +90,7 @@
     }
 
     <!-- GARANT -->
-    <h5>Garant</h5>
+    <h2 class="h5">Garant</h2>
     <div class="mb-3">
         <label class="form-label">Nom du garant *</label>
         <input asp-for="Demande.NomGarant" class="form-control" />
@@ -122,7 +122,7 @@
     </div>
 
     <!-- PARENT -->
-    <h5>Parent</h5>
+    <h2 class="h5">Parent</h2>
     <div class="mb-3">
         <label class="form-label">Nom du parent</label>
         <input asp-for="Demande.NomParent" class="form-control" />
@@ -136,7 +136,7 @@
     </div>
 
     <!-- URGENCE -->
-    <h5>Contact d'urgence</h5>
+    <h2 class="h5">Contact d'urgence</h2>
     <div class="mb-3">
         <label class="form-label">Nom *</label>
         <input asp-for="Demande.NomUrgence" class="form-control" />

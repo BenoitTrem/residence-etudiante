@@ -2,6 +2,8 @@
 
 @model S14_ProjetSession.ViewModels.DemandeCreateViewModel
 
+<h1>Modifier la demande</h1>
+
 <form asp-action="Modifier" method="post">
     @Html.AntiForgeryToken()
     <input type="hidden" asp-for="Demande.Id" />
@@ -60,7 +62,7 @@
     </div>
 
     <!-- JUMELAGES -->
-    <h5>Jumelage</h5>
+    <h2 class="h5">Jumelage</h2>
     @for (int i = 0; i < Model.Jumelages.Count; i++)
     {
         <div class="mb-3">
@@ -73,7 +75,7 @@
     }
 
     <!-- GARANT -->
-    <h5>Garant</h5>
+    <h2 class="h5">Garant</h2>
     <div class="mb-3">
         <label asp-for="Demande.NomGarant" class="form-label">Nom du garant *</label>
         <input asp-for="Demande.NomGarant" class="form-control" required />
@@ -96,7 +98,7 @@
     </div>
 
     <!-- PARENT -->
-    <h5>Parent (optionnel)</h5>
+    <h2 class="h5">Parent (optionnel)</h2>
     <div class="mb-3">
         <label asp-for="Demande.NomParent" class="form-label">Nom du parent</label>
         <input asp-for="Demande.NomParent" class="form-control" />
@@ -107,7 +109,7 @@
     </div>
 
     <!-- URGENCE -->
-    <h5>Contact d'urgence</h5>
+    <h2 class="h5">Contact d'urgence</h2>
     <div class="mb-3">
         <label asp-for="Demande.NomUrgence" class="form-label">Nom *</label>
         <input asp-for="Demande.NomUrgence" class="form-control" required />
