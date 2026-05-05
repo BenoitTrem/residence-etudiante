@@ -3,7 +3,6 @@
 #nullable disable
 
 using System;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -15,13 +14,15 @@ using S14_ProjetSession.Areas.Identity.Data;
 
 namespace S14_ProjetSession.Areas.Identity.Pages.Account
 {
-    public class ConfirmEmailModel : PageModel
+    public class ConfirmEmailChangeModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public ConfirmEmailModel(UserManager<ApplicationUser> userManager)
+        public ConfirmEmailChangeModel(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         /// <summary>
@@ -30,9 +31,10 @@ namespace S14_ProjetSession.Areas.Identity.Pages.Account
         /// </summary>
         [TempData]
         public string StatusMessage { get; set; }
-        public async Task<IActionResult> OnGetAsync(string userId, string code)
+
+        public async Task<IActionResult> OnGetAsync(string userId, string email, string code)
         {
-            if (userId == null || code == null)
+            if (userId == null || email == null || code == null)
             {
                 return RedirectToPage("/Index");
             }
@@ -44,10 +46,24 @@ namespace S14_ProjetSession.Areas.Identity.Pages.Account
             }
 
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
-            var result = await _userManager.ConfirmEmailAsync(user, code);
-            StatusMessage = result.Succeeded
-            ? "Votre adresse courriel a été confirmée avec succès."
-            : "Erreur lors de la confirmation de votre adresse courriel.";
+            var result = await _userManager.ChangeEmailAsync(user, email, code);
+            if (!result.Succeeded)
+            {
+                StatusMessage = "Erreur lors de la confirmation du changement de courriel.";
+                return Page();
+            }
+
+            // In our UI email and user name are one and the same, so when we update the email
+            // we need to update the user name.
+            var setUserNameResult = await _userManager.SetUserNameAsync(user, email);
+            if (!setUserNameResult.Succeeded)
+            {
+                StatusMessage = "Erreur lors de la modification du nom d'utilisateur.";
+                return Page();
+            }
+
+            await _signInManager.RefreshSignInAsync(user);
+            StatusMessage = "Votre adresse courriel a été modifiée avec succès.";
             return Page();
         }
     }

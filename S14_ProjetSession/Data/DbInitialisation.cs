@@ -149,6 +149,23 @@ namespace S14_ProjetSession.Data
 
             context.SaveChanges();
 
+            // Genres
+            var genres = new Genre[]
+            {
+                new Genre { Nom = "Homme" },
+                new Genre { Nom = "Femme" },
+                new Genre { Nom = "Autre" }
+            };
+
+            foreach (var genre in genres)
+            {
+                if (!context.Genres.Any(g => g.Nom == genre.Nom))
+                {
+                    context.Genres.Add(genre);
+                }
+            }
+            context.SaveChanges();
+
             var genreDb = context.Genres.ToList();
 
             // Programmes

@@ -845,3 +845,17 @@ label.required::after {
     background-image: url('/images/Image_Accueil_5.jpg');
     background-position: center;
 }
+
+.confirmation-container {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 5px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    transition: all 0.2s ease;
+    max-width : 500px;
+    width:100%
+}
+
+    .confirmation-container:hover {
+        box-shadow: 0 8px 35px rgba(37, 99, 235, 0.5);
+    }
