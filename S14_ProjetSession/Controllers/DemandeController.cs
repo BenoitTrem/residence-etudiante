@@ -233,7 +233,7 @@ namespace S14_ProjetSession.Controllers
                             Courriel = j.Courriel
                         })
                         .ToList() ?? new List<Jumelage>(),
-                    DemandeGenres = demande.DemandeGenres
+                    DemandeGenres = demande.DemandeGenres?.ToList() ?? new List<Genre>()
                 };
 
                 return CopieDemande;
@@ -301,8 +301,14 @@ namespace S14_ProjetSession.Controllers
         {
             if (id != null)
             {
-                Demande demande = await GetDemandeAvecUserId();
-                List<int> GenreChoisieAnciens = demande.DemandeGenres.Select(dg => dg.GenreId).ToList();
+                Demande? demande = await GetDemandeAvecUserId(id);
+                if (demande == null)
+                {
+                    TempData["Erreur"] = "Impossible de copier cette demande.";
+                    return RedirectToAction("Index");
+                }
+
+                List<int> GenreChoisieAnciens = demande.DemandeGenres.Select(g => g.Id).ToList();
                 
                 // recréation de jumelages
                 List<JumelageViewModel> listeJumelages = new();

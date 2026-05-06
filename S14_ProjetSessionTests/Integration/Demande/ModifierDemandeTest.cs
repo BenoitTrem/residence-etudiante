@@ -103,8 +103,8 @@ namespace S14_ProjetSessionTests.Integration.DemandeTests
             Assert.NotEqual(semestreAvant, demandeApres.SemestreId);
             Assert.Equal(5, demandeApres.SemestreId);
             Assert.Equal(180, demandeApres.PrefDureeBail);
-            Assert.Contains(demandeApres.DemandeGenres, dg => dg.GenreId == 1);
-            Assert.Contains(demandeApres.DemandeGenres, dg => dg.GenreId == 2);
+            Assert.Contains(demandeApres.DemandeGenres, g => g.Id == 1);
+            Assert.Contains(demandeApres.DemandeGenres, g => g.Id == 2);
             Assert.Contains(demandeApres.Jumelages, j => j.Nom == "Alex" && j.Courriel == "alex@test.com");
         }
 
