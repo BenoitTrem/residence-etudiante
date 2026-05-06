@@ -58,56 +58,55 @@ namespace S14_ProjetSessionTests.Integration.DemandeTests
             return new FormUrlEncodedContent(formData);
         }
 
-        //[Fact(DisplayName = "vérifier que la modification d'un objet s'effectue avec des données valides")]
-        //public async Task VerifierModificationValide()
-        //{
-        //    // SemestreId=1 est déjà celui de la demande 1, on envoie 2 pour forcer un changement
-        //    var formData = new Dictionary<string, string>
-        //    {
-        //        { "Demande.Id",                     "1"              },
-        //        { "SelectedSemestreId",             "2"              }, // différent du SemestreId=1 initial
-        //        { "Demande.EtudiantId",             "1"              },
-        //        { "SelectedGenreIds[0]",            "1"              }, // relation N-N
-        //        { "SelectedGenreIds[1]",            "2"              },
-        //        { "Demande.PrefDureeBail",          "120"            },
+        [Fact(DisplayName = "vérifier que la modification d'un objet s'effectue avec des données valides")]
+        public async Task VerifierModificationValide()
+        {
+            int semestreAvant = _demandeRepository.GetDemande(1).SemestreId;
 
-        //        { "Demande.AccepteReglements",          "true"       },
-        //        { "Demande.AccepteTraitementDonnees",   "true"       },
-        //        { "Demande.ConfirmeSoumission",         "true"       },
+            var formData = new Dictionary<string, string>
+            {
+                { "Demande.Id",                     "1"              },
+                { "SelectedSemestreId",             "5"              },
+                { "Demande.EtudiantId",             "1"              },
+                { "SelectedGenreIds[0]",            "1"              },
+                { "SelectedGenreIds[1]",            "2"              },
+                { "Demande.PrefDureeBail",          "180"            },
 
-        //        { "Demande.NomGarant",              "Tremblay"       },
-        //        { "Demande.PrenomGarant",           "Jean"           },
-        //        { "Demande.DateNaissanceGarant",    "1990-01-01"     },
-        //        { "Demande.CourrielGarant",         "test@test.com"  },
-        //        { "Demande.TelephoneGarant",        "8191234567"     },
+                { "Demande.AccepteReglements",          "true"       },
+                { "Demande.AccepteTraitementDonnees",   "true"       },
+                { "Demande.ConfirmeSoumission",         "true"       },
 
-        //        { "Demande.NomParent",              "Parent Test"    },
-        //        { "Demande.CourrielParent",         "parent@test.com"},
+                { "Demande.NomGarant",              "Tremblay"       },
+                { "Demande.PrenomGarant",           "Jean"           },
+                { "Demande.DateNaissanceGarant",    "1990-01-01"     },
+                { "Demande.CourrielGarant",         "test@test.com"  },
+                { "Demande.TelephoneGarant",        "+18191234567"   },
 
-        //        { "Demande.NomUrgence",             "Urgence Test"   },
-        //        { "Demande.LienParenteUrgence",     "Pere"           },
-        //        { "Demande.TelephoneUrgence",       "8199999999"     },
+                { "Demande.NomParent",              "Parent Test"    },
+                { "Demande.CourrielParent",         "parent@test.com"},
 
-        //        { "Jumelages[0].Nom",               "Alex"           },
-        //        { "Jumelages[0].Courriel",          "alex@test.com"  }
-        //    };
+                { "Demande.NomUrgence",             "Urgence Test"   },
+                { "Demande.LienParenteUrgence",     "Pere"           },
+                { "Demande.TelephoneUrgence",       "+18199999999"   },
 
-        //    string chemin = $"/Demande/Modifier/1";
-        //    HttpContent form = await GetForm(formData, chemin);
+                { "Jumelages[0].Nom",               "Alex"           },
+                { "Jumelages[0].Courriel",          "alex@test.com"  }
+            };
 
-        //    int semestreAvant = _demandeRepository.GetDemande(1)!.SemestreId;
+            HttpContent form = await GetForm(formData, "/Demande/Modifier/1");
 
-        //    HttpResponseMessage response = await _client.PostAsync(chemin, form, TestContext.Current.CancellationToken);
+            HttpResponseMessage response = await _client.PostAsync("/Demande/Modifier", form, TestContext.Current.CancellationToken);
 
-        //    Demande demandeApres = _demandeRepository.GetDemande(1)!;
+            Demande demandeApres = _demandeRepository.GetDemande(1)!;
 
-        //    // Le semestre doit avoir changé
-        //    Assert.NotEqual(semestreAvant, demandeApres.SemestreId);
-
-        //    // Les genres N-N doivent avoir été mis à jour
-        //    Assert.Contains(demandeApres.DemandeGenres, dg => dg.GenreId == 1);
-        //    Assert.Contains(demandeApres.DemandeGenres, dg => dg.GenreId == 2);
-        //}
+            Assert.Equal(System.Net.HttpStatusCode.Redirect, response.StatusCode);
+            Assert.NotEqual(semestreAvant, demandeApres.SemestreId);
+            Assert.Equal(5, demandeApres.SemestreId);
+            Assert.Equal(180, demandeApres.PrefDureeBail);
+            Assert.Contains(demandeApres.DemandeGenres, dg => dg.GenreId == 1);
+            Assert.Contains(demandeApres.DemandeGenres, dg => dg.GenreId == 2);
+            Assert.Contains(demandeApres.Jumelages, j => j.Nom == "Alex" && j.Courriel == "alex@test.com");
+        }
 
         [Fact(DisplayName = "vérifier que la modification d'un objet est refusée avec des données invalides")]
         public async Task VerifierModificationInvalideValide()

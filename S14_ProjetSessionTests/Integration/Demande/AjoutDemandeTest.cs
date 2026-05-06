@@ -159,44 +159,44 @@ namespace S14_ProjetSessionTests.Integration
 
         //- Un test pour vérifier que la création d’un objet s’effectue avec des données valides
 
-    //    [Fact]
-    //    public async Task CreationDuneDemande()
-    //    {
-    //        int avant = _demandeRepository.Demandes.Count();
-    //        var formData = new Dictionary<string, string>
-    //{
-    //    { "SemestreId", "5" },
-    //    { "EtudiantId", "1" },
-    //    { "PreferencesGenreId", "1" },
-    //    { "PrefDureeBail", "120" },
+        //    [Fact]
+        //    public async Task CreationDuneDemande()
+        //    {
+        //        int avant = _demandeRepository.Demandes.Count();
+        //        var formData = new Dictionary<string, string>
+        //{
+        //    { "SemestreId", "5" },
+        //    { "EtudiantId", "1" },
+        //    { "PreferencesGenreId", "1" },
+        //    { "PrefDureeBail", "120" },
 
-    //    { "AccepteReglements", "true" },
-    //    { "AccepteTraitementDonnees", "true" },
-    //    { "ConfirmeSoumission", "true" },
+        //    { "AccepteReglements", "true" },
+        //    { "AccepteTraitementDonnees", "true" },
+        //    { "ConfirmeSoumission", "true" },
 
-    //    { "NomGarant", "Tremblay" },
-    //    { "PrenomGarant", "Jean" },
-    //    { "DateNaissanceGarant", "1990-01-01" },
-    //    { "CourrielGarant", "test@test.com" },
-    //    { "TelephoneGarant", "8191234567" },
+        //    { "NomGarant", "Tremblay" },
+        //    { "PrenomGarant", "Jean" },
+        //    { "DateNaissanceGarant", "1990-01-01" },
+        //    { "CourrielGarant", "test@test.com" },
+        //    { "TelephoneGarant", "8191234567" },
 
-    //    { "NomParent", "Parent Test" },
-    //    { "CourrielParent", "parent@test.com" },
+        //    { "NomParent", "Parent Test" },
+        //    { "CourrielParent", "parent@test.com" },
 
-    //    { "NomUrgence", "Urgence Test" },
-    //    { "LienParenteUrgence", "Pere" },
-    //    { "TelephoneUrgence", "8199999999" },
+        //    { "NomUrgence", "Urgence Test" },
+        //    { "LienParenteUrgence", "Pere" },
+        //    { "TelephoneUrgence", "8199999999" },
 
-    //    { "jumelage[0].Nom", "Alex" },
-    //    { "jumelage[0].Courriel", "alex@test.com" }
-    //};
+        //    { "jumelage[0].Nom", "Alex" },
+        //    { "jumelage[0].Courriel", "alex@test.com" }
+        //};
 
-    //        string chemin = "/Demande/Creer";
-    //        HttpContent form = await GetForm(formData, chemin);
-    //        HttpResponseMessage response = await _client.PostAsync(chemin, form, TestContext.Current.CancellationToken);
+        //        string chemin = "/Demande/Creer";
+        //        HttpContent form = await GetForm(formData, chemin);
+        //        HttpResponseMessage response = await _client.PostAsync(chemin, form, TestContext.Current.CancellationToken);
 
-    //        Assert.Equal(avant + 1, _demandeRepository.Demandes.Count());
-    //    }
+        //        Assert.Equal(avant + 1, _demandeRepository.Demandes.Count());
+        //    }
 
         // - Un test pour vérifier que la création d’un objet est refusée avec des données invalides
         //[Fact(DisplayName = "Un nom vide retourne au formulaire et affiche message d'erreur")]
@@ -240,7 +240,7 @@ namespace S14_ProjetSessionTests.Integration
         //    // permet les accents et caractere spécial
         //    html = WebUtility.HtmlDecode(html);
 
-        //    Assert.Contains("Une demande existe déjà pour cet étudiant et ce semestre.", html);
+        //    Assert.Contains("Une demande existe déjà pour cet étudiant et ce semestre. veuillez contacté l'admin pour changer cette demande", html);
         //}
 
 

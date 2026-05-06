@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -40,6 +40,8 @@ namespace S14_ProjetSessionTests.Integration
             });
         }
 
+
+        // aider par l'IA pour faire tous les Case possible d'autorisation parce que y'en a beaucoup mais logique des utils pour les test fait par felix
         [Theory]
         [InlineData("Admin", "/Demande/Index", HttpStatusCode.Forbidden)]
         [InlineData("Gestionnaire", "/Demande/Index", HttpStatusCode.Forbidden)]
@@ -55,7 +57,7 @@ namespace S14_ProjetSessionTests.Integration
         [InlineData("Proprietaire", "/Demande/Modifier/1", HttpStatusCode.OK)]
         [InlineData("AutreEtudiant", "/Demande/Modifier/1", HttpStatusCode.Forbidden)]
         [InlineData("NonConnecte", "/Demande/Modifier/1", HttpStatusCode.Unauthorized)]
-        
+
         [InlineData("Admin", "/Demande/Demandes", HttpStatusCode.OK)]
         [InlineData("Gestionnaire", "/Demande/Demandes", HttpStatusCode.OK)]
         [InlineData("Proprietaire", "/Demande/Demandes", HttpStatusCode.Forbidden)]
@@ -79,8 +81,8 @@ namespace S14_ProjetSessionTests.Integration
         [Theory]
         [InlineData("Admin", HttpStatusCode.Forbidden)]
         [InlineData("Gestionnaire", HttpStatusCode.Forbidden)]
-        [InlineData("Proprietaire", HttpStatusCode.OK)]
-        [InlineData("AutreEtudiant", HttpStatusCode.OK)]
+        [InlineData("Proprietaire", HttpStatusCode.Redirect)]
+        [InlineData("AutreEtudiant", HttpStatusCode.Redirect)]
         [InlineData("NonConnecte", HttpStatusCode.Unauthorized)]
         public async Task DemandeCreerPostRespecteLeTableau(string utilisateur, HttpStatusCode attendu)
         {

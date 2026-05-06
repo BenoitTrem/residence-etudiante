@@ -1,46 +1,54 @@
 @* <author>Felix</author> *@
+@model IEnumerable<Demande>
+
+@{
+    List<Demande> demandes = Model?.OrderByDescending(d => d.DateDemande).ToList() ?? new List<Demande>();
+    Demande? derniereDemande = demandes.FirstOrDefault();
+    bool periodeOuverte = ViewBag.PeriodeInscriptionOuverte == true;
+    bool demandeValideeSoumise = derniereDemande != null
+        && derniereDemande.AccepteReglements
+        && derniereDemande.AccepteTraitementDonnees
+        && derniereDemande.ConfirmeSoumission;
+}
 
 <h1>Mes demandes</h1>
 
-<a asp-controller="Demande" asp-action="Creer">Créer</a>
+<div class="d-flex flex-wrap gap-2 mb-3">
+    <a class="btn btn-primary" asp-controller="Demande" asp-action="Creer">Creer</a>
 
-<a asp-controller="Demande"
-       asp-action="Creer"
-       asp-route-id="67">
-    Créer avec une ancienne demande
-</a>
-
-
-<!-- permet dire si Periode inscription -->
-@if (Model.Count > 0)
-{
-    Demande derniereDemande = ((IEnumerable<Demande>)Model)
-        .OrderByDescending(d => d.DateDemande)
-        .First();
-
-    bool periodeOuverte = ViewBag.PeriodeInscriptionOuverte == true;
-    bool demandeValideeSoumise =
-        derniereDemande.AccepteReglements &&
-        derniereDemande.AccepteTraitementDonnees &&
-        derniereDemande.ConfirmeSoumission;
-
-    <section class="alert alert-info mt-3">
-        <h2 class="h5">État de la demande</h2>
-        <p class="mb-1">
-            <strong>Période d'inscription ouverte :</strong>
-            @(periodeOuverte ? "oui" : "non")
-        </p>
-        <p class="mb-0">
-            <strong>Demande validée et soumise :</strong>
-            @(demandeValideeSoumise ? "oui" : "non")
-        </p>
-    </section>
-
-    <div class="row mt-3">
-        @foreach (Demande demande in Model)
+    @if (derniereDemande != null)
     {
+        <a class="btn btn-outline-primary"
+           asp-controller="Demande"
+           asp-action="Creer"
+           asp-route-id="@derniereDemande.Id">
+            Creer avec ma derniere demande
+        </a>
+    }
+</div>
+
+<section class="alert alert-info mt-3">
+    <h2 class="h5">Etat de la demande</h2>
+    <p class="mb-1">
+        <strong>Periode d'inscription ouverte :</strong>
+        @(periodeOuverte ? "oui" : "non")
+    </p>
+    <p class="mb-0">
+        <strong>Demande validee et soumise :</strong>
+        @(demandeValideeSoumise ? "oui" : "non")
+    </p>
+</section>
+
+@if (!demandes.Any())
+{
+    <div class="alert alert-secondary">Aucune demande a afficher.</div>
+}
+else
+{
+    <div class="row mt-3">
+        @foreach (Demande demande in demandes)
+        {
             <partial name="_CarteDemande" model="demande" />
         }
-    
     </div>
 }

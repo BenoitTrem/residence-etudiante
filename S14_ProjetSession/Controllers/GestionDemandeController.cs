@@ -15,6 +15,9 @@ namespace S14_ProjetSession.Controllers
         private readonly IDemandeRepository _demandeRepository;
         private readonly IUniteRepository _uniteRepository;
 
+        /// <summary>
+        /// Initialise le controleur de gestion des demandes avec les referentiels requis.
+        /// </summary>
         public GestionDemandeController(
             ISemestreRepository semestreRepository,
             IGenresRepository genreRepository,
@@ -30,6 +33,9 @@ namespace S14_ProjetSession.Controllers
             _uniteRepository = uniteRepository;
         }
 
+        /// <summary>
+        /// Affiche les demandes a traiter avec filtre par semestre et pagination.
+        /// </summary>
         [Authorize(Policy = "AdminOuGestionnaire")]
         public IActionResult Index(int? semestreFiltre, int page = 1)
         {
@@ -46,9 +52,9 @@ namespace S14_ProjetSession.Controllers
                     .ToList();
             }
 
+            // pagination
             int totalDemandes = demandes.Count;
             int totalPages = (int)Math.Ceiling((double)totalDemandes / pageSize);
-
             demandes = demandes
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
@@ -67,6 +73,9 @@ namespace S14_ProjetSession.Controllers
             return View(vm);
         }
 
+        /// <summary>
+        /// Exporte en PDF les demandes visibles, avec filtre optionnel par semestre.
+        /// </summary>
         [Authorize(Policy = "AdminOuGestionnaire")]
         public IActionResult ExporterToutesPdf(int? semestreFiltre)
         {
