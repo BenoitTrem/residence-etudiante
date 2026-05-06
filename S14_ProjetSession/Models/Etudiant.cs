@@ -47,9 +47,9 @@ namespace S14_ProjetSession.Models
         public int? CampusId { get; set; }
         public Campus? Campus { get; set; }
 
-        [Required(ErrorMessage = "Le numéro étudiant est obligatoire")]
-        [Display(Name = "No étudiant")]
-        public string noEtudiant { get; set; }
+
+        [Display(Name = "No Etudiant (si disponible)")]
+        public string? noEtudiant { get; set; }
 
         [Display(Name = "No admission (si disponible)")]
         public string? noAdmission { get; set; }

@@ -33,9 +33,7 @@ namespace S14_ProjetSession.Controllers
             _demandeRepository = demandeRepository;
         }
 
-        /// <summary>
-        /// Verifie que les consentements obligatoires de la demande sont acceptes.
-        /// </summary>
+        
         private bool ValiderConsentements(Demande demande)
         {
             bool valide = true;
@@ -61,9 +59,8 @@ namespace S14_ProjetSession.Controllers
             return valide;
         }
 
-        /// <summary>
-        /// Valide que le semestre selectionne existe et que sa periode d'inscription est ouverte.
-        /// </summary>
+
+
         private bool ValiderSemestreOuvert(int? semestreId, out Semestre? semestre)
         {
             semestre = null;
@@ -132,8 +129,6 @@ namespace S14_ProjetSession.Controllers
             return etudiant != null && demande.EtudiantId == etudiant.Id;
         }
 
-      
-
         /// <summary>
         /// Remplace les DemandeGenres d'une demande par les genres sélectionnés.
         /// </summary>
@@ -148,7 +143,7 @@ namespace S14_ProjetSession.Controllers
             }
 
             // Valider que tous les IDs existent
-            var genres = selectedGenreIds
+            List<Genre> genres = selectedGenreIds
                 .Select(id => _genreRepository.GetGenre(id))
                 .ToList();
 
@@ -159,18 +154,11 @@ namespace S14_ProjetSession.Controllers
             }
 
             // Remplacer la collection
-            if (demande.DemandeGenres == null)
-            {
-                demande.DemandeGenres = new List<DemandeGenre>();
-            }
+            demande.DemandeGenres ??= new List<Genre>();
             demande.DemandeGenres.Clear();
             foreach (var genre in genres)
             {
-                demande.DemandeGenres.Add(new DemandeGenre
-                {
-                    GenreId = genre.Id,
-                    DemandeId = demande.Id   // 0 lors de la création, EF le résout
-                });
+                demande.DemandeGenres.Add(genre);
             }
 
             return true;
@@ -245,15 +233,8 @@ namespace S14_ProjetSession.Controllers
                             Courriel = j.Courriel
                         })
                         .ToList() ?? new List<Jumelage>(),
-                    DemandeGenres = demande.DemandeGenres?
-                        .Select(dg => new DemandeGenre
-                        {
-                            GenreId = dg.GenreId,
-                            Genre = dg.Genre
-                        })
-                        .ToList() ?? new List<DemandeGenre>()
+                    DemandeGenres = demande.DemandeGenres
                 };
-                
 
                 return CopieDemande;
             }
@@ -262,9 +243,6 @@ namespace S14_ProjetSession.Controllers
 
         
 
-        /// <summary>
-        /// Affiche les demandes de l'etudiant connecte et l'etat de la periode d'inscription.
-        /// </summary>
         [Authorize(Policy = "EstEtudiant")]
         public async Task<IActionResult> Index()
         {
@@ -317,34 +295,20 @@ namespace S14_ProjetSession.Controllers
         }
 
 
-        /// <summary>
-        /// Affiche le formulaire de creation, avec copie d'une ancienne demande lorsque son id est fourni.
-        /// </summary>
         [Authorize(Policy = "EstEtudiant")]
         [HttpGet]
         public async Task<IActionResult> Creer(int? id)
         {
             if (id != null)
             {
-                Demande? demande = await GetDemandeAvecUserId(id);
-                if (demande == null)
-                {
-                    TempData["Erreur"] = "Impossible de copier cette demande.";
-                    return RedirectToAction("Index");
-                }
-
+                Demande demande = await GetDemandeAvecUserId();
                 List<int> GenreChoisieAnciens = demande.DemandeGenres.Select(dg => dg.GenreId).ToList();
                 
                 // recréation de jumelages
                 List<JumelageViewModel> listeJumelages = new();
-                foreach (Jumelage jumelage in demande.Jumelages) 
+                foreach (Jumelage jumelage in demande.Jumelages)
                 {
                     listeJumelages.Add(new JumelageViewModel() { Courriel = jumelage.Courriel, Nom = jumelage.Nom });
-                }
-
-                while (listeJumelages.Count < 3)
-                {
-                    listeJumelages.Add(new JumelageViewModel());
                 }
 
                
@@ -355,10 +319,8 @@ namespace S14_ProjetSession.Controllers
                     Semestres = _semestreRepository.Semestres,
                     SelectedGenreIds = GenreChoisieAnciens,
                     Jumelages = listeJumelages
-                    
                 };
                 return View(vm);
-
             }
             else
             {
@@ -374,9 +336,6 @@ namespace S14_ProjetSession.Controllers
 
      
 
-        /// <summary>
-        /// Cree une nouvelle demande valide pour l'etudiant connecte.
-        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = "EstEtudiant")]
@@ -403,9 +362,11 @@ namespace S14_ProjetSession.Controllers
                 ModelState.AddModelError("Demande.ConfirmeSoumission", "Vous devez confirmer la soumission.");
 
 
+            vm.Genres = _genreRepository.Genres;
+            vm.Semestres = _semestreRepository.Semestres;
             Semestre? semestre = null;
 
-            RetirerErreursNavigationDemande();
+             ModelState.Remove("Demande.Etudiant");
 
             // Étudiant connecté
             string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -423,18 +384,15 @@ namespace S14_ProjetSession.Controllers
 
             ValiderSemestreOuvert(vm.SelectedSemestreId, out semestre);
 
-            // les genres 
+            // les genres
             if (vm.SelectedGenreIds == null || !vm.SelectedGenreIds.Any())
                 ModelState.AddModelError("SelectedGenreIds", "Au moins un genre préféré est requis.");
-
-            if (!ModelState.IsValid)
-                return View(vm);
 
             // demande genre ne fonctionne pas ici 
             
 
             
-            // Doublon par semestre.
+            // Doublon
             bool demandeExiste = semestre != null && _demandeRepository.Demandes
                 .Any(d => d.EtudiantId == etudiant.Id && d.SemestreId == semestre.Id);
 
@@ -472,15 +430,13 @@ namespace S14_ProjetSession.Controllers
                 return View(vm);
             }
 
-
-
             // Ajout des propriétés pour que Validate fonctionne.
             vm.Demande.StatutDemande = StatutDemande.EnAttente;
             vm.Demande.Etudiant = etudiant;
             vm.Demande.EtudiantId = etudiant.Id;
             vm.Demande.SemestreId = semestre.Id;
             vm.Demande.Semestre = semestre;
-            
+
             // Propriété problématique à supprimer pour que le ModelState fonctionne.
             RetirerErreursNavigationDemande();
 
@@ -524,8 +480,8 @@ namespace S14_ProjetSession.Controllers
                 }).ToList(),
                 Genres = _genreRepository.Genres,
                 Semestres = _semestreRepository.Semestres,
-                // Pré-cocher les genres déjà associés
-                SelectedGenreIds = demande.DemandeGenres.Select(dg => dg.GenreId).ToList(),
+                // @author John Zuleta : lecture via .Id directement (plus de GenreId)
+                SelectedGenreIds = demande.DemandeGenres.Select(g => g.Id).ToList(),
                 SelectedSemestreId = demande.Semestre?.Id
             };
 
@@ -537,7 +493,6 @@ namespace S14_ProjetSession.Controllers
 
         // ─── Modifier POST ───────────────────────────────────────────────────────
 
-
         // je ne sais pas encore si je donne le droit à un Admin de modifier. TODO Félix
         /// <summary>
         /// Modifie une demande existante appartenant a l'etudiant connecte.
@@ -547,7 +502,6 @@ namespace S14_ProjetSession.Controllers
         [Authorize]
         public async Task<IActionResult> Modifier(DemandeCreateViewModel vm)
         {
-            
             vm.Genres = _genreRepository.Genres;
             vm.Semestres = _semestreRepository.Semestres;
 
@@ -567,8 +521,6 @@ namespace S14_ProjetSession.Controllers
 
             // Propriétés de navigation assignées côté serveur
             RetirerErreursNavigationDemande();
-
-           
 
             // Étudiant connecté
             string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -594,7 +546,7 @@ namespace S14_ProjetSession.Controllers
                 return View(vm);
 
            
-            // Doublon par semestre (hors demande courante)
+            // Doublon (hors demande courante)
             bool demandeDoubleExiste = _demandeRepository.Demandes
                 .Any(d => d.Id != demandeEnBase.Id &&
                           d.EtudiantId == etudiant.Id &&
@@ -608,7 +560,6 @@ namespace S14_ProjetSession.Controllers
             }
 
             // StatutDemande, DateTraitement, UniteId
-            
             demandeEnBase.SemestreId = semestre.Id;
             demandeEnBase.PrefDureeBail = vm.Demande.PrefDureeBail;
             demandeEnBase.AccepteReglements = vm.Demande.AccepteReglements;
@@ -633,6 +584,7 @@ namespace S14_ProjetSession.Controllers
                 demandeEnBase.DateTraitement = vm.Demande.DateTraitement;
                 demandeEnBase.UniteId = vm.Demande.UniteId;
             }
+
             // Mise à jour des genres (relation N-N)
             if (!AppliquerGenres(demandeEnBase, vm.SelectedGenreIds, out string erreurGenre))
             {

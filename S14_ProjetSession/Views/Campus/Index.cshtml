@@ -9,8 +9,8 @@
 *@
 
 @{
-    var isAdmin = (await AuthorizationService.AuthorizeAsync(User, "AdminUniquement")).Succeeded;
-    var isAdminOrGestionnaire = (await AuthorizationService.AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded;
+    bool isAdmin = (await AuthorizationService.AuthorizeAsync(User, "AdminUniquement")).Succeeded;
+    bool isAdminOrGestionnaire = (await AuthorizationService.AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded;
 }
 
 <div class="container">

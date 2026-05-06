@@ -62,15 +62,28 @@ Application de gestion des résidences étudiantes.
 | Accéder à la gestion             | ❌                    | ❌             | ✅           | ✅             |
 | Traiter une demande              | ❌                    | ❌             | ✅           | ✅             |
 
-### Gestion des résidences
+### Gestion des résidences et unités
 
 | Opération                       | Étudiant | Gestionnaire | Administrateur |
 |---------------------------------|:--------:|:------------:|:--------------:|
-| Voir les unités / résidences    | ✅       | ✅           | ✅             |
-| Ajouter / modifier une unité    | ❌       | ✅           | ✅             |
+| Voir les résidences             | ✅       | ✅           | ✅             |
+| Ajouter / modifier une résidence    | ❌       | ✅           | ✅             |
+| Supprimer résidence             | ❌       | ❌           | ✅             |
+| Voir la liste des unités        | ❌       | ✅           | ✅             |
+| Ajouter des unités              | ❌       | ✅           | ✅             |
+| Modifier une unité              | ❌       | ✅           | ✅             |
+| Supprimer une unité             | ❌       | ❌           | ✅             |
 | Jumeler des étudiants           | ❌       | ✅           | ✅             |
 | Attribuer une unité             | ❌       | ✅           | ✅             |
-| Supprimer une unité / résidence | ❌       | ❌           | ✅             |
+
+### Commodités
+
+| Opération                  | Étudiant | Gestionnaire | Administrateur |
+|----------------------------|:--------:|:------------:|:--------------:|
+| Voir la liste des commodités | ❌      | ✅           | ✅             |
+| Créer une commodité        | ❌       | ✅           | ✅             |
+| Modifier une commodité     | ❌       | ✅           | ✅             |
+| Supprimer une commodité    | ❌       | ❌           | ✅             |
 
 ---
 
@@ -79,26 +92,26 @@ Application de gestion des résidences étudiantes.
 Spécifier les numéros de billets (vous pouvez compléter au fur et à mesure). Vous devrez tous déployer l'application produite.
 
 - **Préparation de la base de données (00ST.1, 00ST.3)**
-   - Felix : Modèle `Demande`, préférences de durée de bail
-   - John : Modèle `Étudiant`, programme, genre,campus
-   - Benoit : Modèles `Résidence`, `Unité`
+   - Felix : Modèle `Demande`, `préférences de durée de bail`
+   - John : Modèle `Étudiant`, `programme`, `genre`,`campus`
+   - Benoit : Modèles `Résidence`, `Unité`, `Commodité`
 
 - **Programmation côté serveur (00ST.1, 00ST.2, 00ST.5)**
-   - Felix : Contrôleurs et logique des demandes
+   - Felix : Contrôleurs et logique des demandes.
    - John : Contrôleurs et logique des étudiants, campus, programme et genre.
-   - Benoit : Contrôleurs et lgogique des résidences et unités
+   - Benoit : Contrôleurs et logique des résidences, unités et commodités.
 
 - **Réalisation d'une interface utilisateur (00ST.4, 00ST.6)**
-   - Felix : Formulaire de création de demande
-   - John : Interface profil étudiant , gestion de erreurs
-   - Benoit : Interface gestion des résidences
+   - Felix : Formulaire de création de demande.
+   - John : Interface profil étudiant , gestion de erreurs.
+   - Benoit : Interface gestion des résidences, unités, commodité et la page d'accueil.
 
 - **Contrôle rigoureux de la qualité de l'application (00ST.7)**
-   - Felix : Tests des demandes
-   - John : Tests des étudiants
-   - Benoit : Tests des résidences et unités
+   - Felix : Tests des demandes.
+   - John : Tests des étudiants.
+   - Benoit : Tests des résidences et unités.
 
 - **Production de la documentation et respect des règles d'orthographe et de grammaire dans l'interface (00ST.2, 00ST.9)**
-   - Felix : README et documentation des demandes
-   - John : Documentation des modèles étudiants et README
-   - Benoit : Documentation des résidences et unités
+   - Felix : README et documentation des demandes.
+   - John : Documentation des modèles étudiants et README.
+   - Benoit : Documentation des résidences, unités, commodités et du JavaScript.

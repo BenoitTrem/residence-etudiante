@@ -34,8 +34,7 @@ namespace S14_ProjetSession.Controllers
         {
             try
             {
-              
-                var programmes = _programmesRepository.Programmes
+                List<Programme> programmes = _programmesRepository.Programmes
                     .OrderBy(p => p.Nom)
                     .ToList();
 
@@ -43,7 +42,7 @@ namespace S14_ProjetSession.Controllers
             }
             catch (Exception)
             {
-                return Erreur(500, "Erreur lors du chargement des programmes");
+                return View("Erreur", new ErreurViewModel { StatusCode = 500, Message = "Erreur lors du chargement des programmes" });
             }
         }
 
@@ -61,7 +60,7 @@ namespace S14_ProjetSession.Controllers
             }
             catch (Exception)
             {
-                return Erreur(500, "Erreur lors du formulaire");
+                return View("Erreur", new ErreurViewModel { StatusCode = 500, Message = "Erreur lors du formulaire" });
             }
         }
 
@@ -92,7 +91,7 @@ namespace S14_ProjetSession.Controllers
             }
             catch (Exception)
             {
-                return Erreur(500, "Erreur lors de la création");
+                return View("Erreur", new ErreurViewModel { StatusCode = 500, Message = "Erreur lors de la création" });
             }
         }
 
@@ -105,10 +104,10 @@ namespace S14_ProjetSession.Controllers
             try
             {
                 ViewData["Title"] = "Modifier un programme";
-                var programme = _programmesRepository.GetProgramme(id);
+                Programme programme = _programmesRepository.GetProgramme(id);
 
                 if (programme == null)
-                    return Erreur(404, "Programme introuvable");
+                    return View("Erreur", new ErreurViewModel { StatusCode = 404, Message = "Programme introuvable" });
 
                 ViewBag.Campus = _campusRepository.Campus;
 
@@ -116,7 +115,7 @@ namespace S14_ProjetSession.Controllers
             }
             catch (Exception)
             {
-                return Erreur(500, "Erreur lors du chargement");
+                return View("Erreur", new ErreurViewModel { StatusCode = 500, Message = "Erreur lors du chargement" });
             }
         }
 
@@ -147,7 +146,7 @@ namespace S14_ProjetSession.Controllers
             }
             catch (Exception)
             {
-                return Erreur(500, "Erreur lors de la modification");
+                return View("Erreur", new ErreurViewModel { StatusCode = 500, Message = "Erreur lors de la modification" });
             }
         }
 
@@ -161,10 +160,10 @@ namespace S14_ProjetSession.Controllers
         {
             try
             {
-                var programme = _programmesRepository.GetProgramme(id);
+                Programme programme = _programmesRepository.GetProgramme(id);
 
                 if (programme == null)
-                    return Erreur(404, "Programme introuvable");
+                    return View("Erreur", new ErreurViewModel { StatusCode = 404, Message = "Programme introuvable" });
 
                 _programmesRepository.Supprimer(programme);
 
@@ -174,20 +173,8 @@ namespace S14_ProjetSession.Controllers
             }
             catch (Exception)
             {
-                return Erreur(500, "Erreur lors de la suppression");
+                return View("Erreur", new ErreurViewModel { StatusCode = 500, Message = "Erreur lors de la suppression" });
             }
-        }
-
-        /// <summary>
-        /// Gestion des erreurs.
-        /// </summary>
-        private IActionResult Erreur(int code, string message)
-        {
-            return View("Error", new ErreurViewModel
-            {
-                StatusCode = code,
-                Message = message
-            });
         }
     }
 }

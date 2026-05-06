@@ -168,16 +168,55 @@ namespace S14_ProjetSession.Data
 
             var genreDb = context.Genres.ToList();
 
+
             // Programmes
             var programmes = new Programme[]
             {
-                new Programme{ Nom = "Techniques de l'informatique", Code = "420.A0", CampusId = campusDb[0].Id },
-                new Programme{ Nom = "Sciences de la nature", Code = "200.B0", CampusId = campusDb[0].Id },
-                new Programme{ Nom = "Administration des affaires", Code = "410.B0", CampusId = campusDb[1].Id },
-                new Programme{ Nom = "Techniques de génie logiciel", Code = "420.B1", CampusId = campusDb[1].Id },
-                new Programme{ Nom = "Sciences humaines", Code = "300.A0", CampusId = campusDb[2].Id }
-            };
+                // Campus Gabrielle-Roy (0) - Arts, lettres, sciences
+                new Programme{ Nom = "Arts visuels - Approche Matière", Code = "510.AM", CampusId = campusDb[0].Id },
+                new Programme{ Nom = "Arts visuels - Technologie de l'image", Code = "510.T1", CampusId = campusDb[0].Id },
+                new Programme{ Nom = "Arts, lettres et communication - Option Cinéma", Code = "500.AG", CampusId = campusDb[0].Id },
+                new Programme{ Nom = "Arts, lettres et communication - Option Langues", Code = "500.AL", CampusId = campusDb[0].Id },
+                new Programme{ Nom = "Arts, lettres et communication - Option Littérature", Code = "500.AH", CampusId = campusDb[0].Id },
+                new Programme{ Nom = "Arts, lettres et communication - Option Médias", Code = "500.AJ", CampusId = campusDb[0].Id },
+                new Programme{ Nom = "Arts, lettres et communication - Option Théâtre", Code = "500.AK", CampusId = campusDb[0].Id },
 
+              // Campus Félix-Leclerc (1) - Sciences & techniques de santé
+              new Programme{ Nom = "Sciences de la nature", Code = "200.B1", CampusId = campusDb[1].Id },
+              new Programme{ Nom = "Sciences humaines", Code = "300.M0", CampusId = campusDb[1].Id },
+              new Programme{ Nom = "Sciences, lettres et arts (SLA)", Code = "700.A1", CampusId = campusDb[1].Id },
+              new Programme{ Nom = "Soins infirmiers", Code = "180.A0", CampusId = campusDb[1].Id },
+              new Programme{ Nom = "Soins préhospitaliers d'urgence", Code = "181.A1", CampusId = campusDb[1].Id },
+              new Programme{ Nom = "Technique d'éducation spécialisée", Code = "351.A0", CampusId = campusDb[1].Id },
+              new Programme{ Nom = "Technique de la documentation", Code = "393.B0", CampusId = campusDb[1].Id },
+
+               // Campus Louis-Reboul (2) - Techniques sociales & santé
+               new Programme{ Nom = "Techniques d'éducation à l'enfance", Code = "322.A1", CampusId = campusDb[2].Id },
+               new Programme{ Nom = "Techniques d'hygiène dentaire", Code = "111.B0", CampusId = campusDb[2].Id },
+               new Programme{ Nom = "Techniques d'inhalothérapie", Code = "141.A0", CampusId = campusDb[2].Id },
+               new Programme{ Nom = "Techniques d'intégration multimédia", Code = "582.A1", CampusId = campusDb[2].Id },
+               new Programme{ Nom = "Techniques d'administration et de gestion", Code = "410.G0", CampusId = campusDb[2].Id },
+               new Programme{ Nom = "Techniques de design d'intérieur", Code = "570.E0", CampusId = campusDb[2].Id },
+               new Programme{ Nom = "Techniques de diététique", Code = "120.A0", CampusId = campusDb[2].Id },
+
+               // Campus de Papineauville (3) - Techniques industrielles & juridiques
+               new Programme{ Nom = "Techniques de génie mécanique", Code = "241.A0", CampusId = campusDb[3].Id },
+               new Programme{ Nom = "Techniques de gestion et d'intervention en loisir", Code = "391.A0", CampusId = campusDb[3].Id },
+               new Programme{ Nom = "Techniques de l'informatique", Code = "420.B0", CampusId = campusDb[3].Id },
+               new Programme{ Nom = "Techniques de laboratoire (biotechnologies)", Code = "210.AA", CampusId = campusDb[3].Id },
+               new Programme{ Nom = "Techniques en travail social", Code = "388.A1", CampusId = campusDb[3].Id },
+               new Programme{ Nom = "Techniques juridiques", Code = "310.C0", CampusId = campusDb[3].Id },
+               new Programme{ Nom = "Techniques policières", Code = "310.A0", CampusId = campusDb[3].Id },
+
+               // Centre de formation continue (4) - Technologies du bâtiment & génie
+               new Programme{ Nom = "Technologie d'analyses biomédicales", Code = "140.C0", CampusId = campusDb[4].Id },
+               new Programme{ Nom = "Technologie de génie électrique - électronique programmable", Code = "243.G0", CampusId = campusDb[4].Id },
+               new Programme{ Nom = "Technologie de l'architecture", Code = "221.A0", CampusId = campusDb[4].Id },
+               new Programme{ Nom = "Technologie de la géomatique", Code = "230.B0", CampusId = campusDb[4].Id },
+               new Programme{ Nom = "Technologie de radiodiagnostic", Code = "142.H0", CampusId = campusDb[4].Id },
+               new Programme{ Nom = "Technologie du génie civil", Code = "221.B0", CampusId = campusDb[4].Id },
+               new Programme{ Nom = "Technologie du génie du bâtiment", Code = "221.C0", CampusId = campusDb[4].Id },
+            };
             foreach (var programme in programmes)
             {
                 if (!context.Programmes.Any(p => p.Code == programme.Code))
@@ -393,10 +432,10 @@ namespace S14_ProjetSession.Data
             context.SaveChanges();
 
             // Seed des demandes pour démonstration
-            var etudiantsDb = context.Etudiants.ToList();
-            var semestresDb = context.Semestres.ToList();
-            var genresDb = context.Genres.ToList();
-            var unitesDb = context.Unites.ToList();
+            List<Etudiant> etudiantsDb = context.Etudiants.ToList();
+            List<Semestre> semestresDb = context.Semestres.ToList();
+            List<Genre> genresDb = context.Genres.ToList();
+            List<Unite> unitesDb = context.Unites.ToList();
 
             var demandes = new Demande[]
             {
@@ -424,9 +463,9 @@ namespace S14_ProjetSession.Data
                     {
                         new Jumelage { Nom = "Marie Gagnon", Courriel = "marie.gagnon@college.ca" }
                     },
-                    DemandeGenres = new List<DemandeGenre>
+                    DemandeGenres = new List<Genre>
                     {
-                        new DemandeGenre { GenreId = genresDb[0].Id } // Homme
+                       genresDb[0]
                     }
                 },
                 new Demande
@@ -455,10 +494,8 @@ namespace S14_ProjetSession.Data
                     {
                         new Jumelage { Nom = "Sophie Bouchard", Courriel = "sophie.bouchard@college.ca" }
                     },
-                    DemandeGenres = new List<DemandeGenre>
-                    {
-                        new DemandeGenre { GenreId = genresDb[1].Id } // Femme
-                    }
+                    // Demande 2 - Marie Gagnon
+                    DemandeGenres = new List<Genre> { genresDb[1] } // Femme
                 },
                 new Demande
                 {
@@ -480,10 +517,8 @@ namespace S14_ProjetSession.Data
                     StatutDemande = StatutDemande.Refusee,
                     DateTraitement = DateTime.Now.AddDays(-1),
                     Jumelages = new List<Jumelage>(),
-                    DemandeGenres = new List<DemandeGenre>
-                    {
-                        new DemandeGenre { GenreId = genresDb[0].Id } // Homme
-                    }
+                     // Demande 3 - David Nguyen
+                    DemandeGenres = new List<Genre> { genresDb[0] } // Homme
                 },
                 new Demande
                 {
@@ -510,10 +545,7 @@ namespace S14_ProjetSession.Data
                         new Jumelage { Nom = "Alex Tremblay", Courriel = "alex.tremblay@college.ca" },
                         new Jumelage { Nom = "Marie Gagnon", Courriel = "marie.gagnon@college.ca" }
                     },
-                    DemandeGenres = new List<DemandeGenre>
-                    {
-                        new DemandeGenre { GenreId = genresDb[1].Id } // Femme
-                    }
+                    DemandeGenres = new List<Genre> { genresDb[1] } // Femme
                 },
                 new Demande
                 {
@@ -534,10 +566,7 @@ namespace S14_ProjetSession.Data
                     TelephoneUrgence = "6131112222",
                     StatutDemande = StatutDemande.EnAttente,
                     Jumelages = new List<Jumelage>(),
-                    DemandeGenres = new List<DemandeGenre>
-                    {
-                        new DemandeGenre { GenreId = genresDb[0].Id } // Homme
-                    }
+                    DemandeGenres = new List<Genre> { genresDb[0] } // Homme
                 },
                 // Nouvelles demandes pour le premier semestre (printemps-2025)
                 new Demande
@@ -562,10 +591,7 @@ namespace S14_ProjetSession.Data
                     {
                         new Jumelage { Nom = "David Nguyen", Courriel = "david.nguyen@college.ca" }
                     },
-                    DemandeGenres = new List<DemandeGenre>
-                    {
-                        new DemandeGenre { GenreId = genresDb[1].Id } // Femme
-                    }
+                    DemandeGenres = new List<Genre> { genresDb[1] } // Femme
                 },
                 new Demande
                 {
@@ -586,10 +612,7 @@ namespace S14_ProjetSession.Data
                     TelephoneUrgence = "6137778888",
                     StatutDemande = StatutDemande.EnAttente,
                     Jumelages = new List<Jumelage>(),
-                    DemandeGenres = new List<DemandeGenre>
-                    {
-                        new DemandeGenre { GenreId = genresDb[0].Id } // Homme
-                    }
+                    DemandeGenres = new List<Genre> { genresDb[0] } // Homme
                 }
             };
 

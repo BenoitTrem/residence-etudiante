@@ -13,7 +13,7 @@ namespace S14_ProjetSession.Models
 
 
         [Required(ErrorMessage = "Le Nom est obligatoire")]
-        [StringLength(50, ErrorMessage = "Max 50 caractères")]
+        [StringLength(150, ErrorMessage = "Max 50 caractères")]
         public string Nom { get; set; }
 
         [Required(ErrorMessage = "Le Code est obligatoire")]

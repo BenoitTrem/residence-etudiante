@@ -55,7 +55,7 @@ namespace S14_ProjetSession.Areas.Identity.Pages.Account
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByEmailAsync(Input.Email);
+                ApplicationUser user = await _userManager.FindByEmailAsync(Input.Email);
                 if (user == null)
                 {
                     // Do not reveal if the user does not exist

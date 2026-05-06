@@ -98,11 +98,17 @@ namespace S14_ProjetSession.Controllers
                 TempData["Erreur"] = "Une erreur s'est produite avec l'ajout de la commodité.";
                 return RedirectToAction("Index");
             }
-            // Ajoute la nouvelle commodité a la DB
-            _commoditeRepository.Ajouter(commodite);
+            try
+            {
+                // Ajoute la nouvelle commodité a la DB
+                _commoditeRepository.Ajouter(commodite);
+            }
+            catch
+            {
+                return View("Erreur", new ErreurViewModel { StatusCode = 500, Message = "Erreur lors de la création de la commodité." });
+            }
+
             TempData["Succes"] = $"La commodité {commodite.Nom} a été ajoutée avec succès.";
-                
-            
             return RedirectToAction("Index");
         }
 
@@ -126,13 +132,20 @@ namespace S14_ProjetSession.Controllers
                 return RedirectToAction("Index");
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 TempData["Erreur"] = $"Une erreur s'est produite avec la modification de la commodité {commodite.Nom}.";
                 return RedirectToAction("Index");
             }
+            try
+            {
+                _commoditeRepository.Modifier(commodite);
+            }
+            catch
+            {
+                return View("Erreur", new ErreurViewModel { StatusCode = 500, Message = "Erreur lors de la modification de la commodité." });
+            }
 
-            _commoditeRepository.Modifier(commodite);
             TempData["Succes"] = $"La commodité {commodite.Nom} a été modifiée avec succès.";
             return RedirectToAction("Index");
         }
@@ -148,6 +161,7 @@ namespace S14_ProjetSession.Controllers
         /// </returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "AdminUniquement")]
         public IActionResult Supprimer(int id)
         {
             // Récupère la commodité correspondant au ID
@@ -157,8 +171,15 @@ namespace S14_ProjetSession.Controllers
                 TempData["Erreur"] = $"La commodité avec l'ID {id} n'existe pas.";
                 return RedirectToAction("Index");
             }
-           
-            _commoditeRepository.Supprimer(commodite);
+            try
+            {
+                _commoditeRepository.Supprimer(commodite);
+            }
+            catch
+            {
+                return View("Erreur", new ErreurViewModel { StatusCode = 500, Message = "Erreur lors de la suppression de la commodité." });
+            }
+
             TempData["Succes"] = $"La commodité {commodite.Nom} a été supprimée avec succès.";
             return RedirectToAction("Index");
         }

@@ -36,12 +36,12 @@ namespace S14_ProjetSession.Controllers
         {
             try
             {
-                var campus = _repo.Campus.OrderBy(c => c.Nom).ToList();
+                List<Campus> campus = _repo.Campus.OrderBy(c => c.Nom).ToList();
                 return View(campus);
             }
             catch
             {
-                return Erreur(500, "Erreur lors du chargement des campus.");
+                return View("Erreur", new ErreurViewModel { StatusCode = 500, Message = "Erreur lors du chargement des campus." });
             }
         }
 
@@ -74,7 +74,6 @@ namespace S14_ProjetSession.Controllers
             {
                 ViewData["Title"] = "Créer un campus";
                 if (!ModelState.IsValid)
-
                     return View(campus);
 
                 _repo.Creer(campus);
@@ -84,7 +83,7 @@ namespace S14_ProjetSession.Controllers
             }
             catch
             {
-                return Erreur(500, "Erreur lors de la création.");
+                return View("Erreur", new ErreurViewModel { StatusCode = 500, Message = "Erreur lors de la création." });
             }
         }
 
@@ -101,16 +100,16 @@ namespace S14_ProjetSession.Controllers
             try
             {
                 ViewData["Title"] = "Modifier un campus";
-                var campus = _repo.GetById(id);
+                Campus campus = _repo.GetById(id);
 
                 if (campus == null)
-                    return Erreur(404, "Campus introuvable.");
+                    return View("Erreur", new ErreurViewModel { StatusCode = 404, Message = "Campus introuvable." });
 
                 return View(campus);
             }
             catch
             {
-                return Erreur(500, "Erreur chargement.");
+                return View("Erreur", new ErreurViewModel { StatusCode = 500, Message = "Erreur chargement." });
             }
         }
 
@@ -140,7 +139,7 @@ namespace S14_ProjetSession.Controllers
             }
             catch
             {
-                return Erreur(500, $"Erreur modification du campus {campus.Nom}.");
+                return View("Erreur", new ErreurViewModel { StatusCode = 500, Message = $"Erreur modification du campus {campus.Nom}." });
             }
         }
 
@@ -159,7 +158,7 @@ namespace S14_ProjetSession.Controllers
         {
             try
             {
-                var campus = _repo.GetById(id);
+                Campus campus = _repo.GetById(id);
 
                 if (campus == null)
                 {
@@ -174,26 +173,8 @@ namespace S14_ProjetSession.Controllers
             }
             catch
             {
-                return Erreur(500, $"Erreur suppression du campus {id}.");
+                return View("Erreur", new ErreurViewModel { StatusCode = 500, Message = $"Erreur suppression du campus {id}." });
             }
-        }
-
-       
-
-        /// <summary>
-        /// Méthode privée pour gérer les erreurs et afficher une vue dédiée.
-        /// </summary>
-        /// <param name="code">Le code HTTP de l'erreur (ex: 404, 500).</param>
-        /// <param name="message">Le message d'erreur à afficher.</param>
-        /// <returns>Une vue d'erreur contenant les détails du problème.</returns>
-        private IActionResult Erreur(int code, string message)
-        {
-            return View("Erreur", new ErreurViewModel
-            {
-                StatusCode = code,
-                Message = message,
-                
-            });
         }
     }
 }

@@ -278,9 +278,8 @@ namespace S14_ProjetSession
                 return "Non precise";
             }
 
-            return string.Join(", ", demande.DemandeGenres
-                .Where(dg => dg.Genre != null)
-                .Select(dg => dg.Genre!.Nom));
+            // @author John Zuleta : DemandeGenres est maintenant List<Genre> directement, plus de .Genre intermédiaire
+            return string.Join(", ", demande.DemandeGenres.Select(g => g.Nom));
         }
 
         private static string StatutTexte(Demande demande)

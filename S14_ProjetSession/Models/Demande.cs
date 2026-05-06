@@ -20,13 +20,10 @@ namespace S14_ProjetSession.Models
 
         public Etudiant Etudiant { get; set; }
 
+        //@author John
+        // Relation directe Genre <-> Demande plusieurs à plusieurs (sans table de jointure explicite)
+        public List<Genre> DemandeGenres { get; set; } = new List<Genre>();
 
-        
-
-       //@author John
-       // Ajout de la relation genre - demande
-       public List<DemandeGenre> DemandeGenres { get; set; }
-        
         // simplement le nombre de jours pour le moment
         public int PrefDureeBail { get; set; }
 
@@ -36,7 +33,6 @@ namespace S14_ProjetSession.Models
 
         public bool ConfirmeSoumission { get; set; }
 
-        //[Required(ErrorMessage = "La date de la demande est obligatoire.")]
         public DateTime DateDemande { get; set; } = DateTime.Now;
 
         public List<Jumelage> Jumelages { get; set; } = new List<Jumelage>();
@@ -86,15 +82,13 @@ namespace S14_ProjetSession.Models
         public DateTime? DateDebutBail { get; set; }
 
         public DateTime? DateFinBail { get; set; }
-        
+
         public StatutDemande StatutDemande { get; set; } = StatutDemande.EnAttente;
 
         public DateTime? DateTraitement { get; set; }
 
         // Attribuer une unité à la demande.
-
         public int? UniteId { get; set; }
         public Unite? Unite { get; set; }
-
     }
 }

@@ -29,17 +29,14 @@
                 <strong>Lien :</strong> @Model.LienParenteUrgence
             </p>
 
-            <!-- Genres -->
+            <!-- Genres : DemandeGenres est maintenant List<Genre> directement, plus de .Genre intermédiaire -->
             @if (Model.DemandeGenres != null && Model.DemandeGenres.Any())
             {
                 <p class="card-text"><strong>Genres :</strong></p>
                 <ul>
-                    @foreach (var dg in Model.DemandeGenres)
+                    @foreach (var genre in Model.DemandeGenres)
                     {
-                        @if (dg.Genre != null)
-                        {
-                            <li>@dg.Genre.Nom</li>
-                        }
+                        <li>@genre.Nom</li>
                     }
                 </ul>
             }
@@ -91,7 +88,7 @@
         </div>
 
         @if (User.Identity?.IsAuthenticated == true &&
-            (User.IsInRole("Admin") || User.IsInRole("Gestionnaire")))
+                (User.IsInRole("Admin") || User.IsInRole("Gestionnaire")))
         {
             <div class="card-footer text-end">
                 <a asp-action="Modifier" asp-route-id="@Model.Id" class="btn btn-primary btn-sm">

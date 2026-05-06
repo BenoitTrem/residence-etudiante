@@ -55,9 +55,7 @@ namespace S14_ProjetSession.Controllers
         {
             try
             {
-               
-
-                var etudiants = _etudiantRepository.Etudiants
+                List<Etudiant> etudiants = _etudiantRepository.Etudiants
                     .OrderBy(e => e.Nom)
                     .ThenBy(e => e.Prenom)
                     .ToList();
@@ -66,12 +64,12 @@ namespace S14_ProjetSession.Controllers
             }
             catch (Exception)
             {
-                return (ViewResult)Erreur(500, "Erreur lors du chargement des étudiants");
+                return (ViewResult)View("Erreur", new ErreurViewModel { StatusCode = 500, Message = "Erreur lors du chargement des étudiants" });
             }
         }
 
         /// <summary>
-        /// Affiche le formulaire de création d’un étudiant.
+        /// Affiche le formulaire de création d'un étudiant.
         /// </summary>
         /// <returns>Vue du formulaire</returns>
         /// <author>John Zuleta</author>
@@ -81,13 +79,13 @@ namespace S14_ProjetSession.Controllers
             try
             {
                 ViewData["Title"] = "Créer un étudiant";
-                var user = await _userManager.GetUserAsync(User);
+                ApplicationUser user = await _userManager.GetUserAsync(User);
                 if (user == null)
                     return Challenge();
 
                 if (User.IsInRole("Utilisateur"))
                 {
-                    var etudiant = await _etudiantRepository.GetByUserIdAsync(user.Id);
+                    Etudiant etudiant = await _etudiantRepository.GetByUserIdAsync(user.Id);
                     if (etudiant != null)
                         return Forbid();
                 }
@@ -101,14 +99,14 @@ namespace S14_ProjetSession.Controllers
             }
             catch (Exception)
             {
-                return Erreur(500, "Erreur lors de l'affichage du formulaire");
+                return View("Erreur", new ErreurViewModel { StatusCode = 500, Message = "Erreur lors de l'affichage du formulaire" });
             }
         }
 
         /// <summary>
-        /// Traite la création d’un étudiant.
+        /// Traite la création d'un étudiant.
         /// </summary>
-        /// <param name="etudiant">Données de l’étudiant</param>
+        /// <param name="etudiant">Données de l'étudiant</param>
         /// <returns>Redirection ou vue avec erreurs</returns>
         /// <author>John Zuleta</author>
         [HttpPost]
@@ -128,13 +126,13 @@ namespace S14_ProjetSession.Controllers
                     return View(etudiant);
                 }
 
-                var user = await _userManager.GetUserAsync(User);
+                ApplicationUser user = await _userManager.GetUserAsync(User);
                 if (user == null)
                     return Challenge();
 
                 if (User.IsInRole("Utilisateur"))
                 {
-                    var existe = await _etudiantRepository.GetByUserIdAsync(user.Id);
+                    Etudiant existe = await _etudiantRepository.GetByUserIdAsync(user.Id);
                     if (existe != null)
                         return Forbid();
                 }
@@ -160,14 +158,14 @@ namespace S14_ProjetSession.Controllers
             }
             catch (Exception)
             {
-                return Erreur(500, "Erreur lors de la création");
+                return View("Erreur", new ErreurViewModel { StatusCode = 500, Message = "Erreur lors de la création" });
             }
         }
 
         /// <summary>
         /// Affiche le formulaire de modification.
         /// </summary>
-        /// <param name="id">Id de l’étudiant</param>
+        /// <param name="id">Id de l'étudiant</param>
         /// <returns>Vue ou erreur</returns>
         /// <author>John Zuleta</author>
         public async Task<IActionResult> Modifier(int id)
@@ -175,13 +173,13 @@ namespace S14_ProjetSession.Controllers
             try
             {
                 ViewData["Title"] = "Modifier un étudiant";
-                var user = await _userManager.GetUserAsync(User);
+                ApplicationUser user = await _userManager.GetUserAsync(User);
                 if (user == null)
                     return Challenge();
 
-                var etudiant = _etudiantRepository.GetEtudiant(id);
+                Etudiant etudiant = _etudiantRepository.GetEtudiant(id);
                 if (etudiant == null)
-                    return Erreur(404, "Étudiant introuvable");
+                    return View("Erreur", new ErreurViewModel { StatusCode = 404, Message = "Étudiant introuvable" });
 
                 if (!User.IsInRole("Admin") &&
                     !User.IsInRole("Gestionnaire") &&
@@ -192,17 +190,16 @@ namespace S14_ProjetSession.Controllers
                 ViewBag.Programmes = _programmesRepository.Programmes;
                 ViewBag.Campus = _campusRepository.Campus;
 
-
                 return View(etudiant);
             }
             catch (Exception)
             {
-                return Erreur(500, "Erreur lors du chargement");
+                return View("Erreur", new ErreurViewModel { StatusCode = 500, Message = "Erreur lors du chargement" });
             }
         }
 
         /// <summary>
-        /// Traite la modification d’un étudiant.
+        /// Traite la modification d'un étudiant.
         /// </summary>
         /// <param name="etudiant">Données modifiées</param>
         /// <returns>Redirection ou vue</returns>
@@ -214,9 +211,8 @@ namespace S14_ProjetSession.Controllers
         {
             try
             {
-
                 ViewData["Title"] = "Modifier un étudiant";
-                var user = await _userManager.GetUserAsync(User);
+                ApplicationUser user = await _userManager.GetUserAsync(User);
                 if (user == null)
                     return Challenge();
 
@@ -234,14 +230,14 @@ namespace S14_ProjetSession.Controllers
                     _etudiantRepository.Modifier(etudiant);
 
                     TempData["Succes"] = $"L'étudiant {etudiant.Nom} a été modifié";
-                    if(User.IsInRole("Admin") || User.IsInRole("Gestionnaire")){
+                    if (User.IsInRole("Admin") || User.IsInRole("Gestionnaire"))
+                    {
                         return RedirectToAction("Index");
                     }
                     else
                     {
                         return RedirectToAction("Profil");
                     }
-                    
                 }
 
                 ViewBag.Genres = _genresRepository.Genres;
@@ -252,7 +248,7 @@ namespace S14_ProjetSession.Controllers
             }
             catch (Exception)
             {
-                return Erreur(500, "Erreur lors de la modification");
+                return View("Erreur", new ErreurViewModel { StatusCode = 500, Message = "Erreur lors de la modification" });
             }
         }
 
@@ -269,26 +265,25 @@ namespace S14_ProjetSession.Controllers
         {
             try
             {
-                var etudiant = _etudiantRepository.GetEtudiant(Id);
+                Etudiant etudiant = _etudiantRepository.GetEtudiant(Id);
 
                 if (etudiant == null)
-                    return Erreur(404, "Étudiant introuvable");
+                    return View("Erreur", new ErreurViewModel { StatusCode = 404, Message = "Étudiant introuvable" });
 
                 _etudiantRepository.Supprimer(etudiant);
 
                 TempData["Succes"] = $"L'étudiant {etudiant.Prenom} {etudiant.Nom} a été supprimé";
 
-          
                 return RedirectToAction("Index");
             }
             catch (Exception)
             {
-                return Erreur(500, "Erreur lors de la suppression");
+                return View("Erreur", new ErreurViewModel { StatusCode = 500, Message = "Erreur lors de la suppression" });
             }
         }
 
         /// <summary>
-        /// Affiche le profil de l’étudiant connecté.
+        /// Affiche le profil de l'étudiant connecté.
         /// </summary>
         /// <returns>Vue du profil</returns>
         /// <author>Benoit Tremblay</author>
@@ -296,35 +291,18 @@ namespace S14_ProjetSession.Controllers
         {
             try
             {
-                var user = await _userManager.GetUserAsync(User);
+                ApplicationUser user = await _userManager.GetUserAsync(User);
                 if (user == null)
                     return Challenge();
 
-                var etudiant = await _etudiantRepository.GetByUserIdAsync(user.Id);
-           
+                Etudiant etudiant = await _etudiantRepository.GetByUserIdAsync(user.Id);
 
                 return View(etudiant);
             }
             catch (Exception)
             {
-                return Erreur(500, "Erreur lors du chargement du profil");
+                return View("Erreur", new ErreurViewModel { StatusCode = 500, Message = "Erreur lors du chargement du profil" });
             }
-        }
-
-        /// <summary>
-        /// Génère une vue d’erreur personnalisée avec code HTTP et message.
-        /// </summary>
-        /// <param name="code">Code HTTP (404, 500, etc.)</param>
-        /// <param name="message">Message à afficher à l'utilisateur</param>
-        /// <returns>Vue Error avec modèle personnalisé</returns>
-        /// <author>John Zuleta</author>
-        private IActionResult Erreur(int code, string message)
-        {
-            return View("Error", new ErreurViewModel
-            {
-                StatusCode = code,
-                Message = message,
-            });
         }
     }
 }
