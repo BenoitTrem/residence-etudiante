@@ -260,11 +260,17 @@ namespace S14_ProjetSession.Controllers
                 return View("AjouterResidence", residence);
             }
 
-            // Sauvegarde
-            _residenceRepository.Creer(residence);
+            try
+            {
+                // Sauvegarde
+                _residenceRepository.Creer(residence);
+            }
+            catch
+            {
+                return View("Erreur", new ErreurViewModel { StatusCode = 500, Message = "Erreur lors de la création de la résidence." });
+            }
 
             TempData["Succes"] = $"La résidence {residence.Nom ?? ""} a été créée avec succès.";
-
             return RedirectToAction("Index");
         }
 
@@ -379,9 +385,16 @@ namespace S14_ProjetSession.Controllers
 
                 return View("ModifierResidence", residenceDb);
             }
+            try
+            {
+                // Sauvegarde les modifications dans la base de données
+                _residenceRepository.Modifier(residenceDb);
+            }
+            catch
+            {
+                return View("Erreur", new ErreurViewModel { StatusCode = 500, Message = "Erreur lors de la modification de la résidence." });
+            }
 
-            // Sauvegarde les modifications dans la base de données
-            _residenceRepository.Modifier(residenceDb);
             TempData["Succes"] = $"La résidence {residence.Nom ?? ""} a été modifiée avec succès.";
             return RedirectToAction("Index");
         }
@@ -401,7 +414,7 @@ namespace S14_ProjetSession.Controllers
         {
             // Récupère la résidence correspondant au ID
             Residence? residence = _residenceRepository.GetById(id);
- 
+
             // Si la résidence n'existe pas
             if (residence == null)
             {
@@ -409,8 +422,16 @@ namespace S14_ProjetSession.Controllers
                 return RedirectToAction("Index");
             }
 
-            // Supprime la résidence de la base de données
-            _residenceRepository.Supprimer(residence);
+            try
+            {
+                // Supprime la résidence de la base de données
+                _residenceRepository.Supprimer(residence);
+            }
+            catch
+            {
+                return View("Erreur", new ErreurViewModel { StatusCode = 500, Message = "Erreur lors de la suppression de la résidence." });
+            }
+
             TempData["Succes"] = $"La résidence {residence.Nom ?? ""} a été supprimé avec succès.";
             return RedirectToAction("Index");
         }

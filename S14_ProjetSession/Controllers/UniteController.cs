@@ -201,28 +201,34 @@ namespace S14_ProjetSession.Controllers
 
                 return View("AjouterUnite", unite);
             }
-
-            Random random = new Random();
-            // Création d'une nouvelle unité pour chaque itération
-            for (int i = 0; i < nombreUnites; i++)
+            try
             {
-                int numeroSuivant = _uniteRepository
-                    .GetByResidenceId(unite.ResidenceId)
-                    .Select(u => u.Numero ?? 0)
-                    .DefaultIfEmpty(0)
-                    .Max() + 1;
-
-                Unite nouvelleUnite = new Unite
+                // Création d'une nouvelle unité pour chaque itération
+                for (int i = 0; i < nombreUnites; i++)
                 {
-                    Capacite = unite.Capacite,
-                    AdapteePourMobiliteReduite = unite.AdapteePourMobiliteReduite,
-                    ResidenceId = unite.ResidenceId,
-                    Numero = numeroSuivant
-                };
+                    int numeroSuivant = _uniteRepository
+                        .GetByResidenceId(unite.ResidenceId)
+                        .Select(u => u.Numero ?? 0)
+                        .DefaultIfEmpty(0)
+                        .Max() + 1;
 
-                // Enregistre la nouvelle unité dans la DB
-                _uniteRepository.Creer(nouvelleUnite);
+                    Unite nouvelleUnite = new Unite
+                    {
+                        Capacite = unite.Capacite,
+                        AdapteePourMobiliteReduite = unite.AdapteePourMobiliteReduite,
+                        ResidenceId = unite.ResidenceId,
+                        Numero = numeroSuivant
+                    };
+
+                    // Enregistre la nouvelle unité dans la DB
+                    _uniteRepository.Creer(nouvelleUnite);
+                }
             }
+            catch
+            {
+                return View("Erreur", new ErreurViewModel { StatusCode = 500, Message = "Erreur lors de la création des unités." });
+            }
+
             TempData["Succes"] = $"{nombreUnites} unité(s) ont été créées avec succès.";
             return RedirectToAction("Index", new { id = unite.ResidenceId });
         }
@@ -291,10 +297,17 @@ namespace S14_ProjetSession.Controllers
                 return View("ModifierUnite", unite);
             }
 
-            // Met à jour l'unité dans la DB
-            _uniteRepository.Modifier(unite);
-            TempData["Succes"] = $"L'unité #{unite.Numero} a été modifiée avec succès.";
+            try
+            {
+                // Met à jour l'unité dans la DB
+                _uniteRepository.Modifier(unite);
+            }
+            catch
+            {
+                return View("Erreur", new ErreurViewModel { StatusCode = 500, Message = "Erreur lors de la modification de l'unité'." });
+            }
 
+            TempData["Succes"] = $"L'unité #{unite.Numero} a été modifiée avec succès.";
             return RedirectToAction("Index", new { id = unite.ResidenceId });
         }
 
@@ -318,8 +331,16 @@ namespace S14_ProjetSession.Controllers
                 return RedirectToAction("Index", "Residence");
             }
 
-            // Supprime l'unité de la DB
-            _uniteRepository.Supprimer(unite);
+            try
+            {
+                // Supprime l'unité de la DB
+                _uniteRepository.Supprimer(unite);
+            }
+            catch
+            {
+                return View("Erreur", new ErreurViewModel { StatusCode = 500, Message = "Erreur lors de la suppression de l'unité." });
+            }
+
             TempData["Succes"] = $"L'unité #{unite.Numero} a été supprimé avec succès.";
             return RedirectToAction("Index", new { id = unite.ResidenceId });
         }
