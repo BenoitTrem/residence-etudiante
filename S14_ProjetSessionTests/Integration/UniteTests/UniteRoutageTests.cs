@@ -47,6 +47,7 @@ namespace S14_ProjetSessionTests.Integration.UniteTests
                     services.AddSingleton<IResidenceRepository>(_residenceRepository);
                     services.AddSingleton<ICampusRepository>(_campusRepo.Object);
                     services.AddSingleton<ICommoditeRepository>(_commoditeRepo.Object);
+                    services.AddSingleton<IEtudiantRepository, MockEtudiantRepository>();
 
                     services.AddSingleton<Func<ClaimsPrincipal?>>(() => _utilisateurActuel);
 
