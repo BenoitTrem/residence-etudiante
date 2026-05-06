@@ -87,21 +87,33 @@
             </a>
         </div>
 
-        @if (User.Identity?.IsAuthenticated == true &&
-                (User.IsInRole("Admin") || User.IsInRole("Gestionnaire")))
+        @{
+            bool estConnecte = User.Identity?.IsAuthenticated == true;
+            bool estAdmin = User.IsInRole("Admin");
+            bool estGestionnaire = User.IsInRole("Gestionnaire");
+            bool peutModifier = estConnecte && !estAdmin && !estGestionnaire;
+            bool peutSupprimer = estConnecte && estAdmin;
+        }
+
+        @if (peutModifier || peutSupprimer)
         {
             <div class="card-footer text-end">
-                <a asp-action="Modifier" asp-route-id="@Model.Id" class="btn btn-primary btn-sm">
-                    Modifier
-                </a>
+                @if (peutModifier)
+                {
+                    <a asp-controller="Demande" asp-action="Modifier" asp-route-id="@Model.Id" class="btn btn-primary btn-sm">
+                        Modifier
+                    </a>
+                }
 
-                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal-@Model.Id">
-                    Supprimer la demande
-                </button>
+                @if (peutSupprimer)
+                {
+                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal-@Model.Id">
+                        Supprimer la demande
+                    </button>
 
-                <div class="modal fade" id="deleteModal-@Model.Id" tabindex="-1">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
+                    <div class="modal fade" id="deleteModal-@Model.Id" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
                             <div class="modal-header">
                                 <h2 class="modal-title h5">Confirmer la suppression</h2>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -118,7 +130,8 @@
                                     Annuler
                                 </button>
 
-                                <form asp-action="Supprimer"
+                                <form asp-controller="Demande"
+                                      asp-action="Supprimer"
                                       asp-route-id="@Model.Id"
                                       method="post">
                                     @Html.AntiForgeryToken()
@@ -127,9 +140,10 @@
                                     </button>
                                 </form>
                             </div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
             </div>
         }
     </div>

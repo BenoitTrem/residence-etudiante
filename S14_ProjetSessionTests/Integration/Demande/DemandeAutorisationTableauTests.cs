@@ -130,7 +130,7 @@ namespace S14_ProjetSessionTests.Integration
             {
                 "Admin" => await CreerFormulaireAvecToken("/Demande/Demandes", new Dictionary<string, string>()),
                 "Proprietaire" => await CreerFormulaireAvecToken("/Demande/Creer", new Dictionary<string, string>()),
-                "Gestionnaire" => await CreerFormulaireAvecToken("/Demande/Demandes", new Dictionary<string, string>()),
+                "Gestionnaire" => await CreerFormulaireAvecToken("/GestionDemande/Index", new Dictionary<string, string>()),
                 "AutreEtudiant" => await CreerFormulaireAvecToken("/Demande/Creer", new Dictionary<string, string>()),
                 _ => new FormUrlEncodedContent(new Dictionary<string, string>())
             };
@@ -222,7 +222,7 @@ namespace S14_ProjetSessionTests.Integration
             return utilisateur switch
             {
                 "Admin" => "/Demande/Demandes",
-                "Gestionnaire" => "/Demande/Demandes",
+                "Gestionnaire" => "/GestionDemande/Index",
                 "AutreEtudiant" => "/Demande/Creer",
                 _ => "/Demande/Creer"
             };
