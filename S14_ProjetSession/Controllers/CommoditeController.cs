@@ -161,6 +161,7 @@ namespace S14_ProjetSession.Controllers
         /// </returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "AdminUniquement")]
         public IActionResult Supprimer(int id)
         {
             // Récupère la commodité correspondant au ID
