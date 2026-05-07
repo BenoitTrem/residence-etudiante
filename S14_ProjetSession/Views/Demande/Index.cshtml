@@ -14,7 +14,7 @@
 <h1>Mes demandes</h1>
 
 <div class="d-flex flex-wrap gap-2 mb-3">
-    <a class="btn btn-primary" asp-controller="Demande" asp-action="Creer">Creer</a>
+    <a class="btn btn-primary" asp-controller="Demande" asp-action="Creer">Créer</a>
 
     @if (derniereDemande != null)
     {
@@ -22,19 +22,19 @@
            asp-controller="Demande"
            asp-action="Creer"
            asp-route-id="@derniereDemande.Id">
-            Creer avec ma derniere demande
+            Créer avec ma dernière demande
         </a>
     }
 </div>
 
 <section class="alert alert-info mt-3">
-    <h2 class="h5">Etat de la demande</h2>
+    <h2 class="h5">État de la demande</h2>
     <p class="mb-1">
-        <strong>Periode d'inscription ouverte :</strong>
+        <strong>Période d'inscription ouverte :</strong>
         @(periodeOuverte ? "oui" : "non")
     </p>
     <p class="mb-0">
-        <strong>Demande validee et soumise :</strong>
+        <strong>Demande validée et soumise :</strong>
         @(demandeValideeSoumise ? "oui" : "non")
     </p>
 </section>

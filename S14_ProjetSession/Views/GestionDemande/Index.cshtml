@@ -165,7 +165,7 @@ else
                             <h2 class="modal-title h5" id="modalLabel_@demande.Id">
                                 Traiter la demande - @demande.Etudiant?.Prenom @demande.Etudiant?.Nom
                             </h2>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                         </div>
 
                         <div class="modal-body">
@@ -235,8 +235,7 @@ else
                                     </div>
 
                                     @* Unité *@
-                                    <div class="col-md-6 mb-3" id="divUnite_@demande.Id"
-                                         style="@(demande.StatutDemande == StatutDemande.Acceptee ? "" : "display:none;")">
+                                    <div class="col-md-6 mb-3 @(demande.StatutDemande == StatutDemande.Acceptee ? "" : "d-none")" id="divUnite_@demande.Id">
                                         <label class="form-label fw-semibold">Assigner une unité</label>
                                         <select name="uniteId" class="form-select">
                                             <option value="">-- Choisir une unité --</option>
@@ -356,9 +355,9 @@ else
 
             // StatutDemande.Acceptee = 1
             if (select.value === '@((int)StatutDemande.Acceptee)') {
-                divUnite.style.display = '';
+                divUnite.classList.remove('d-none');
             } else {
-                divUnite.style.display = 'none';
+                divUnite.classList.add('d-none');
             }
         }
     </script>

@@ -92,7 +92,7 @@
             bool estAdmin = User.IsInRole("Admin");
             bool estGestionnaire = User.IsInRole("Gestionnaire");
             bool peutModifier = estConnecte && !estAdmin && !estGestionnaire;
-            bool peutSupprimer = estConnecte && estAdmin;
+            bool peutSupprimer = estConnecte && (estAdmin || (Model.StatutDemande == StatutDemande.EnAttente));
         }
 
         @if (peutModifier || peutSupprimer)
@@ -100,7 +100,8 @@
             <div class="card-footer text-end">
                 @if (peutModifier)
                 {
-                    <a asp-controller="Demande" asp-action="Modifier" asp-route-id="@Model.Id" class="btn btn-primary btn-sm">
+                    <a asp-controller="Demande" asp-action="Modifier" asp-route-id="@Model.Id" 
+                       class="btn btn-primary btn-sm @(Model.StatutDemande != StatutDemande.EnAttente ? "disabled" : "")">
                         Modifier
                     </a>
                 }
@@ -116,7 +117,7 @@
                             <div class="modal-content">
                             <div class="modal-header">
                                 <h2 class="modal-title h5">Confirmer la suppression</h2>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                             </div>
 
                             <div class="modal-body">
