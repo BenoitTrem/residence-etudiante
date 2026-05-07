@@ -350,10 +350,26 @@ namespace S14_ProjetSession.Controllers
             vm.Genres = _genreRepository.Genres;
             vm.Semestres = _semestreRepository.Semestres;
 
+            void AfficherErreursModelState()
+            {
+                var erreurs = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .Where(e => !string.IsNullOrWhiteSpace(e))
+                    .Distinct()
+                    .ToList();
+
+                if (erreurs.Count > 0)
+                {
+                    TempData["Erreur"] = string.Join(" | ", erreurs);
+                }
+            }
+
             // Date trop ancienne: avant 1900, la date semble irréaliste.
             if (vm.Demande.DateNaissanceGarant.HasValue && vm.Demande.DateNaissanceGarant.Value.Year < 1900)
             {
                 ModelState.AddModelError("Demande.DateNaissanceGarant", "La date de naissance du garant doit etre apres le 1er janvier 1900.");
+                AfficherErreursModelState();
                 return View(vm);
             }
 
@@ -384,11 +400,16 @@ namespace S14_ProjetSession.Controllers
             var etudiant = _etudiantRepository.GetEtudiant(etudiantConnecte.Id);
             if (etudiant == null)
             {
-                ModelState.AddModelError(string.Empty, "Étudiant introuvable.");
+                ModelState.AddModelError("Formulaire", "Étudiant introuvable.");
+                AfficherErreursModelState();
                 return View(vm);
             }
 
-            ValiderSemestreOuvert(vm.SelectedSemestreId, out semestre);
+            if (!ValiderSemestreOuvert(vm.SelectedSemestreId, out semestre))
+            {
+                AfficherErreursModelState();
+                return View(vm);
+            }
 
             // les genres
             if (vm.SelectedGenreIds == null || !vm.SelectedGenreIds.Any())
@@ -404,7 +425,8 @@ namespace S14_ProjetSession.Controllers
 
             if (demandeExiste)
             {
-                ModelState.AddModelError(string.Empty, "Une demande existe déjà pour cet étudiant et ce semestre. Vous pouvez modifier votre demande existante depuis votre tableau de bord.");
+                ModelState.AddModelError("Formulaire", "Une demande existe déjà pour cet étudiant et ce semestre. Vous pouvez modifier votre demande existante depuis votre tableau de bord.");
+                AfficherErreursModelState();
                 return View(vm);
             }
 
@@ -416,8 +438,9 @@ namespace S14_ProjetSession.Controllers
                     if (string.IsNullOrWhiteSpace(j.Courriel) ||
                         !new EmailAddressAttribute().IsValid(j.Courriel))
                     {
-                        ModelState.AddModelError(string.Empty,
+                        ModelState.AddModelError("Formulaire",
                             $"Courriel invalide pour le jumelage {j.Nom}.");
+                        AfficherErreursModelState();
                         return View(vm);
                     }
 
@@ -433,6 +456,7 @@ namespace S14_ProjetSession.Controllers
             if (!AppliquerGenres(vm.Demande, vm.SelectedGenreIds!, out string erreurGenre))
             {
                 ModelState.AddModelError("SelectedGenreIds", erreurGenre);
+                AfficherErreursModelState();
                 return View(vm);
             }
 
@@ -448,9 +472,12 @@ namespace S14_ProjetSession.Controllers
 
             TryValidateModel(vm.Demande);
             RetirerErreursNavigationDemande();
-
+            ModelState.Remove("");
             if (!ModelState.IsValid)
+            {
+                AfficherErreursModelState();
                 return View(vm);
+            }
 
             _demandeRepository.Creer(vm.Demande);
 
@@ -538,11 +565,14 @@ namespace S14_ProjetSession.Controllers
             var etudiant = _etudiantRepository.GetEtudiant(etudiantConnecte.Id);
             if (etudiant == null)
             {
-                ModelState.AddModelError(string.Empty, "Étudiant introuvable.");
+                ModelState.AddModelError("Formulaire", "Étudiant introuvable.");
                 return View(vm);
             }
 
-            ValiderSemestreOuvert(vm.SelectedSemestreId, out Semestre? semestre);
+            if (!ValiderSemestreOuvert(vm.SelectedSemestreId, out Semestre? semestre))
+            {
+                return View(vm);
+            }
 
             // Valider genres
             if (vm.SelectedGenreIds == null || !vm.SelectedGenreIds.Any())
@@ -560,7 +590,7 @@ namespace S14_ProjetSession.Controllers
 
             if (demandeDoubleExiste)
             {
-                ModelState.AddModelError(string.Empty,
+                ModelState.AddModelError("Formulaire",
                     "Une demande existe déjà pour cet étudiant et ce semestre. veuillez contacté l'admin pour changer cette demande");
                 return View(vm);
             }
@@ -607,7 +637,7 @@ namespace S14_ProjetSession.Controllers
                     if (string.IsNullOrWhiteSpace(j.Courriel) ||
                         !new EmailAddressAttribute().IsValid(j.Courriel))
                     {
-                        ModelState.AddModelError(string.Empty,
+                        ModelState.AddModelError("Formulaire",
                             $"Courriel invalide pour le jumelage {j.Nom}.");
                         return View(vm);
                     }
@@ -625,7 +655,7 @@ namespace S14_ProjetSession.Controllers
 
             TryValidateModel(demandeEnBase);
             RetirerErreursNavigationDemande();
-
+            ModelState.Remove("");
             if (!ModelState.IsValid)
                 return View(vm);
 
