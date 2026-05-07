@@ -404,7 +404,7 @@ namespace S14_ProjetSession.Controllers
 
             if (demandeExiste)
             {
-                ModelState.AddModelError(string.Empty, "Une demande existe déjà pour cet étudiant et ce semestre. veuillez contacté l'admin pour changer cette demande");
+                ModelState.AddModelError(string.Empty, "Une demande existe déjà pour cet étudiant et ce semestre. Vous pouvez modifier votre demande existante depuis votre tableau de bord.");
                 return View(vm);
             }
 

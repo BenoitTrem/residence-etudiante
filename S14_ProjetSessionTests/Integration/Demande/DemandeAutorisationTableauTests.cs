@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -177,10 +177,10 @@ namespace S14_ProjetSessionTests.Integration
                 ["Demande.PrenomGarant"] = "Test",
                 ["Demande.DateNaissanceGarant"] = "1970-01-01",
                 ["Demande.CourrielGarant"] = "garant@test.com",
-                ["Demande.TelephoneGarant"] = "8191112222",
+                ["Demande.TelephoneGarant"] = "819-111-2222",
                 ["Demande.NomUrgence"] = "Urgence",
                 ["Demande.LienParenteUrgence"] = "Parent",
-                ["Demande.TelephoneUrgence"] = "8193334444"
+                ["Demande.TelephoneUrgence"] = "819-333-4444"
             });
         }
 
@@ -199,10 +199,10 @@ namespace S14_ProjetSessionTests.Integration
                 ["Demande.PrenomGarant"] = "Test",
                 ["Demande.DateNaissanceGarant"] = "1970-01-01",
                 ["Demande.CourrielGarant"] = "garant@test.com",
-                ["Demande.TelephoneGarant"] = "8191112222",
+                ["Demande.TelephoneGarant"] = "819-111-2222",
                 ["Demande.NomUrgence"] = "Urgence",
                 ["Demande.LienParenteUrgence"] = "Parent",
-                ["Demande.TelephoneUrgence"] = "8193334444"
+                ["Demande.TelephoneUrgence"] = "819-333-4444"
             };
 
             return await CreerFormulaireAvecToken("/Demande/Modifier/1", donnees);

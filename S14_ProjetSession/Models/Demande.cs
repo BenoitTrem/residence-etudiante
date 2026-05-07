@@ -25,6 +25,8 @@ namespace S14_ProjetSession.Models
         public List<Genre> DemandeGenres { get; set; } = new List<Genre>();
 
         // simplement le nombre de jours pour le moment
+        [Required(ErrorMessage = "La durée du bail est obligatoire.")]
+        [Range(1, 365, ErrorMessage = "La durée du bail doit être entre 1 et 365 jours.")]
         public int PrefDureeBail { get; set; }
 
         public bool AccepteReglements { get; set; }
@@ -33,6 +35,8 @@ namespace S14_ProjetSession.Models
 
         public bool ConfirmeSoumission { get; set; }
 
+        [DatePasDansLeFutur]
+        [DataType(DataType.Date)]
         public DateTime DateDemande { get; set; } = DateTime.Now;
 
         public List<Jumelage> Jumelages { get; set; } = new List<Jumelage>();
@@ -46,6 +50,10 @@ namespace S14_ProjetSession.Models
         public string PrenomGarant { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "La date de naissance du garant est obligatoire.")]
+        [DatePasDansLeFutur]
+        [AgeMinimum(18, ErrorMessage = "Le garant doit être majeur (18 ans et plus).")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? DateNaissanceGarant { get; set; }
 
         [Required(ErrorMessage = "Le courriel du garant est obligatoire.")]
@@ -54,7 +62,7 @@ namespace S14_ProjetSession.Models
         public string CourrielGarant { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Le téléphone du garant est obligatoire.")]
-        [Phone(ErrorMessage = "Le numéro de téléphone du garant doit être valide.")]
+        [RegularExpression(@"^\d{3}-\d{3}-\d{4}$", ErrorMessage = "Le format du téléphone doit être 000-000-0000")]
         [StringLength(20, ErrorMessage = "Le téléphone du garant ne peut pas dépasser 20 caractères.")]
         public string TelephoneGarant { get; set; } = string.Empty;
 
@@ -74,7 +82,7 @@ namespace S14_ProjetSession.Models
         public string LienParenteUrgence { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Le téléphone du contact d'urgence est obligatoire.")]
-        [Phone(ErrorMessage = "Le numéro de téléphone du contact d'urgence doit être valide.")]
+        [RegularExpression(@"^\d{3}-\d{3}-\d{4}$", ErrorMessage = "Le format du téléphone doit être 000-000-0000")]
         [StringLength(20, ErrorMessage = "Le téléphone du contact d'urgence ne peut pas dépasser 20 caractères.")]
         public string TelephoneUrgence { get; set; } = string.Empty;
 

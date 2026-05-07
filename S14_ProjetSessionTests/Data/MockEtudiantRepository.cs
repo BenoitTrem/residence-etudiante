@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,7 +26,7 @@ namespace S14_ProjetSession.Data
         noAdmission = "ADM001",
         MobiliteReduite = false,
         AdressePermanente = "123 rue Principale, Gatineau, QC",
-        Telephone = "8191234567",
+        Telephone = "819-123-4567",
         CourrielInstitutionnel = "alex.tremblay@cegepoutaouais.qc.ca",
         CourrielPersonnel = "alex.tremblay@gmail.com",
         ApplicationUserId = "468a4852-42ee-4f45-9be5-41422b589904"
@@ -43,7 +43,7 @@ namespace S14_ProjetSession.Data
         noAdmission = "ADM002",
         MobiliteReduite = false,
         AdressePermanente = "456 avenue du Parc, Ottawa, ON",
-        Telephone = "8199876543",
+        Telephone = "819-987-6543",
         CourrielInstitutionnel = "marie.gagnon@cegepoutaouais.qc.ca",
         CourrielPersonnel = "marie.gagnon@gmail.com",
         ApplicationUserId = "468a4852-42ee-4f45-9be5-41422b589902"

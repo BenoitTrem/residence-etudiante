@@ -59,14 +59,14 @@ namespace S14_ProjetSession.Data
                 PrenomGarant = "Jean",
                 DateNaissanceGarant = new DateTime(1970, 5, 12),
                 CourrielGarant = "jean.martin@email.com",
-                TelephoneGarant = "8191112222",
+                TelephoneGarant = "819-111-2222",
 
                 NomParent = "Luc Martin",
                 CourrielParent = "luc.martin@email.com",
 
                 NomUrgence = "Marie Martin",
                 LienParenteUrgence = "Mère",
-                TelephoneUrgence = "8193334444",
+                TelephoneUrgence = "819-333-4444",
 
                 Jumelages = new List<Jumelage>()
             });
@@ -82,7 +82,7 @@ namespace S14_ProjetSession.Data
                      _genres[1] 
                 },
 
-                PrefDureeBail = 90,
+                PrefDureeBail = 120,
 
                 AccepteReglements = true,
                 AccepteTraitementDonnees = true,
@@ -113,14 +113,14 @@ namespace S14_ProjetSession.Data
                 PrenomGarant = "Paul",
                 DateNaissanceGarant = new DateTime(1968, 8, 20),
                 CourrielGarant = "paul.robert@email.com",
-                TelephoneGarant = "8195556666",
+                TelephoneGarant = "819-555-6666",
 
                 NomParent = "Julie Robert",
                 CourrielParent = "julie.robert@email.com",
 
                 NomUrgence = "Marc Robert",
                 LienParenteUrgence = "Frère",
-                TelephoneUrgence = "8197778888",
+                TelephoneUrgence = "819-777-8888",
 
                 Jumelages = new List<Jumelage>()
             });

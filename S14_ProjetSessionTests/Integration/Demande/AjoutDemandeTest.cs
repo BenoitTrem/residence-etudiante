@@ -1,4 +1,4 @@
-﻿using Castle.Components.DictionaryAdapter;
+using Castle.Components.DictionaryAdapter;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -130,14 +130,14 @@ namespace S14_ProjetSessionTests.Integration
                     { "PrenomGarant", "Jean" },
                     { "DateNaissanceGarant", "1990-01-01" },
                     { "CourrielGarant", "test@test.com" },
-                    { "TelephoneGarant", "8191234567" },
+                    { "TelephoneGarant", "819-123-4567" },
 
                     { "NomParent", "Parent Test" },
                     { "CourrielParent", "parent@test.com" },
 
                     { "NomUrgence", "Urgence Test" },
                     { "LienParenteUrgence", "Pere" },
-                    { "TelephoneUrgence", "8199999999" },
+                    { "TelephoneUrgence", "819-999-9999" },
 
                     // Jumelage list
                     { "jumelage[0].Nom", "Alex" },
@@ -276,7 +276,7 @@ namespace S14_ProjetSessionTests.Integration
             HttpResponseMessage response = await _client.GetAsync("/demande");
             string htmlContent = await response.Content.ReadAsStringAsync();
             Assert.Contains("Alex Tremblay", htmlContent);
-            Assert.Contains("8191112222", htmlContent);
+            Assert.Contains("819-111-2222", htmlContent);
             Assert.Contains("Martin Jean", htmlContent);
 
         }

@@ -9,21 +9,7 @@
 
 <h1 class="mb-4">Gestion des demandes</h1>
 
-@* Messages de succès/erreur *@
-@if (TempData["Succes"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["Succes"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-}
-@if (TempData["Erreur"] != null)
-{
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        @TempData["Erreur"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-}
+@* Messages de succès/erreur gérés par _Layout -> _MessagePartial *@
 
 @* Filtre par semestre *@
 <div class="card mb-4 shadow-sm">

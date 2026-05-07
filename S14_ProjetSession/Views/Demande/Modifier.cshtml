@@ -24,8 +24,18 @@
             
             <div class="mb-3">
                 <label class="form-label">Semestre *</label>
-                <select asp-for="SelectedSemestreId" class="form-control" asp-items="@(new SelectList(Model.Semestres, "Id", "NomSemestre"))" required>
+                <select asp-for="SelectedSemestreId" class="form-control" required>
                     <option value="">-- Choisir un semestre --</option>
+                    @foreach (var semestre in Model.Semestres)
+                    {
+                        @if (semestre.InscriptionOuverte || semestre.Id == Model.SelectedSemestreId)
+                        {
+                            string note = !semestre.InscriptionOuverte ? " (fermé)" : "";
+                            <option value="@semestre.Id">
+                                @semestre.NomSemestre @note
+                            </option>
+                        }
+                    }
                 </select>
                 <span asp-validation-for="SelectedSemestreId" class="text-danger"></span>
             </div>
@@ -50,8 +60,12 @@
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Durée du bail (jours) *</label>
-                <input asp-for="Demande.PrefDureeBail" class="form-control" type="number" min="1" required />
+                <label class="form-label">Durée du bail *</label>
+                <select asp-for="Demande.PrefDureeBail" class="form-control">
+                    <option value="120">120 jours (1 semestre)</option>
+                    <option value="240">240 jours (2 semestres)</option>
+                    <option value="365">365 jours (1 an)</option>
+                </select>
                 <span asp-validation-for="Demande.PrefDureeBail" class="text-danger"></span>
             </div>
 
@@ -94,7 +108,7 @@
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Date de naissance *</label>
-                    <input asp-for="Demande.DateNaissanceGarant" type="date" class="form-control" required />
+                    <input asp-for="Demande.DateNaissanceGarant" type="date" class="form-control" max="@DateTime.Now.ToString("yyyy-MM-dd")" required />
                     <span asp-validation-for="Demande.DateNaissanceGarant" class="text-danger"></span>
                 </div>
                 <div class="col-md-6">
@@ -103,8 +117,8 @@
                     <span asp-validation-for="Demande.CourrielGarant" class="text-danger"></span>
                 </div>
                 <div class="col-12">
-                    <label class="form-label">Téléphone *</label>
-                    <input asp-for="Demande.TelephoneGarant" class="form-control" type="tel" required />
+                    <label class="form-label">Téléphone * (Format: 000-000-0000)</label>
+                    <input asp-for="Demande.TelephoneGarant" class="form-control" placeholder="000-000-0000" pattern="\d{3}-\d{3}-\d{4}" required />
                     <span asp-validation-for="Demande.TelephoneGarant" class="text-danger"></span>
                 </div>
             </div>
@@ -134,8 +148,8 @@
                     <span asp-validation-for="Demande.LienParenteUrgence" class="text-danger"></span>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">Téléphone *</label>
-                    <input asp-for="Demande.TelephoneUrgence" class="form-control" type="tel" required />
+                    <label class="form-label">Téléphone * (Format: 000-000-0000)</label>
+                    <input asp-for="Demande.TelephoneUrgence" class="form-control" placeholder="000-000-0000" pattern="\d{3}-\d{3}-\d{4}" required />
                     <span asp-validation-for="Demande.TelephoneUrgence" class="text-danger"></span>
                 </div>
             </div>
@@ -152,18 +166,21 @@
             
             <div class="border p-3 mb-3 rounded">
                 <div class="form-check mb-2">
-                    <input asp-for="Demande.AccepteReglements" class="form-check-input" required />
+                    <input asp-for="Demande.AccepteReglements" class="form-check-input" />
                     <label class="form-check-label">J'accepte les règlements *</label>
+                    <span asp-validation-for="Demande.AccepteReglements" class="text-danger d-block"></span>
                 </div>
 
                 <div class="form-check mb-2">
-                    <input asp-for="Demande.AccepteTraitementDonnees" class="form-check-input" required />
+                    <input asp-for="Demande.AccepteTraitementDonnees" class="form-check-input" />
                     <label class="form-check-label">J'accepte le traitement des données *</label>
+                    <span asp-validation-for="Demande.AccepteTraitementDonnees" class="text-danger d-block"></span>
                 </div>
 
                 <div class="form-check mb-2">
-                    <input asp-for="Demande.ConfirmeSoumission" class="form-check-input" required />
+                    <input asp-for="Demande.ConfirmeSoumission" class="form-check-input" />
                     <label class="form-check-label">Je confirme la soumission *</label>
+                    <span asp-validation-for="Demande.ConfirmeSoumission" class="text-danger d-block"></span>
                 </div>
             </div>
 

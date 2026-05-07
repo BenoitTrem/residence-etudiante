@@ -26,10 +26,12 @@
                     <option value="">-- Choisir un semestre --</option>
                     @foreach (var semestre in Model.Semestres)
                     {
-                        string etat = semestre.InscriptionOuverte ? "ouverte" : "fermée";
-                        <option value="@semestre.Id" disabled="@(!semestre.InscriptionOuverte)">
-                            @semestre.NomSemestre - inscription @etat
-                        </option>
+                        @if (semestre.InscriptionOuverte)
+                        {
+                            <option value="@semestre.Id">
+                                @semestre.NomSemestre - inscription ouverte
+                            </option>
+                        }
                     }
                 </select>
                 <span asp-validation-for="SelectedSemestreId" class="text-danger"></span>
@@ -55,8 +57,12 @@
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Durée du bail (jours) *</label>
-                <input asp-for="Demande.PrefDureeBail" class="form-control" />
+                <label class="form-label">Durée du bail *</label>
+                <select asp-for="Demande.PrefDureeBail" class="form-control">
+                    <option value="120">120 jours (1 semestre)</option>
+                    <option value="240">240 jours (2 semestres)</option>
+                    <option value="365">365 jours (1 an)</option>
+                </select>
                 <span asp-validation-for="Demande.PrefDureeBail" class="text-danger"></span>
             </div>
 
@@ -99,7 +105,7 @@
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Date de naissance *</label>
-                    <input asp-for="Demande.DateNaissanceGarant" type="date" class="form-control" />
+                    <input asp-for="Demande.DateNaissanceGarant" type="date" class="form-control" max="@DateTime.Now.ToString("yyyy-MM-dd")" />
                     <span asp-validation-for="Demande.DateNaissanceGarant" class="text-danger"></span>
                 </div>
                 <div class="col-md-6">
@@ -108,8 +114,8 @@
                     <span asp-validation-for="Demande.CourrielGarant" class="text-danger"></span>
                 </div>
                 <div class="col-12">
-                    <label class="form-label">Téléphone *</label>
-                    <input asp-for="Demande.TelephoneGarant" class="form-control" />
+                    <label class="form-label">Téléphone * (Format: 000-000-0000)</label>
+                    <input asp-for="Demande.TelephoneGarant" class="form-control" placeholder="000-000-0000" pattern="\d{3}-\d{3}-\d{4}" />
                     <span asp-validation-for="Demande.TelephoneGarant" class="text-danger"></span>
                 </div>
             </div>
@@ -139,8 +145,8 @@
                     <span asp-validation-for="Demande.LienParenteUrgence" class="text-danger"></span>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">Téléphone *</label>
-                    <input asp-for="Demande.TelephoneUrgence" class="form-control" />
+                    <label class="form-label">Téléphone * (Format: 000-000-0000)</label>
+                    <input asp-for="Demande.TelephoneUrgence" class="form-control" placeholder="000-000-0000" pattern="\d{3}-\d{3}-\d{4}" />
                     <span asp-validation-for="Demande.TelephoneUrgence" class="text-danger"></span>
                 </div>
             </div>
