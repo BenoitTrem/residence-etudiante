@@ -33,7 +33,7 @@ namespace S14_ProjetSession.Models
         [Required(ErrorMessage = "Le genre est obligatoire")]
         [Display(Name = "Genre")]
         public int GenreId { get; set; }
-        public Genre Genre { get; set; }
+        public Genre? Genre { get; set; }
 
 
         [Display(Name = "Programme")]

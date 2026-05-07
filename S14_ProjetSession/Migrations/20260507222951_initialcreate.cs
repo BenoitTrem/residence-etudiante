@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace S14_ProjetSession.Migrations
 {
     /// <inheritdoc />
-    public partial class FixSetNullForeignKeyslj : Migration
+    public partial class initialcreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -230,7 +230,8 @@ namespace S14_ProjetSession.Migrations
                         name: "FK_Programmes_Campuses_CampusId",
                         column: x => x.CampusId,
                         principalTable: "Campuses",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -253,7 +254,8 @@ namespace S14_ProjetSession.Migrations
                         name: "FK_Residences_Campuses_CampusId",
                         column: x => x.CampusId,
                         principalTable: "Campuses",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -395,7 +397,8 @@ namespace S14_ProjetSession.Migrations
                         name: "FK_Demandes_Etudiants_EtudiantId",
                         column: x => x.EtudiantId,
                         principalTable: "Etudiants",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Demandes_Semestres_SemestreId",
                         column: x => x.SemestreId,
@@ -406,7 +409,8 @@ namespace S14_ProjetSession.Migrations
                         name: "FK_Demandes_Unites_UniteId",
                         column: x => x.UniteId,
                         principalTable: "Unites",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -450,7 +454,8 @@ namespace S14_ProjetSession.Migrations
                         name: "FK_Jumelage_Demandes_DemandeId",
                         column: x => x.DemandeId,
                         principalTable: "Demandes",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
