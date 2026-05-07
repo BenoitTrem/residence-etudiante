@@ -80,6 +80,12 @@ public class ResidencesDbContext : IdentityDbContext<ApplicationUser>
             })
             .IsUnique();
 
+        modelBuilder.Entity<Demande>()
+        .HasOne(d => d.Unite)
+        .WithMany(u => u.Demandes)
+        .HasForeignKey(d => d.UniteId)
+        .OnDelete(DeleteBehavior.SetNull);
+
         // @author John Zuleta
         // Relation Demande <-> Genre plusieurs à plusieurs implicite (sans classe de jointure)
         // EF Core génère automatiquement la table de jointure

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -80,14 +80,14 @@ namespace S14_ProjetSessionTests.Integration.DemandeTests
                 { "Demande.PrenomGarant",           "Jean"           },
                 { "Demande.DateNaissanceGarant",    "1990-01-01"     },
                 { "Demande.CourrielGarant",         "test@test.com"  },
-                { "Demande.TelephoneGarant",        "+18191234567"   },
+                { "Demande.TelephoneGarant",        "819-123-4567"   },
 
                 { "Demande.NomParent",              "Parent Test"    },
                 { "Demande.CourrielParent",         "parent@test.com"},
 
                 { "Demande.NomUrgence",             "Urgence Test"   },
                 { "Demande.LienParenteUrgence",     "Pere"           },
-                { "Demande.TelephoneUrgence",       "+18199999999"   },
+                { "Demande.TelephoneUrgence",       "819-999-9999"   },
 
                 { "Jumelages[0].Nom",               "Alex"           },
                 { "Jumelages[0].Courriel",          "alex@test.com"  }
@@ -131,14 +131,14 @@ namespace S14_ProjetSessionTests.Integration.DemandeTests
                 { "Demande.PrenomGarant",           "Jean"           },
                 { "Demande.DateNaissanceGarant",    "1990-01-01"     },
                 { "Demande.CourrielGarant",         "test@test.com"  },
-                { "Demande.TelephoneGarant",        "8191234567"     },
+                { "Demande.TelephoneGarant",        "819-123-4567"     },
 
                 { "Demande.NomParent",              "Parent Test"    },
                 { "Demande.CourrielParent",         "parent@test.com"},
 
                 { "Demande.NomUrgence",             "Urgence Test"   },
                 { "Demande.LienParenteUrgence",     "Pere"           },
-                { "Demande.TelephoneUrgence",       "8199999999"     },
+                { "Demande.TelephoneUrgence",       "819-999-9999"     },
 
                 { "Jumelages[0].Nom",               "Alex"           },
                 { "Jumelages[0].Courriel",          "alex@test.com"  }

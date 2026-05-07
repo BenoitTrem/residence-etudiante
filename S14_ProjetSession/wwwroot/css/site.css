@@ -10,6 +10,21 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: white;
     color: black;
+    line-height: 1.5;
+}
+
+h1 {
+    font-size: 300% !important;
+    font-weight: 700;
+}
+
+h2 {
+    font-size: 150% !important;
+    font-weight: 600;
+}
+
+.footer {
+    font-size: 75%;
 }
 
 @media (min-width: 768px) {
