@@ -21,9 +21,8 @@ namespace S14_ProjetSession.Models
         public string Code { get; set; }
 
 
-        [Required(ErrorMessage = "Le Campus est obligatoire")]
         [Display(Name = "Campus")]
-        public int CampusId { get; set; }
+        public int? CampusId { get; set; }
 
         public Campus? Campus { get; set; }
 

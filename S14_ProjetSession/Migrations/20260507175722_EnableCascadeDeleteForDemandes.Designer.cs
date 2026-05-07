@@ -12,8 +12,8 @@ using S14_ProjetSession.Data;
 namespace S14_ProjetSession.Migrations
 {
     [DbContext(typeof(ResidencesDbContext))]
-    [Migration("20260505230438_InitialCreatee")]
-    partial class InitialCreatee
+    [Migration("20260507175722_EnableCascadeDeleteForDemandes")]
+    partial class EnableCascadeDeleteForDemandes
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -330,7 +330,7 @@ namespace S14_ProjetSession.Migrations
                     b.Property<DateTime?>("DateTraitement")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("EtudiantId")
+                    b.Property<int?>("EtudiantId")
                         .HasColumnType("int");
 
                     b.Property<string>("LienParenteUrgence")
@@ -386,7 +386,8 @@ namespace S14_ProjetSession.Migrations
                     b.HasIndex("UniteId");
 
                     b.HasIndex("EtudiantId", "SemestreId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[EtudiantId] IS NOT NULL");
 
                     b.ToTable("Demandes");
                 });
@@ -401,12 +402,13 @@ namespace S14_ProjetSession.Migrations
 
                     b.Property<string>("AdressePermanente")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("ApplicationUserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("CampusId")
+                    b.Property<int?>("CampusId")
                         .HasColumnType("int");
 
                     b.Property<string>("CourrielInstitutionnel")
@@ -436,7 +438,7 @@ namespace S14_ProjetSession.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("ProgrammeId")
+                    b.Property<int?>("ProgrammeId")
                         .HasColumnType("int");
 
                     b.Property<string>("Telephone")
@@ -521,7 +523,7 @@ namespace S14_ProjetSession.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CampusId")
+                    b.Property<int?>("CampusId")
                         .HasColumnType("int");
 
                     b.Property<string>("Code")
@@ -733,8 +735,7 @@ namespace S14_ProjetSession.Migrations
                     b.HasOne("S14_ProjetSession.Models.Etudiant", "Etudiant")
                         .WithMany("Demandes")
                         .HasForeignKey("EtudiantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("S14_ProjetSession.Models.Semestre", "Semestre")
                         .WithMany()
@@ -762,8 +763,7 @@ namespace S14_ProjetSession.Migrations
                     b.HasOne("S14_ProjetSession.Models.Campus", "Campus")
                         .WithMany("Etudiants")
                         .HasForeignKey("CampusId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("S14_ProjetSession.Models.Genre", "Genre")
                         .WithMany("Etudiants")
@@ -774,8 +774,7 @@ namespace S14_ProjetSession.Migrations
                     b.HasOne("S14_ProjetSession.Models.Programme", "Programme")
                         .WithMany("Etudiants")
                         .HasForeignKey("ProgrammeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("S14_ProjetSession.Models.Unite", "Unite")
                         .WithMany("Etudiants")
@@ -797,16 +796,15 @@ namespace S14_ProjetSession.Migrations
                 {
                     b.HasOne("S14_ProjetSession.Models.Demande", null)
                         .WithMany("Jumelages")
-                        .HasForeignKey("DemandeId");
+                        .HasForeignKey("DemandeId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("S14_ProjetSession.Models.Programme", b =>
                 {
                     b.HasOne("S14_ProjetSession.Models.Campus", "Campus")
                         .WithMany("programmes")
-                        .HasForeignKey("CampusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CampusId");
 
                     b.Navigation("Campus");
                 });

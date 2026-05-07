@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace S14_ProjetSession.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class FixSetNullForeignKeyslj : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -221,7 +221,7 @@ namespace S14_ProjetSession.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nom = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     Code = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    CampusId = table.Column<int>(type: "int", nullable: false)
+                    CampusId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -230,8 +230,7 @@ namespace S14_ProjetSession.Migrations
                         name: "FK_Programmes_Campuses_CampusId",
                         column: x => x.CampusId,
                         principalTable: "Campuses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -314,12 +313,12 @@ namespace S14_ProjetSession.Migrations
                     Prenom = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     DateNaissance = table.Column<DateTime>(type: "datetime2", nullable: false),
                     GenreId = table.Column<int>(type: "int", nullable: false),
-                    ProgrammeId = table.Column<int>(type: "int", nullable: false),
-                    CampusId = table.Column<int>(type: "int", nullable: false),
+                    ProgrammeId = table.Column<int>(type: "int", nullable: true),
+                    CampusId = table.Column<int>(type: "int", nullable: true),
                     noEtudiant = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     noAdmission = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     MobiliteReduite = table.Column<bool>(type: "bit", nullable: false),
-                    AdressePermanente = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AdressePermanente = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Telephone = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CourrielInstitutionnel = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CourrielPersonnel = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -339,7 +338,7 @@ namespace S14_ProjetSession.Migrations
                         column: x => x.CampusId,
                         principalTable: "Campuses",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Etudiants_Genres_GenreId",
                         column: x => x.GenreId,
@@ -351,7 +350,7 @@ namespace S14_ProjetSession.Migrations
                         column: x => x.ProgrammeId,
                         principalTable: "Programmes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Etudiants_Unites_UniteId",
                         column: x => x.UniteId,
@@ -367,7 +366,7 @@ namespace S14_ProjetSession.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SemestreId = table.Column<int>(type: "int", nullable: false),
-                    EtudiantId = table.Column<int>(type: "int", nullable: false),
+                    EtudiantId = table.Column<int>(type: "int", nullable: true),
                     PrefDureeBail = table.Column<int>(type: "int", nullable: false),
                     AccepteReglements = table.Column<bool>(type: "bit", nullable: false),
                     AccepteTraitementDonnees = table.Column<bool>(type: "bit", nullable: false),
@@ -396,8 +395,7 @@ namespace S14_ProjetSession.Migrations
                         name: "FK_Demandes_Etudiants_EtudiantId",
                         column: x => x.EtudiantId,
                         principalTable: "Etudiants",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Demandes_Semestres_SemestreId",
                         column: x => x.SemestreId,
@@ -509,7 +507,8 @@ namespace S14_ProjetSession.Migrations
                 name: "IX_Demandes_EtudiantId_SemestreId",
                 table: "Demandes",
                 columns: new[] { "EtudiantId", "SemestreId" },
-                unique: true);
+                unique: true,
+                filter: "[EtudiantId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Demandes_SemestreId",

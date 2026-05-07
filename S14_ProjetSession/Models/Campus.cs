@@ -22,7 +22,7 @@ namespace S14_ProjetSession.Models
 
 
         [Required(ErrorMessage = "L'abreviation est obligatoire")]
-        [StringLength(10, ErrorMessage = "Max 10 caractères")]
+        [StringLength(10, ErrorMessage = "Max 5 caractères")]
         public string Abreviation { get; set; }
 
 

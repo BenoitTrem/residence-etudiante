@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using S14_ProjetSession.Data;
 
@@ -11,9 +12,11 @@ using S14_ProjetSession.Data;
 namespace S14_ProjetSession.Migrations
 {
     [DbContext(typeof(ResidencesDbContext))]
-    partial class ResidencesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260507175441_FixSetNullForeignKeyslj")]
+    partial class FixSetNullForeignKeyslj
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -731,8 +734,7 @@ namespace S14_ProjetSession.Migrations
                 {
                     b.HasOne("S14_ProjetSession.Models.Etudiant", "Etudiant")
                         .WithMany("Demandes")
-                        .HasForeignKey("EtudiantId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("EtudiantId");
 
                     b.HasOne("S14_ProjetSession.Models.Semestre", "Semestre")
                         .WithMany()
@@ -793,16 +795,14 @@ namespace S14_ProjetSession.Migrations
                 {
                     b.HasOne("S14_ProjetSession.Models.Demande", null)
                         .WithMany("Jumelages")
-                        .HasForeignKey("DemandeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("DemandeId");
                 });
 
             modelBuilder.Entity("S14_ProjetSession.Models.Programme", b =>
                 {
                     b.HasOne("S14_ProjetSession.Models.Campus", "Campus")
                         .WithMany("programmes")
-                        .HasForeignKey("CampusId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("CampusId");
 
                     b.Navigation("Campus");
                 });
@@ -811,8 +811,7 @@ namespace S14_ProjetSession.Migrations
                 {
                     b.HasOne("S14_ProjetSession.Models.Campus", null)
                         .WithMany("Residences")
-                        .HasForeignKey("CampusId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("CampusId");
                 });
 
             modelBuilder.Entity("S14_ProjetSession.Models.ResidenceCommodite", b =>

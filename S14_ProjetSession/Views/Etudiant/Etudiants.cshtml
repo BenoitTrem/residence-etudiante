@@ -40,7 +40,7 @@
                         </div>
 
                         <p class="card-text text-muted mb-4">
-                            Programme : @etudiant.Programme.Nom
+                            Programme : @(etudiant.Programme?.Nom ?? "Aucun programme assigné")
                         </p>
 
                         <div class="d-flex gap-2 mt-4">
@@ -75,7 +75,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            
 
             @* Modal suppression *@
             @if (isAdmin)
@@ -109,13 +109,17 @@
                     </form>
                 </dialog>
             }
+            </div>
         }
     </div>
 
     @* Modal accès refusé *@
     <dialog id="modalNonAdmin" class="info-modal">
         <h2>Accès refusé</h2>
-        <p>Vous devez être Admin pour effectuer cette action.</p>
+
+        <p>
+            Vous devez être Admin pour effectuer cette action.
+        </p>
 
         <div class="d-flex justify-content-end mt-3">
             <button class="btn btn-outline-dark px-4"

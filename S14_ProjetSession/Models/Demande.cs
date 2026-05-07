@@ -15,10 +15,10 @@ namespace S14_ProjetSession.Models
 
         public Semestre? Semestre { get; set; }
 
-        [Required(ErrorMessage = "L'étudiant est obligatoire.")]
-        public int EtudiantId { get; set; }
 
-        public Etudiant Etudiant { get; set; }
+        public int? EtudiantId { get; set; }
+
+        public Etudiant? Etudiant { get; set; }
 
         //@author John
         // Relation directe Genre <-> Demande plusieurs à plusieurs (sans table de jointure explicite)

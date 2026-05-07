@@ -32,32 +32,34 @@ namespace S14_ProjetSession.Models
 
         [Required(ErrorMessage = "Le genre est obligatoire")]
         [Display(Name = "Genre")]
-        public int? GenreId { get; set; }
+        public int GenreId { get; set; }
+        public Genre Genre { get; set; }
 
-        public Genre? Genre { get; set; }
 
-        [Required(ErrorMessage = "Le programme est obligatoire")]
         [Display(Name = "Programme")]
         public int? ProgrammeId { get; set; }
 
         public Programme? Programme { get; set; }
 
-        [Required(ErrorMessage = "Le campus est obligatoire")]
+      
         [Display(Name = "Campus")]
         public int? CampusId { get; set; }
         public Campus? Campus { get; set; }
 
 
         [Display(Name = "No Etudiant (si disponible)")]
+        [RegularExpression(@"^\d{7}$", ErrorMessage = "Le numéro étudiant doit contenir exactement 7 chiffres.")]
         public string? noEtudiant { get; set; }
 
         [Display(Name = "No admission (si disponible)")]
+        [RegularExpression(@"^\d{7}$", ErrorMessage = "Le numéro d'admission doit contenir exactement 7 chiffres.")]
         public string? noAdmission { get; set; }
 
         [Display(Name = "Mobilité réduite")]
         public bool MobiliteReduite { get; set; }
 
         [Required(ErrorMessage = "L'adresse est obligatoire")]
+        [StringLength(50, ErrorMessage = "Max 50 caractères")]
         [Display(Name = "Adresse permanente")]
         public string AdressePermanente { get; set; }
 

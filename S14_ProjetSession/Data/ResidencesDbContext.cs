@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using S14_ProjetSession.Areas.Identity.Data;
@@ -112,7 +112,7 @@ public class ResidencesDbContext : IdentityDbContext<ApplicationUser>
             .HasOne(e => e.Campus)
             .WithMany(c => c.Etudiants)
             .HasForeignKey(e => e.CampusId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.SetNull);
 
         // @author John Zuleta
         // Relation Étudiant -> Programme (1-N)
@@ -121,6 +121,38 @@ public class ResidencesDbContext : IdentityDbContext<ApplicationUser>
             .HasOne(e => e.Programme)
             .WithMany(p => p.Etudiants)
             .HasForeignKey(e => e.ProgrammeId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.SetNull);
+
+        // @author Felix
+        // Suppression en cascade des demandes lors de la suppression d'un étudiant
+        modelBuilder.Entity<Demande>()
+            .HasOne(d => d.Etudiant)
+            .WithMany(e => e.Demandes)
+            .HasForeignKey(d => d.EtudiantId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // @author Felix
+        // Suppression en cascade des jumelages lors de la suppression d'une demande
+        modelBuilder.Entity<Jumelage>()
+            .HasOne<Demande>()
+            .WithMany(d => d.Jumelages)
+            .HasForeignKey("DemandeId")
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // @author John
+        // Mise à null du campus dans les programmes lors de la suppression d'un campus
+        modelBuilder.Entity<Programme>()
+            .HasOne(p => p.Campus)
+            .WithMany(c => c.programmes)
+            .HasForeignKey(p => p.CampusId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        // @author Jhon
+        // Mise à null du campus dans les résidences lors de la suppression d'un campus
+        modelBuilder.Entity<Residence>()
+            .HasOne<Campus>()
+            .WithMany(c => c.Residences)
+            .HasForeignKey("CampusId")
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }
