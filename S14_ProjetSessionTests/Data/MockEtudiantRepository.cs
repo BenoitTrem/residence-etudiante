@@ -22,6 +22,7 @@ namespace S14_ProjetSession.Data
         DateNaissance = new DateTime(2003, 5, 14),
         GenreId = 1,
         ProgrammeId = 1,
+        CampusId = 1,
         noEtudiant = "20230001",
         noAdmission = "ADM001",
         MobiliteReduite = false,

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using S14_ProjetSession.Models;
 using S14_ProjetSession.Data;
@@ -30,15 +30,31 @@ namespace S14_ProjetSession.Controllers
         /// Affiche la liste des programmes.
         /// </summary>
         [Authorize(Policy = "AdminOuGestionnaire")]
-        public IActionResult Index()
+        // Utilisation du code de pagination fourni par le professeur
+        public IActionResult Index(string ordre = "", int noPage = 1)
         {
             try
             {
-                List<Programme> programmes = _programmesRepository.Programmes
-                    .OrderBy(p => p.Nom)
-                    .ToList();
+                ViewData["OrdreActuel"] = ordre;
+                ViewData["OrdreTri"] = ordre == "desc" ? "asc" : "desc";
+                List<Programme> programmes;
+                int itemsParPage = 6;
+                noPage = (noPage > 0 && noPage < int.MaxValue) ? noPage : 1;
 
-                return View(programmes);
+                if (ordre == "desc")
+                {
+                    programmes = _programmesRepository.Programmes
+                        .OrderByDescending(p => p.Nom)
+                        .ToList();
+                }
+                else
+                {
+                    programmes = _programmesRepository.Programmes
+                        .OrderBy(p => p.Nom)
+                        .ToList();
+                }
+
+                return View(PaginatedList<Programme>.Create(programmes, noPage, itemsParPage));
             }
             catch (Exception)
             {

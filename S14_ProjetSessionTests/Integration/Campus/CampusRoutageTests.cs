@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -132,6 +132,35 @@ namespace S14_ProjetSessionTests.Integration.CampusTests
         {
             _currentUser = _etudiant;
             HttpResponseMessage response = await _client.GetAsync("/Campus/Modifier/1", TestContext.Current.CancellationToken);
+            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+        }
+
+        // ── Autorisation : rôle normal (Étudiant) pour actions de modification (POST) ──
+
+        [Fact(DisplayName = "POST /Campus/Creer refusée à un étudiant")]
+        public async Task Creer_Post_RefuseEtudiant()
+        {
+            _currentUser = _etudiant;
+            HttpContent form = new FormUrlEncodedContent(new Dictionary<string, string>());
+            HttpResponseMessage response = await _client.PostAsync("/Campus/Creer", form, TestContext.Current.CancellationToken);
+            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+        }
+
+        [Fact(DisplayName = "POST /Campus/Modifier refusée à un étudiant")]
+        public async Task Modifier_Post_RefuseEtudiant()
+        {
+            _currentUser = _etudiant;
+            HttpContent form = new FormUrlEncodedContent(new Dictionary<string, string>());
+            HttpResponseMessage response = await _client.PostAsync("/Campus/Modifier/1", form, TestContext.Current.CancellationToken);
+            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+        }
+
+        [Fact(DisplayName = "POST /Campus/Supprimer refusée à un étudiant")]
+        public async Task Supprimer_Post_RefuseEtudiant()
+        {
+            _currentUser = _etudiant;
+            HttpContent form = new FormUrlEncodedContent(new Dictionary<string, string>());
+            HttpResponseMessage response = await _client.PostAsync("/Campus/Supprimer/1", form, TestContext.Current.CancellationToken);
             Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
         }
     }

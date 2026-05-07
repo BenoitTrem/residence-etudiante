@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Campus>
+@model PaginatedList<Campus>
 @using Microsoft.AspNetCore.Authorization
 @inject IAuthorizationService AuthorizationService
 
@@ -14,7 +14,19 @@
 }
 
 <div class="container">
-    <h1 class="mb-5 mt-5">Les campus</h1>
+    <div class="d-flex align-items-center mb-5 mt-5 gap-3">
+        <h1 class="mb-0">Les campus</h1>
+        <a class="text-decoration-none text-dark" asp-controller="Campus" asp-action="Index" asp-route-ordre="@ViewData["OrdreTri"]" aria-label="ordre de tri">
+            @if ((string)ViewData["OrdreTri"] == "asc")
+            {
+                <i class="bi bi-sort-alpha-down fs-2"></i>
+            }
+            else
+            {
+                <i class="bi bi-sort-alpha-down-alt fs-2"></i>
+            }
+        </a>
+    </div>
 
     @if (isAdminOrGestionnaire)
     {
@@ -127,4 +139,26 @@
             </button>
         </div>
     </dialog>
+
+    <!-- Utilisation du code de pagination fourni par le professeur -->
+    <div class="d-flex justify-content-center mt-4 mb-5">
+        @if (Model.HasPreviousPage)
+        {
+            <a asp-action="Index"
+               asp-route-noPage="@(Model.PageIndex - 1)"
+               asp-route-ordre="@ViewData["OrdreActuel"]"
+               class="btn btn-outline-primary me-2">
+                <i class="bi bi-chevron-left" aria-label="Précédent"></i> Précédent
+            </a>
+        }
+        @if (Model.HasNextPage)
+        {
+            <a asp-action="Index"
+               asp-route-noPage="@(Model.PageIndex + 1)"
+               asp-route-ordre="@ViewData["OrdreActuel"]"
+               class="btn btn-outline-primary">
+                Suivant <i class="bi bi-chevron-right" aria-label="Suivant"></i>
+            </a>
+        }
+    </div>
 </div>

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using S14_ProjetSession.Areas.Identity.Data;
@@ -51,16 +51,33 @@ namespace S14_ProjetSession.Controllers
         /// <returns>Vue contenant la liste des étudiants</returns>
         /// <author>John Zuleta</author>
         [Authorize(Policy = "AdminOuGestionnaire")]
-        public ViewResult Index()
+        // Utilisation du code de pagination fourni par le professeur
+        public ViewResult Index(string ordre = "", int noPage = 1)
         {
             try
             {
-                List<Etudiant> etudiants = _etudiantRepository.Etudiants
-                    .OrderBy(e => e.Nom)
-                    .ThenBy(e => e.Prenom)
-                    .ToList();
+                ViewData["OrdreActuel"] = ordre;
+                ViewData["OrdreTri"] = ordre == "desc" ? "asc" : "desc";
+                List<Etudiant> etudiants;
+                int itemsParPage = 6;
+                noPage = (noPage > 0 && noPage < int.MaxValue) ? noPage : 1;
 
-                return View("Etudiants", etudiants);
+                if (ordre == "desc")
+                {
+                    etudiants = _etudiantRepository.Etudiants
+                        .OrderByDescending(e => e.Nom)
+                        .ThenByDescending(e => e.Prenom)
+                        .ToList();
+                }
+                else
+                {
+                    etudiants = _etudiantRepository.Etudiants
+                        .OrderBy(e => e.Nom)
+                        .ThenBy(e => e.Prenom)
+                        .ToList();
+                }
+
+                return View("Etudiants", PaginatedList<Etudiant>.Create(etudiants, noPage, itemsParPage));
             }
             catch (Exception)
             {

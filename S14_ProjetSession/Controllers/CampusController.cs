@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using S14_ProjetSession.Areas.Identity.Data;
@@ -32,12 +32,27 @@ namespace S14_ProjetSession.Controllers
         /// </summary>
         /// <returns>Une vue avec la liste des campus ou une vue d'erreur si un problème survient.</returns>
         [Authorize(Policy = "AdminOuGestionnaire")]
-        public IActionResult Index()
+        // Utilisation du code de pagination fourni par le professeur
+        public IActionResult Index(string ordre = "", int noPage = 1)
         {
             try
             {
-                List<Campus> campus = _repo.Campus.OrderBy(c => c.Nom).ToList();
-                return View(campus);
+                ViewData["OrdreActuel"] = ordre;
+                ViewData["OrdreTri"] = ordre == "desc" ? "asc" : "desc";
+                List<Campus> campus;
+                int itemsParPage = 6;
+                noPage = (noPage > 0 && noPage < int.MaxValue) ? noPage : 1;
+
+                if (ordre == "desc")
+                {
+                    campus = _repo.Campus.OrderByDescending(c => c.Nom).ToList();
+                }
+                else
+                {
+                    campus = _repo.Campus.OrderBy(c => c.Nom).ToList();
+                }
+
+                return View(PaginatedList<Campus>.Create(campus, noPage, itemsParPage));
             }
             catch
             {

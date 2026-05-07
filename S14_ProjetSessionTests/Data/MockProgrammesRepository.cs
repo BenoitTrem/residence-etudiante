@@ -1,4 +1,4 @@
-﻿using S14_ProjetSession.Models;
+using S14_ProjetSession.Models;
 
 /*
  * @author John Zuleta
@@ -17,8 +17,8 @@ namespace S14_ProjetSession.Data
         {
             _programmes = new List<Programme>
             {
-                new Programme { Id = 1, Nom = "Informatique"         },
-                new Programme { Id = 2, Nom = "Administration"       }
+                new Programme { Id = 1, Nom = "Informatique", Code = "420", CampusId = 1 },
+                new Programme { Id = 2, Nom = "Administration", Code = "410", CampusId = 1 }
             };
         }
 
@@ -35,12 +35,13 @@ namespace S14_ProjetSession.Data
             _programmes.Add(programme);
         }
 
-        /// <summary>Met à jour le programme existant.</summary>
         public void Modifier(Programme programme)
         {
             Programme? existant = GetProgramme(programme.Id);
             if (existant == null) return;
             existant.Nom = programme.Nom;
+            existant.Code = programme.Code;
+            existant.CampusId = programme.CampusId;
         }
 
         /// <summary>Supprime le programme de la liste.</summary>

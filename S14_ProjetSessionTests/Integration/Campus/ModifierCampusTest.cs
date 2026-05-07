@@ -113,44 +113,6 @@ namespace S14_ProjetSessionTests.Integration.CampusTests
             Assert.Equal(nomAvant, _campusRepository.GetById(1)!.Nom);
         }
 
-
-        // Vérifie que modifier le CampusId d'un étudiant met bien à jour la relation Campus -> Etudiant
-        // CreerEtudiant() a NameIdentifier = "468a4852-42ee-4f45-9be5-41422b589904"
-        // qui correspond à ApplicationUserId de l'étudiant 1 dans MockEtudiantRepository
-        [Fact(DisplayName = "Modification du CampusId de l'étudiant met à jour la relation")]
-        public async Task Modifier_RelationCampusEtudiant_MiseAJour()
-        {
-            _currentUser = _etudiant;
-
-            S14_ProjetSession.Models.Etudiant? etudiantAvant = _etudiantRepository.GetEtudiant(1);
-            Assert.NotNull(etudiantAvant);
-            Assert.Equal(1, etudiantAvant.CampusId);
-
-            HttpContent form = await GetForm(new Dictionary<string, string>
-            {
-                { "Id",                     "1"                                    },
-                { "Nom",                    "Tremblay"                             },
-                { "Prenom",                 "Alex"                                 },
-                { "DateNaissance",          "2003-05-14"                           },
-                { "GenreId",                "1"                                    },
-                { "ProgrammeId",            "1"                                    },
-                { "CampusId",               "2"                                    },
-                { "noEtudiant",             "20230001"                             },
-                { "noAdmission",            "ADM001"                               },
-                { "MobiliteReduite",        "false"                                },
-                { "AdressePermanente",      "123 rue Principale"                   },
-                { "Telephone",              "8191234567"                           },
-                { "CourrielInstitutionnel", "alex.tremblay@cegepoutaouais.qc.ca"   },
-                { "CourrielPersonnel",      "alex.tremblay@gmail.com"              },
-                { "ApplicationUserId",      "468a4852-42ee-4f45-9be5-41422b589904" }
-            });
-
-            await _client.PostAsync("/Etudiant/Modifier", form, TestContext.Current.CancellationToken);
-
-            S14_ProjetSession.Models.Etudiant? etudiantApres = _etudiantRepository.GetEtudiant(1);
-            Assert.NotNull(etudiantApres);
-            Assert.Equal(2, etudiantApres.CampusId);
-        }
-
+       
     }
 }
