@@ -31,5 +31,6 @@ namespace S14_ProjetSession.Models
         public Residence? Residence { get; set; }
 
         public List<Etudiant> Etudiants { get; set; } = new();
+        public List<Demande> Demandes { get; set; } = new();
     }
 }
