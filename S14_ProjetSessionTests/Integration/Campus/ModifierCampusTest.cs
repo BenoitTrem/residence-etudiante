@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -114,7 +114,6 @@ namespace S14_ProjetSessionTests.Integration.CampusTests
         }
 
 
-        /**
         // Vérifie que modifier le CampusId d'un étudiant met bien à jour la relation Campus -> Etudiant
         // CreerEtudiant() a NameIdentifier = "468a4852-42ee-4f45-9be5-41422b589904"
         // qui correspond à ApplicationUserId de l'étudiant 1 dans MockEtudiantRepository
@@ -152,8 +151,6 @@ namespace S14_ProjetSessionTests.Integration.CampusTests
             Assert.NotNull(etudiantApres);
             Assert.Equal(2, etudiantApres.CampusId);
         }
-
-        **/
 
     }
 }

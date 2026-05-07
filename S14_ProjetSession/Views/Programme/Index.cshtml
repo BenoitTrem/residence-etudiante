@@ -2,6 +2,10 @@
 @using Microsoft.AspNetCore.Authorization
 @inject IAuthorizationService AuthorizationService
 
+@*
+    Vue : Index PROGRAMME
+    Auteur : John Zuleta
+*@
 @{
     bool isAdmin = (await AuthorizationService.AuthorizeAsync(User, "AdminUniquement")).Succeeded;
     bool isAdminOrGestionnaire = (await AuthorizationService.AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded;
