@@ -1,0 +1,19 @@
+@* <author>Felix</author> *@
+
+<h1>Demandes</h1>
+
+<div class="container">
+    <div class="row">
+        @if (ViewBag.Demandes == null || ViewBag.Demandes.Count <= 0)
+        {
+            <p>Aucune demande à afficher.</p>
+        }
+        else
+        {
+            @foreach (Demande demande in ViewBag.Demandes)
+            {
+                <partial name="_CarteDemande" model="demande" />
+            }
+        }
+    </div>
+</div>

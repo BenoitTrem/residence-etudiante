@@ -1,0 +1,120 @@
+﻿@model ResidenceEtudiante.Models.Residence
+@using ResidenceEtudiante.ViewModels
+
+<div class="container mt-5 mb-5">
+    <h1 class="mb-4">@ViewData["Title"]</h1>
+
+    <form asp-controller="Residence" asp-action="Creer" method="post">
+        <div class="form-container">
+            <div class="mb-4">
+                <label asp-for="Nom" class="form-label required"></label>
+                <input asp-for="Nom" class="form-control" placeholder="Entrez un nom..." />
+                <span asp-validation-for="Nom" class="text-danger"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="AdresseLigne" class="form-label">
+                    Adresse *
+                    <span class="info-bulle">
+                        ?
+                        <span class="info-texte">
+                             <div class="info-section mb-2">
+                                <strong>Format attendu :</strong> Numéro civique, rue
+                            </div>
+                             <strong>Exemple :</strong> 123 rue Sainte-Catherine
+                        </span>
+                    </span>
+                </label>
+                <input asp-for="AdresseLigne" class="form-control" placeholder="Entrez l'adresse..." />
+                <span asp-validation-for="AdresseLigne" class="text-danger"></span>
+            </div>
+
+          <div class="row mb-4">
+            <div class="col-md-4">
+                    <label asp-for="Ville" class="form-label required"></label>
+                    <input asp-for="Ville" class="form-control" placeholder="Entrez la ville..." />
+                <span asp-validation-for="Ville" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                    <label asp-for="Province" class="form-label required"></label>
+                <input asp-for="Province" class="form-control" readonly />
+                <span asp-validation-for="Province" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                    <label asp-for="CodePostal" class="form-label required"></label>
+                <input asp-for="CodePostal" class="form-control" placeholder="Ex: J8X 3X2" />
+                <span asp-validation-for="CodePostal" class="text-danger"></span>
+            </div>
+        </div>
+
+            <div class="mb-3">
+                <label class="form-label mb-3">
+                    Commodités
+                    <span class="info-bulle">
+                        ?
+                        <span class="info-texte">
+                             <div class="info-section mb-2">
+                                 Sélectionnez les commodités offertes par la résidence.
+                             </div>
+                            Vous pouvez ajouter une description pour préciser les détails (ex. : horaires, conditions, particularités).
+                        </span>
+                    </span>
+                </label>
+                 @if (ViewBag.Commodites == null || !((IEnumerable<dynamic>)ViewBag.Commodites).Any())
+                    {
+                    <div class="alert alert-warning py-2">
+                        <div class="small fw-semibold">
+                            Aucune commodité disponible.
+                        </div>
+
+                        <div class="small text-muted mt-1">
+                            Vous devez d’abord en ajouter pour pouvoir les sélectionner.
+                        </div>
+
+                        <small class="text-muted d-block mt-1">
+                            Vous pourrez les ajouter plus tard et modifier la résidence au besoin.
+                        </small>
+
+                        <div class="mt-2">
+                            <a asp-controller="Commodite" asp-action="Index" class="btn btn-outline-primary btn-sm">
+                                Aller aux commodités
+                            </a>
+                        </div>
+                    </div>
+                    }
+                    else
+                    {
+                        <ul class="row row-cols-3">
+                            @{
+                                int index = 0;
+
+                                foreach (ResidenceCommoditeViewModel commodite in ViewBag.Commodites)
+                                {
+                                    <li class="form-check col">
+                                        <label>
+                                            <input type="hidden" name="commodites[@index].Id" value="@commodite.CheckBoxViewModel.Value" />
+                                            <input type="checkbox" class="form-check-input" name="commodites[@index].IsChecked" value="true" @(commodite.CheckBoxViewModel.IsChecked ? "checked" : "") />
+                                            @commodite.CheckBoxViewModel.Label
+                                        </label>
+
+                                    <label class="form-label visually-hidden"
+                                           for="desc-@index">
+                                        Description commodité
+                                    </label>
+                                    <textarea id="desc-@index" name="commodites[@index].Description" class="form-control mt-1 mb-3 description-input" rows="2" placeholder="Ajouter une description..."
+                                            style="display:none;">@commodite.DescriptionViewModel.Description</textarea>
+                                    </li>
+
+                                    index++;
+                                }
+                            }
+                    </ul>
+                    }
+            </div>
+            <div class="text-center mt-5 mb-3">
+                <button type="submit" class="btn btn-outline-primary w-25">Ajouter</button>
+                <a asp-controller="Residence" asp-action="Index" class="btn btn-outline-dark ms-2 w-25">Annuler</a>
+            </div>
+        </div>
+    </form>
+</div>

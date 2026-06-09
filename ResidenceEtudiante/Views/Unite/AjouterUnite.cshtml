@@ -1,0 +1,71 @@
+﻿@model ResidenceEtudiante.Models.Unite
+
+<div class="container mt-5">
+    <h1 class="mb-4 text-truncate">@ViewData["Title"]</h1>
+
+    <form asp-controller="Unite" asp-action="Creer" method="post">
+        <div class="form-container">
+
+            <div class="mb-4">
+
+                <div class="mb-4">
+                    <label class="form-label required">Résidence</label>
+
+                    <select asp-for="ResidenceId" class="form-select">
+                        <option value="0">-- Sélectionner une résidence --</option>
+
+                        @foreach (Residence residence in ViewBag.Residences as List<Residence>)
+                        {
+                            <option value="@residence.Id">
+                                @residence.Nom
+                            </option>
+                        }
+                    </select>
+
+                    <span asp-validation-for="ResidenceId" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <label class="form-label fw-semibold mb-0 required">
+                        Nombre d’unités à ajouter
+                    </label>
+
+                    <span class="text-muted small">
+                        Maximum 50 unités par création
+                    </span>
+                </div>
+
+                <input type="number" name="nombreUnites" class="form-control" min="1" max="50" value="1" />
+
+                <span class="text-danger small">
+                    @Html.ValidationMessage("nombreUnites")
+                </span>
+
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Capacite" class="form-label required"></label>
+                <input asp-for="Capacite" class="form-control" placeholder="Nombre de places..." />
+                <span asp-validation-for="Capacite" class="text-danger"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="AdapteePourMobiliteReduite" class="form-label required"></label>
+                <select asp-for="AdapteePourMobiliteReduite" class="form-select">
+                    <option value="">-- Sélectionner --</option>
+                    <option value="true">Oui</option>
+                    <option value="false">Non</option>
+                </select>
+                <span asp-validation-for="AdapteePourMobiliteReduite" class="text-danger"></span>
+            </div>
+
+            <div class="text-center mt-5 mb-3">
+                <button type="submit" class="btn btn-outline-primary w-25">Ajouter</button>
+                <a asp-controller="Unite"asp-action="Index"asp-route-id="@Model.ResidenceId" class="btn btn-outline-dark ms-2 w-25">
+                    Annuler
+                </a>
+            </div>
+
+        </div>
+    </form>
+</div>

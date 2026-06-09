@@ -1,0 +1,372 @@
+﻿@model List<ResidenceEtudiante.Models.Residence>
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+@using Microsoft.AspNetCore.Identity
+@using ResidenceEtudiante.Areas.Identity.Data
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    bool afficherPagination = ViewBag.TotalPages > 1;
+    bool estFiltrer = ViewBag.Disponible != null || ViewBag.Nom != null || ViewBag.AdresseLigne != null || ViewBag.Ville != null;
+}
+
+<div class="container">
+    <h1 class="mb-5 mt-5">@ViewData["Title"]</h1>
+
+    @if ((await AuthorizationService.AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded)
+    {
+        <a class="btn btn-primary mb-4 w-100 p-2" asp-controller="Residence" asp-action="AjouterResidence">
+            Ajouter une résidence
+        </a>
+    }
+
+    <div class="hr"></div>
+
+    <form method="get" class="mb-4 mt-4">
+        <input type="hidden" name="id" value="@ViewBag.ResidenceId" />
+
+        <div class="row g-2">
+            <div class="col">
+                <label for="disponible" class="form-label small text-muted mb-1">
+                    Disponibilité
+                </label>
+                <select id="disponible" name="disponible" class="form-select form-select-sm">
+                    <option value="">Toutes</option>
+                    <option value="true" selected="@(ViewBag.Disponible?.ToString() == "True")">Disponible</option>
+                    <option value="false" selected="@(ViewBag.Disponible?.ToString() == "False")">Non disponible</option>
+                </select>
+            </div>
+
+            <div class="col">
+                <label for="nom" class="form-label small text-muted mb-1">
+                    Nom
+                </label>
+                <textarea id="nom" type="text" name="nom" class="form-control form-control-sm textarea-auto"
+                          rows="1" placeholder="(ex: Résidence...)">@ViewBag.Nom</textarea>
+            </div>
+
+            <div class="col">
+                <label for="adresseLigne" class="form-label small text-muted mb-1">
+                    Adresse
+                </label>
+                <textarea id="adresseLigne" name="adresseLigne" class="form-control form-control-sm textarea-auto"
+                          rows="1" placeholder="(ex: 123 rue des Pins)">@ViewBag.AdresseLigne</textarea>
+            </div>
+            <div class="col">
+                <label for="ville" class="form-label small text-muted mb-1">
+                    Ville
+                </label>
+                <textarea id="ville" type="text" name="ville" class="form-control form-control-sm textarea-auto"
+                          rows="1" placeholder="(ex: Gatineau)">@ViewBag.Ville</textarea>
+            </div>
+            <div class="col">
+                <label for="ascendant" class="form-label small text-muted mb-1">
+                    Ordre d’affichage
+                </label>
+                <select id="ascendant" name="ascendant" class="form-select form-select-sm">
+                    <option value="true" selected="@(ViewBag.Ascendant == true)">Ascendant</option>
+                    <option value="false" selected="@(ViewBag.Ascendant == false)">Descendant</option>
+                </select>
+            </div>
+
+
+            <div class="col d-flex flex-column justify-content-end">
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-outline-primary w-100">
+                        Filtrer
+                    </button>
+
+                    <a class="btn btn-outline-dark w-100 d-flex align-items-center justify-content-center"
+                       asp-action="Index"
+                       asp-route-id="@ViewBag.ResidenceId">
+                        Réinitialiser
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+    @if (afficherPagination)
+    {
+        <div class="d-flex justify-content-center mt-5">
+
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                <a class="btn btn-sm @(i == ViewBag.PageActuelle ? "btn-primary" : "btn-outline-primary") mx-1" asp-action="Index"
+                   asp-route-page="@i"
+                   asp-route-disponible="@ViewBag.Disponible"
+                   asp-route-nom="@ViewBag.Nom"
+                   asp-route-adresseLigne="@ViewBag.AdresseLigne"
+                   asp-route-ville="@ViewBag.Ville"
+                   asp-route-ascendant="@ViewBag.Ascendant">
+
+                    @i
+                </a>
+            }
+        </div>
+    }
+    @if (Model == null || !Model.Any())
+    {
+        <div class="text-center py-5">
+
+            @if ((await AuthorizationService.AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded)
+            {
+                @if (estFiltrer)
+                {
+                    <p class="text-muted fs-5">
+                        Aucune résidence ne correspond aux filtres appliqués.
+                    </p>
+
+                    <p class="text-muted fs-5">
+                        Essayez de modifier ou réinitialiser les filtres.
+                    </p>
+                    <p class="text-muted fs-5">
+                        Utilisez le bouton <strong>« Ajouter une résidence »</strong> en haut de la page pour en créer une.
+                    </p>
+                }
+                else
+                {
+                    <h2 class="mb-3 text-danger fw-bold">
+                        Aucune résidence disponible
+                    </h2>
+
+                    <p class="text-muted fs-5">
+                        Aucune résidence n’a encore été ajoutée.
+                    </p>
+
+                    <p class="text-muted fs-5">
+                        Utilisez le bouton <strong>« Ajouter une résidence »</strong> en haut de la page pour en créer une.
+                    </p>
+                    
+                }
+            }
+            else
+            {
+                @if (estFiltrer)
+                {
+                    <p class="text-muted fs-5">
+                        Aucune résidence ne correspond aux filtres appliqués.
+                    </p>
+
+                    <p class="text-muted fs-5">
+                        Essayez de modifier ou réinitialiser les filtres.
+                    </p>
+                }
+                else
+                {
+                    <h2 class="mb-3 text-danger fw-bold">
+                        Aucune résidence disponible
+                    </h2>
+
+                    <p class="text-muted fs-5">
+                        Il n’y a actuellement aucune résidence disponible.
+                    </p>
+
+                    <p class="text-muted fs-5">
+                        Revenez plus tard ou contactez l’administration pour plus d’informations.
+                    </p>
+                }  
+            }
+
+        </div>
+    }
+
+    else
+    {
+    <div class="row mt-5 mb-5">
+        @foreach (Residence residence in Model)
+        {
+            <div class="col-md-6 mb-5">
+                <div class="carte h-100 mt-3 @(residence.TotalUnites == 0 ? "carte-non-disponible" : "")">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h2 class="card-title mb-0 text-truncate width">
+                                @residence.Nom
+                            </h2>
+                            <a class="btn btn-outline-primary ms-2 flex-shrink-0 px-3" asp-controller="Residence" asp-action="ResidenceDetails" asp-route-id="@residence.Id">
+                                Détails
+                            </a>
+                        </div>
+
+                        <p class="card-text mb-2 text-nowrap overflow-hidden text-truncate">@residence.AdresseComplete</p>
+
+                        @if(residence.TotalUnites == 0)
+                        {
+                            <p class="card-text text-danger mb-4">Il y a actuellement aucune unité dans cette résidence.</p>
+                        }
+                        else
+                        {
+                                <p class="card-text mb-4 invisible">La résidence est disponible</p>
+                        }
+
+                        @if (!User.IsInRole("Admin") && !User.IsInRole("Gestionnaire"))
+                        {
+                            if (residence.TotalUnites == 0)
+                                {
+                                    <div class="text-center mt-5">
+                                        <button class="btn btn-outline-secondary btn-lg px-5" type="button" data-dialog-open="@($"modalIndisponible_{residence.Id}")">
+                                            Faire une demande
+                                        </button>
+                                    </div>
+
+                                <dialog id="@($"modalIndisponible_{residence.Id}")" class="info-modal">
+                                    <div class="text-center py-3 px-3">
+                                        <h2 class="mb-3 text-danger fw-bold">
+                                            Aucune unité disponible
+                                        </h2>
+                                        <p class="text-muted fs-5">
+                                            Il n’y a actuellement aucune unité disponible dans la résidence
+                                            <strong class="text-truncate">@residence.Nom</strong>.
+                                        </p>
+                                        <p class="text-muted">
+                                            Revenez plus tard ou consultez une autre résidence.
+                                        </p>
+                                        <div class="d-flex justify-content-center mt-4">
+                                            <button class="btn btn-outline-dark px-5" type="button" data-dialog-close>
+                                                Fermer
+                                            </button>
+                                        </div>
+                                    </div>
+                                </dialog>
+                            }
+                            else
+                            {
+                                if (!SignInManager.IsSignedIn(User))
+                                {
+                                    <div class="text-center mt-5">
+                                        <button class="btn btn-outline-primary btn-lg px-5" type="button" data-dialog-open="modalConnexion">
+                                            Faire une demande
+                                        </button>
+                                    </div>
+                                }
+                                else if ((await AuthorizationService.AuthorizeAsync(User, "EstEtudiant")).Succeeded)
+                                {
+                                    <div class="text-center mt-5">
+                                        <a class="btn btn-outline-primary btn-lg px-5" asp-controller="Demande" asp-action="Creer">
+                                            Faire une demande
+                                        </a>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="text-center mt-5">
+                                        <button class="btn btn-outline-primary btn-lg px-5" type="button" data-dialog-open="modalEtudiant">
+                                            Faire une demande
+                                        </button>
+                                    </div>
+                                }
+                            }
+                        }
+
+                        @if ((await AuthorizationService.AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded)
+                        {
+                            <a class="btn btn-outline-primary w-100" asp-controller="Unite" asp-action="Index" asp-route-id="@residence.Id">
+                                Voir les unités
+                            </a>
+
+                            <div class="d-flex gap-2 mt-2">
+                                <a class="btn btn-outline-success flex-fill" asp-controller="Residence" asp-action="ModifierResidence" asp-route-id="@residence.Id">
+                                    Modifier
+                                </a>
+
+                                @if ((await AuthorizationService.AuthorizeAsync(User, "AdminUniquement")).Succeeded)
+                                {
+                                    <button class="btn btn-outline-danger flex-fill" type="button" data-dialog-open="@($"modalSupprimer_{residence.Id}")">
+                                        Supprimer
+                                    </button>
+                                }
+                                else if ((await AuthorizationService.AuthorizeAsync(User, "GestionnaireUniquement")).Succeeded)
+                                {
+                                    <button class="btn btn-outline-danger flex-fill btn-tooltip" type="button" data-dialog-open="modalNonAdmin">
+                                        Supprimer
+                                        <span class="tooltip-text">
+                                            Vous devez être Admin pour effectuer cette action
+                                        </span>
+                                    </button>
+                                }
+                            </div>
+                        }
+                   
+
+                        <dialog id="@($"modalSupprimer_{residence.Id}")" class="danger">
+                                <h2>Suppression d'une résidence</h2>
+                            <p class="mt-3">
+                                Êtes-vous sûr de vouloir supprimer la résidence
+                                <strong class="text-truncate">@residence.Nom</strong> ?
+                            </p>
+
+                            <form asp-action="Supprimer" asp-controller="Residence" method="post">
+                                <input type="hidden" name="id" value="@residence.Id" />
+                                <div class="d-flex justify-content-between">
+                                    <button type="submit" class="btn btn-outline-danger px-4">Supprimer</button>
+                                    <button type="button" class="btn btn-outline-dark px-4" data-dialog-close>Annuler</button>
+                                </div>
+                            </form>
+                        </dialog>
+
+                        <dialog id="modalNonAdmin" class="info-modal">
+                            <h2>Accès refusé</h2>
+                            <p>Vous devez être Admin pour effectuer cette action.</p>
+                            <div class="d-flex justify-content-end mt-3">
+                                <button class="btn btn-outline-dark px-4" type="button" data-dialog-close>
+                                    Fermer
+                                </button>
+                            </div>
+                        </dialog>
+
+                        <dialog id="modalConnexion" class="info-modal">
+                            <h2>Connexion requise</h2>
+                            <p class="mt-3">
+                                Vous devez être connecté pour faire une demande.
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center mt-5">
+                                <a class="btn btn-outline-primary px-4" asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Context.Request.Path">
+                                    Se connecter
+                                </a>
+                                <button class="btn btn-outline-dark px-4" type="button" data-dialog-close>
+                                    Fermer
+                                </button>
+                            </div>
+                        </dialog>
+
+                        <dialog id="modalEtudiant" class="info-modal">
+                            <h2>Profil étudiant requis</h2>
+                            <p class="mt-3">
+                                Vous devez compléter votre profil étudiant avant de faire une demande.
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center mt-5">
+                                <a class="btn btn-outline-primary px-4" asp-controller="Etudiant" asp-action="Creer">
+                                    Compléter mon profil
+                                </a>
+                                <button class="btn btn-outline-dark px-4" type="button" data-dialog-close>
+                                    Fermer
+                                </button>
+                            </div>
+                        </dialog>
+
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    }
+</div>
+@if (afficherPagination)
+{
+    <div class="d-flex justify-content-center mt-5 mb-5">
+
+        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+        {
+            <a class="btn btn-sm @(i == ViewBag.PageActuelle ? "btn-primary" : "btn-outline-primary") mx-1" asp-action="Index" asp-route-id="@ViewBag.ResidenceId"
+               asp-route-page="@i"
+               asp-route-disponible="@ViewBag.Disponible"
+               asp-route-nom="@ViewBag.Nom"
+               asp-route-adresseLigne="@ViewBag.AdresseLigne"
+               asp-route-ville="@ViewBag.Ville"
+               asp-route-ascendant="@ViewBag.Ascendant">
+
+                @i
+            </a>
+        }
+    </div>
+}

@@ -1,0 +1,59 @@
+﻿@model ResidenceEtudiante.Models.Programme
+@*
+    Vue : Create Programme
+    Auteur : John Zuleta
+*@
+<div class="container mt-5 mb-5">
+    <h1 class="mb-4">@ViewData["Title"]</h1>
+
+    <form asp-action="Creer" method="post">
+
+        <div class="form-container">
+
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+            <!-- NOM -->
+            <div class="mb-4">
+                <label asp-for="Nom" class="form-label required"></label>
+                <input asp-for="Nom" class="form-control"
+                       placeholder="Nom du programme..." />
+                <span asp-validation-for="Nom" class="text-danger"></span>
+            </div>
+
+            <!-- CODE -->
+            <div class="mb-4">
+                <label asp-for="Code" class="form-label required"></label>
+                <input asp-for="Code" class="form-control"
+                       placeholder="Ex: INF123" />
+                <span asp-validation-for="Code" class="text-danger"></span>
+            </div>
+
+            <!-- CAMPUS -->
+            <div class="mb-4">
+                <label asp-for="CampusId" class="form-label required"></label>
+
+                <select asp-for="CampusId"
+                        class="form-select"
+                        asp-items="@(new SelectList(ViewBag.Campus, "Id", "Nom"))">
+                    <option value="">Sélectionner un campus</option>
+                </select>
+
+                <span asp-validation-for="CampusId" class="text-danger"></span>
+            </div>
+
+            <!-- BUTTONS -->
+            <div class="text-center mt-5 mb-3">
+                <button type="submit" class="btn btn-outline-primary w-25">
+                    Créer
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-outline-dark ms-2 w-25">
+                    Annuler
+                </a>
+            </div>
+
+        </div>
+
+    </form>
+</div>

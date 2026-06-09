@@ -1,0 +1,207 @@
+@* <author>Felix</author> *@
+
+@model ResidenceEtudiante.ViewModels.DemandeCreateViewModel
+
+@{
+    ViewData["Title"] = "Créer une demande";
+}
+
+<div class="container py-3">
+    <h1>Créer une demande</h1>
+    
+   
+
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+    <form asp-action="Creer" method="post" id="multiStepForm">
+        @Html.AntiForgeryToken()
+
+        <!-- ÉTAPE 1 : PRÉFÉRENCES -->
+        <div id="step1" class="form-step">
+            <h2 class="h5 mb-3">1. Vos préférences</h2>
+            
+            <div class="mb-3">
+                <label class="form-label">Semestre *</label>
+                <select asp-for="SelectedSemestreId" class="form-control">
+                    <option value="">-- Choisir un semestre --</option>
+                    @foreach (var semestre in Model.Semestres)
+                    {
+                        @if (semestre.InscriptionOuverte)
+                        {
+                            <option value="@semestre.Id">
+                                @semestre.NomSemestre - inscription ouverte
+                            </option>
+                        }
+                    }
+                </select>
+                <span asp-validation-for="SelectedSemestreId" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Préférences de genre</label>
+                <div class="border p-2 rounded">
+                    @foreach (var genre in Model.Genres)
+                    {
+                        bool estCoche = Model.SelectedGenreIds != null
+                        && Model.SelectedGenreIds.Contains(genre.Id);
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   name="SelectedGenreIds"
+                                   value="@genre.Id"
+                                   @(estCoche ? "checked" : "") />
+                            <label class="form-check-label">@genre.Nom</label>
+                        </div>
+                    }
+                </div>
+                <span asp-validation-for="SelectedGenreIds" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Durée du bail *</label>
+                <select asp-for="Demande.PrefDureeBail" class="form-control">
+                    <option value="120">120 jours (1 semestre)</option>
+                    <option value="240">240 jours (2 semestres)</option>
+                    <option value="365">365 jours (1 an)</option>
+                </select>
+                <span asp-validation-for="Demande.PrefDureeBail" class="text-danger"></span>
+            </div>
+
+            <h3 class="h6 mt-4">Jumelages (Optionnel)</h3>
+            @for (int i = 0; i < Model.Jumelages.Count; i++)
+            {
+                <div class="border p-2 mb-2 rounded bg-light">
+                    <label class="form-label small">Jumelage @(i + 1)</label>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <input asp-for="Jumelages[i].Nom" class="form-control form-control-sm" placeholder="Nom" />
+                        </div>
+                        <div class="col-6">
+                            <input asp-for="Jumelages[i].Courriel" class="form-control form-control-sm" placeholder="Courriel" />
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div class="mt-4">
+                <button type="button" class="btn btn-primary" onclick="changeStep(2)">Suivant</button>
+            </div>
+        </div>
+
+        <!-- ÉTAPE 2 : INFORMATIONS COMPLÉMENTAIRES -->
+        <div id="step2" class="form-step d-none">
+            <h2 class="h5 mb-3">2. Informations complémentaires</h2>
+            
+            <h3 class="h6 fw-bold">Garant (Cautionnement)</h3>
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Nom *</label>
+                    <input asp-for="Demande.NomGarant" class="form-control" />
+                    <span asp-validation-for="Demande.NomGarant" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Prénom *</label>
+                    <input asp-for="Demande.PrenomGarant" class="form-control" />
+                    <span asp-validation-for="Demande.PrenomGarant" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Date de naissance *</label>
+                    <input asp-for="Demande.DateNaissanceGarant" type="date" class="form-control" max="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                    <span asp-validation-for="Demande.DateNaissanceGarant" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Courriel *</label>
+                    <input asp-for="Demande.CourrielGarant" class="form-control" />
+                    <span asp-validation-for="Demande.CourrielGarant" class="text-danger"></span>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Téléphone * (Format: 000-000-0000)</label>
+                    <input asp-for="Demande.TelephoneGarant" class="form-control" placeholder="000-000-0000" pattern="\d{3}-\d{3}-\d{4}" />
+                    <span asp-validation-for="Demande.TelephoneGarant" class="text-danger"></span>
+                </div>
+            </div>
+
+            <h3 class="h6 fw-bold">Parent / Tuteur</h3>
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Nom</label>
+                    <input asp-for="Demande.NomParent" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Courriel</label>
+                    <input asp-for="Demande.CourrielParent" class="form-control" />
+                </div>
+            </div>
+
+            <h3 class="h6 fw-bold">Contact d'urgence</h3>
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label">Nom *</label>
+                    <input asp-for="Demande.NomUrgence" class="form-control" />
+                    <span asp-validation-for="Demande.NomUrgence" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Lien de parenté *</label>
+                    <input asp-for="Demande.LienParenteUrgence" class="form-control" />
+                    <span asp-validation-for="Demande.LienParenteUrgence" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Téléphone * (Format: 000-000-0000)</label>
+                    <input asp-for="Demande.TelephoneUrgence" class="form-control" placeholder="000-000-0000" pattern="\d{3}-\d{3}-\d{4}" />
+                    <span asp-validation-for="Demande.TelephoneUrgence" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="button" class="btn btn-secondary" onclick="changeStep(1)">Précédent</button>
+                <button type="button" class="btn btn-primary" onclick="changeStep(3)">Suivant</button>
+            </div>
+        </div>
+
+        <!-- ÉTAPE 3 : CONFIRMATION -->
+        <div id="step3" class="form-step d-none">
+            <h2 class="h5 mb-3">3. Confirmation</h2>
+            
+            <div class="border p-3 mb-3 rounded">
+                <div class="form-check mb-2">
+                    <input asp-for="Demande.AccepteReglements" class="form-check-input" />
+                    <label class="form-check-label">J'accepte les règlements *</label>
+                    <span asp-validation-for="Demande.AccepteReglements" class="text-danger d-block"></span>
+                </div>
+
+                <div class="form-check mb-2">
+                    <input asp-for="Demande.AccepteTraitementDonnees" class="form-check-input" />
+                    <label class="form-check-label">J'accepte le traitement des données *</label>
+                    <span asp-validation-for="Demande.AccepteTraitementDonnees" class="text-danger d-block"></span>
+                </div>
+
+                <div class="form-check mb-2">
+                    <input asp-for="Demande.ConfirmeSoumission" class="form-check-input" />
+                    <label class="form-check-label">Je confirme la soumission *</label>
+                    <span asp-validation-for="Demande.ConfirmeSoumission" class="text-danger d-block"></span>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="button" class="btn btn-secondary" onclick="changeStep(2)">Précédent</button>
+                <button type="submit" class="btn btn-success">Soumettre la demande</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function changeStep(step) {
+            // Cacher toutes les étapes
+            document.querySelectorAll('.form-step').forEach(s => s.classList.add('d-none'));
+            
+            // Afficher l'étape cible
+            document.getElementById('step' + step).classList.remove('d-none');
+            
+            window.scrollTo(0, 0);
+        }
+    </script>
+}
+

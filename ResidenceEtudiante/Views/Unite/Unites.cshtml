@@ -1,0 +1,291 @@
+﻿@model List<ResidenceEtudiante.Models.Unite>
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+@using Microsoft.AspNetCore.Identity
+@using ResidenceEtudiante.Areas.Identity.Data
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    bool compact = Model.Count >= 10;
+    bool afficherPagination = ViewBag.TotalPages > 1;
+    bool estFiltrer = ViewBag.Capacite != null || ViewBag.Numero != null || ViewBag.MobiliteReduite != null;
+}
+
+<div class="container">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mt-5 mb-3">
+        <h1 class="text-truncate">
+            @ViewData["Title"]
+        </h1>
+        <a class="btn btn-outline-dark px-4" asp-controller="Residence" asp-action="Index">
+            Retour
+        </a>
+    </div>
+    <div class="mb-3">
+        <label for="residenceSelect" class="est-invisible">
+            Sélection de la résidence
+        </label>
+        <select id="residenceSelect" class="form-select form-select-lg fw-bold text-truncate w-100 w-md-75" onchange="loadUnits(this.value)" data-selected="@ViewBag.ResidenceId">
+
+            <option value="">Toutes les unités</option>
+
+            @foreach (Residence residence in ViewBag.Residences as List<Residence>)
+            {
+                <option value="@residence.Id">@residence.Nom</option>
+            }
+        </select>
+    </div>
+
+    <div class="mt-2 ms-3">
+        <strong>Adresse :</strong>
+        <span>@ViewBag.Adresse</span>
+    </div>
+
+    <div class="mt-3 ms-3 mb-4">
+        <div>
+            <strong>@(ViewBag.NombreTotal > 1 ? "Unités totales :" : "Unité totale :")</strong>
+
+            @if ((ViewBag.NombreTotal ?? 0) == 0)
+            {
+                <span class="badge bg-danger fs-6">0 unité.</span>
+            }
+            else if (ViewBag.NombreTotal == 1)
+            {
+                <span class="badge bg-success fs-6">1 unité</span>
+            }
+            else
+            {
+                <span class="badge bg-success fs-6">@((ViewBag.NombreTotal ?? 0)) unités</span>
+            }
+        </div>
+    </div>
+
+      @if ((await AuthorizationService.AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded)
+         {
+            <a class="btn btn-primary mb-4 w-100 p-2 mt-2" asp-controller="Unite" asp-action="AjouterUnite" asp-route-residenceId="@ViewBag.ResidenceId">
+                Ajouter des unités
+            </a>
+         }
+
+  <div class="hr"></div>
+    <form method="get" class="mb-4 mt-4">
+        <input type="hidden" name="id" value="@ViewBag.ResidenceId" />
+
+        <div class="row g-2">
+
+            <div class="col">
+                <label for="capacite" class="form-label small text-muted mb-1">
+                    Capacité
+                </label>
+                <input id="capacite" type="number" name="capacite"
+                       class="form-control form-control-sm"
+                       value="@ViewBag.Capacite" placeholder="(ex: 1)" />
+            </div>
+
+            <div class="col">
+                <label for="numero" class="form-label small text-muted mb-1">
+                    Numéro
+                </label>
+                <input id="numero" type="number" name="numero"
+                       class="form-control form-control-sm"
+                       value="@ViewBag.Numero" placeholder="(ex: 1)" />
+            </div>
+
+            <div class="col">
+                <label for="mobiliteReduite" class="form-label small text-muted mb-1">
+                    Mobilité réduite
+                </label>
+                <select id="mobiliteReduite" name="mobiliteReduite" class="form-select form-select-sm">
+                    <option value="">Toutes</option>
+                    <option value="true" selected="@(ViewBag.MobiliteReduite == true)">Adaptée</option>
+                    <option value="false" selected="@(ViewBag.MobiliteReduite == false)">Non adaptée</option>
+                </select>
+            </div>
+
+            <div class="col">
+                <label for="ascendant" class="form-label small text-muted mb-1">
+                    Ordre d’affichage
+                </label>
+                <select id="ascendant" name="ascendant" class="form-select form-select-sm">
+                    <option value="true" selected="@(ViewBag.Ascendant == true)">Ascendant</option>
+                    <option value="false" selected="@(ViewBag.Ascendant == false)">Descendant</option>
+                </select>
+            </div>
+
+
+            <div class="col d-flex flex-column justify-content-end">
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-outline-primary w-100">
+                        Filtrer
+                    </button>
+
+                    <a class="btn btn-outline-dark w-100 d-flex align-items-center justify-content-center"
+                       asp-action="Index"
+                       asp-route-id="@ViewBag.ResidenceId">
+                        Réinitialiser
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+    @if (afficherPagination)
+    {
+        <div class="d-flex justify-content-center mt-5">
+
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                <a class="btn btn-sm @(i == ViewBag.PageActuelle ? "btn-primary" : "btn-outline-primary") mx-1" asp-action="Index" asp-route-id="@ViewBag.ResidenceId" 
+                   asp-route-page="@i"
+                   asp-route-disponible="@ViewBag.Disponible"
+                   asp-route-capacite="@ViewBag.Capacite"
+                   asp-route-numero="@ViewBag.Numero"
+                   asp-route-mobiliteReduite="@ViewBag.MobiliteReduite"
+                   asp-route-ascendant="@ViewBag.Ascendant">
+
+                    @i
+                </a>
+            }
+        </div>
+    } 
+   
+    <div class="list-group mt-5 mb-5">
+        @if (Model == null || !Model.Any())
+        {
+            <div class="text-center py-5">
+
+                @if (estFiltrer)
+                {
+                    <p class="text-muted fs-5">
+                        Aucune unité ne correspond aux filtres appliqués.
+                    </p>
+
+                    <p class="text-muted fs-5">
+                        Essayez de modifier ou réinitialiser les filtres.
+                    </p>
+                    <p class="text-muted fs-5">
+                        Utilisez le bouton <strong>« Ajouter des unités »</strong> en haut de la page pour en créer.
+                    </p>
+                }
+                else
+                {
+                    <h2 class="mb-3 text-danger fw-bold">
+                        Aucune unité
+                    </h2>
+                    <p class="text-muted fs-5">
+                        Il y a actuellement aucune unité dans cette résidence.
+                    </p>
+
+                    <p class="text-muted fs-5">
+                        Utilisez le bouton <strong>« Ajouter des unités »</strong> en haut de la page pour en créer.
+                    </p>
+                }
+            </div>
+        }
+        else
+        {
+            @foreach (Unite unite in Model)
+            {
+                <div class="list-group-item unite-row @(compact ? "unite-compact" : "") d-flex justify-content-between align-items-center">
+                    <div class="flex-grow-1 min-w-0">
+                        <h2 class="mb-1">Unité #@unite.Numero</h2>
+
+                        @if (ViewBag.ModeToutesLesUnites == true)
+                        {
+                            <small class="text-muted d-block">
+                                <strong>Résidence :</strong>
+                                <span class="text-truncate w-100">
+                                    @unite.Residence?.Nom
+                                </span>
+                            </small>
+                        }
+                        <small class="text-muted d-block">
+                            <strong>Accessibilité :</strong>
+                            @if (unite.AdapteePourMobiliteReduite == true)
+                            {
+                                <span class="text-success">
+                                    Adaptée pour les personnes à mobilité réduite
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="text-danger">
+                                    Non adaptée pour les personnes à mobilité réduite
+                                </span>
+                            }
+                        </small>
+
+                        <small class="text-muted d-block">
+                            <strong>Capacité :</strong> @unite.Capacite étudiants
+                        </small>
+                    </div>
+               
+                    <div class="d-flex gap-2 mt-2">
+                        @if ((await AuthorizationService.AuthorizeAsync(User, "AdminOuGestionnaire")).Succeeded)
+                            {
+                            <a class="btn btn-outline-success flex-fill" asp-controller="Unite" asp-action="ModifierUnite" asp-route-id="@unite.Id">
+                                Modifier
+                            </a>
+                            }
+                        @if ((await AuthorizationService.AuthorizeAsync(User, "AdminUniquement")).Succeeded)
+                        {
+                            <button class="btn btn-outline-danger flex-fill" type="button" data-dialog-open="@($"modalSupprimer_{unite.Id}")">
+                                Supprimer
+                            </button>
+                        }     
+                            @if ((await AuthorizationService.AuthorizeAsync(User, "GestionnaireUniquement")).Succeeded)
+                        {
+                                <button class="btn btn-outline-danger flex-fill btn-tooltip" type="button" data-dialog-open="modalNonAdmin">
+                                Supprimer
+                                <span class="tooltip-text">
+                                    Vous devez être Admin pour effectuer cette action
+                                </span>
+                            </button>
+                        }
+                    </div>
+
+                    <dialog id="@($"modalSupprimer_{unite.Id}")" class="danger">
+                        <h2>Suppression d’une unité</h2>
+
+                        <p class="mt-3">
+                            Êtes-vous sûr de vouloir supprimer l'unité #<strong>@unite.Numero</strong> de la résidence
+                            <strong class="text-truncate">@unite.Residence?.Nom</strong> ?
+                        </p>
+
+                        <form asp-action="Supprimer" asp-controller="Unite" method="post">
+                            <input type="hidden" name="id" value="@unite.Id" />
+
+                            <div class="d-flex justify-content-between">
+                                <button type="submit" class="btn btn-outline-danger px-4">Supprimer</button>
+                                <button type="button" class="btn btn-outline-dark px-4" data-dialog-close>Annuler</button>
+                            </div>
+                        </form>
+                    </dialog>
+
+                     <dialog id="modalNonAdmin" class="info-modal">
+                        <h2>Accès refusé</h2>
+                        <p>Vous devez être Admin pour effectuer cette action.</p>
+                        <div class="d-flex justify-content-end mt-3">
+                            <button class="btn btn-outline-dark px-4" type="button" data-dialog-close>Fermer</button>
+                        </div>
+                        </dialog>
+                </div>
+            }
+        }
+    </div>
+    @if (afficherPagination)
+    {
+        <div class="d-flex justify-content-center mt-5 mb-5">
+
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                <a class="btn btn-sm @(i == ViewBag.PageActuelle ? "btn-primary" : "btn-outline-primary") mx-1" asp-action="Index" asp-route-id="@ViewBag.ResidenceId"
+                   asp-route-page="@i"
+                   asp-route-disponible="@ViewBag.Disponible"
+                   asp-route-capacite="@ViewBag.Capacite"
+                   asp-route-numero="@ViewBag.Numero">
+                    @i
+                </a>
+            }
+        </div>
+    }
+</div>

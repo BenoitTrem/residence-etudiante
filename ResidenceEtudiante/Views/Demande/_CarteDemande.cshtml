@@ -1,0 +1,151 @@
+@* <author>Felix</author> *@
+
+@model Demande
+
+<div class="col-md-4 mb-4">
+    <div class="card shadow-sm h-100">
+        <div class="card-body">
+            <!-- Étudiant -->
+            <h3 class="card-title h5">
+                @Model.Etudiant?.Prenom @Model.Etudiant?.Nom
+            </h3>
+
+            <!-- Infos principales -->
+            <p class="card-text">
+                <strong>Semestre :</strong> @Model.Semestre?.NomSemestre <br />
+                <strong>Date :</strong> @Model.DateDemande.ToShortDateString() <br />
+                <strong>Durée bail :</strong> @Model.PrefDureeBail jours
+            </p>
+
+            <!-- Garant -->
+            <p class="card-text">
+                <strong>Garant :</strong> @Model.NomGarant @Model.PrenomGarant <br />
+                <strong>Téléphone :</strong> @Model.TelephoneGarant
+            </p>
+
+            <!-- Urgence -->
+            <p class="card-text">
+                <strong>Urgence :</strong> @Model.NomUrgence <br />
+                <strong>Lien :</strong> @Model.LienParenteUrgence
+            </p>
+
+            <!-- Genres : DemandeGenres est maintenant List<Genre> directement, plus de .Genre intermédiaire -->
+            @if (Model.DemandeGenres != null && Model.DemandeGenres.Any())
+            {
+                <p class="card-text"><strong>Genres :</strong></p>
+                <ul>
+                    @foreach (var genre in Model.DemandeGenres)
+                    {
+                        <li>@genre.Nom</li>
+                    }
+                </ul>
+            }
+
+            <!-- Jumelage -->
+            @if (Model.Jumelages != null && Model.Jumelages.Any())
+            {
+                <p class="card-text"><strong>Jumelages :</strong></p>
+                <ul>
+                    @foreach (var jumelage in Model.Jumelages)
+                    {
+                        <li>@jumelage.Nom — @jumelage.Courriel</li>
+                    }
+                </ul>
+            }
+
+            <!-- Statut -->
+            @{
+                string statutClasse = Model.StatutDemande switch
+                {
+                    StatutDemande.Acceptee => "bg-success",
+                    StatutDemande.Refusee => "bg-danger",
+                    StatutDemande.EnAttente => "bg-warning text-dark",
+                    _ => "bg-secondary"
+                };
+
+                string statutTexte = Model.StatutDemande switch
+                {
+                    StatutDemande.Acceptee => "Acceptée",
+                    StatutDemande.Refusee => "Refusée",
+                    StatutDemande.EnAttente => "En attente",
+                    _ => Model.StatutDemande.ToString()
+                };
+            }
+
+            <p class="card-text mb-0">
+                <strong>Statut :</strong>
+                <span class="badge @statutClasse">@statutTexte</span>
+            </p>
+        </div>
+
+        <div class="card-footer text-end">
+            <a asp-controller="Demande"
+               asp-action="ExporterPdf"
+               asp-route-id="@Model.Id"
+               class="btn btn-outline-secondary btn-sm">
+                Exporter PDF
+            </a>
+        </div>
+
+        @{
+            bool estConnecte = User.Identity?.IsAuthenticated == true;
+            bool estAdmin = User.IsInRole("Admin");
+            bool estGestionnaire = User.IsInRole("Gestionnaire");
+            bool peutModifier = estConnecte && !estAdmin && !estGestionnaire;
+            bool peutSupprimer = estConnecte && (estAdmin || (Model.StatutDemande == StatutDemande.EnAttente));
+        }
+
+        @if (peutModifier || peutSupprimer)
+        {
+            <div class="card-footer text-end">
+                @if (peutModifier)
+                {
+                    <a asp-controller="Demande" asp-action="Modifier" asp-route-id="@Model.Id" 
+                       class="btn btn-primary btn-sm @(Model.StatutDemande != StatutDemande.EnAttente ? "disabled" : "")">
+                        Modifier
+                    </a>
+                }
+
+                @if (peutSupprimer)
+                {
+                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal-@Model.Id">
+                        Supprimer la demande
+                    </button>
+
+                    <div class="modal fade" id="deleteModal-@Model.Id" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                                <h2 class="modal-title h5">Confirmer la suppression</h2>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                Êtes-vous certain de vouloir supprimer cette demande ?
+                                <br />
+                                Cette action est irréversible.
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    Annuler
+                                </button>
+
+                                <form asp-controller="Demande"
+                                      asp-action="Supprimer"
+                                      asp-route-id="@Model.Id"
+                                      method="post">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-danger">
+                                        Supprimer
+                                    </button>
+                                </form>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>

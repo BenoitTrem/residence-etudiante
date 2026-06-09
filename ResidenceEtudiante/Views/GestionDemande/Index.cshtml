@@ -1,0 +1,364 @@
+@* <author>Felix</author> *@
+
+@model ResidenceEtudiante.ViewModels.GestionDemandeIndexViewModel
+@using ResidenceEtudiante.Models
+
+@{
+    ViewData["Title"] = "Gestion des demandes";
+}
+
+<h1 class="mb-4">Gestion des demandes</h1>
+
+@* Messages de succès/erreur gérés par _Layout -> _MessagePartial *@
+
+@* Filtre par semestre *@
+<div class="card mb-4 shadow-sm">
+    <div class="card-body">
+        <form method="get" asp-action="Index" class="row align-items-end">
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Filtrer par semestre</label>
+                <select name="semestreFiltre" class="form-select">
+                    <option value="">-- Tous les semestres --</option>
+                    @foreach (var sem in Model.Semestres)
+                    {
+                        <option value="@sem.Id"
+                                selected="@(Model.SemestreFiltre == sem.Id ? "selected" : null)">
+                            @sem.NomSemestre
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Filtrer</button>
+            </div>
+            <div class="col-md-3">
+                <a asp-controller="GestionDemande"
+                   asp-action="ExporterToutesPdf"
+                   asp-route-semestreFiltre="@Model.SemestreFiltre"
+                   class="btn btn-outline-secondary w-100">
+                    Exporter toutes les demandes PDF
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@* Statistiques rapides *@
+@{
+    int total = Model.Demandes.Count;
+    int enAttente = Model.Demandes.Count(d => d.StatutDemande == StatutDemande.EnAttente);
+    int acceptees = Model.Demandes.Count(d => d.StatutDemande == StatutDemande.Acceptee);
+    int refusees = Model.Demandes.Count(d => d.StatutDemande == StatutDemande.Refusee);
+}
+
+<h2 class="visually-hidden">Statistiques des demandes</h2>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center border-0 shadow-sm">
+            <div class="card-body">
+                <h3 class="card-title h5 text-muted">Total</h3>
+                <p class="display-6 fw-bold">@total</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center border-0 shadow-sm bg-warning bg-opacity-10">
+            <div class="card-body">
+                <h3 class="card-title h5 text-warning">En attente</h3>
+                <p class="display-6 fw-bold text-warning">@enAttente</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center border-0 shadow-sm bg-success bg-opacity-10">
+            <div class="card-body">
+                <h3 class="card-title h5 text-success">Acceptées</h3>
+                <p class="display-6 fw-bold text-success">@acceptees</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center border-0 shadow-sm bg-danger bg-opacity-10">
+            <div class="card-body">
+                <h3 class="card-title h5 text-danger">Refusées</h3>
+                <p class="display-6 fw-bold text-danger">@refusees</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (!Model.Demandes.Any())
+{
+    <div class="alert alert-info">
+        Aucune demande trouvée.
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var demande in Model.Demandes.OrderByDescending(d => d.DateDemande))
+        {
+            @* Calculer les places occupées par unité pour ce semestre *@
+            var semestreId = demande.SemestreId;
+            var statutClasse = demande.StatutDemande switch
+            {
+                StatutDemande.EnAttente => "bg-warning text-dark",
+                StatutDemande.Acceptee => "bg-success",
+                StatutDemande.Refusee => "bg-danger",
+                _ => "bg-secondary"
+            };
+            var statutTexte = demande.StatutDemande switch
+            {
+                StatutDemande.EnAttente => "En attente",
+                StatutDemande.Acceptee => "Acceptée",
+                StatutDemande.Refusee => "Refusée",
+                _ => demande.StatutDemande.ToString()
+            };
+
+            <div class="col-lg-4 col-md-6 mb-3">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                            <div>
+                                <h2 class="card-title h5 mb-1">
+                                    @demande.Etudiant?.Prenom @demande.Etudiant?.Nom
+                                </h2>
+                                <small class="text-muted">@demande.Semestre?.NomSemestre</small>
+                            </div>
+                            <span class="badge @statutClasse">@statutTexte</span>
+                        </div>
+
+                        <p class="card-text mb-2">
+                            <small>
+                                Date : @demande.DateDemande.ToShortDateString()<br />
+                                Personnes : @((demande.Jumelages?.Count() ?? 0) + 1)<br />
+                                Unité :
+                            </small>
+                            @if (demande.Unite != null)
+                            {
+                                <small>@demande.Unite.Numero - @demande.Unite.Residence?.Nom</small>
+                            }
+                            else
+                            {
+                                <small class="text-muted">Non assignée</small>
+                            }
+                        </p>
+
+                        <div class="text-end">
+                            <button type="button" class="btn btn-sm btn-outline-primary"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalDemande_@demande.Id">
+                                Traiter
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* Modal pour traiter la demande *@
+            <div class="modal fade" id="modalDemande_@demande.Id" tabindex="-1"
+                 aria-labelledby="modalLabel_@demande.Id" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2 class="modal-title h5" id="modalLabel_@demande.Id">
+                                Traiter la demande - @demande.Etudiant?.Prenom @demande.Etudiant?.Nom
+                            </h2>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            @* Résumé de la demande *@
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <p><strong>Semestre :</strong> @demande.Semestre?.NomSemestre</p>
+                                    <p><strong>Date demande :</strong> @demande.DateDemande.ToShortDateString()</p>
+                                    <p><strong>Durée bail :</strong> @demande.PrefDureeBail jours</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Garant :</strong> @demande.NomGarant @demande.PrenomGarant</p>
+                                    <p><strong>Contact urgence :</strong> @demande.NomUrgence (@demande.LienParenteUrgence)</p>
+                                </div>
+                            </div>
+
+                            @* Genres : DemandeGenres est maintenant List<Genre> directement, plus de .Genre intermédiaire *@
+                            @if (demande.DemandeGenres != null && demande.DemandeGenres.Any())
+                            {
+                                <p>
+                                    <strong>Genres préférés :</strong>
+                                    @foreach (var genre in demande.DemandeGenres)
+                                    {
+                                        <span class="badge bg-secondary me-1">@genre.Nom</span>
+                                    }
+                                </p>
+                            }
+
+                            @* Jumelages *@
+                            @if (demande.Jumelages != null && demande.Jumelages.Any())
+                            {
+                                <p><strong>Jumelages :</strong></p>
+                                <ul>
+                                    @foreach (var j in demande.Jumelages)
+                                    {
+                                        <li>@j.Nom - @j.Courriel</li>
+                                    }
+                                </ul>
+                            }
+
+                            <hr />
+
+                            @* Formulaire de traitement *@
+                            <form asp-controller="GestionDemande" asp-action="TraiterDemande" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="demandeId" value="@demande.Id" />
+
+                                <div class="row">
+                                    @* Statut *@
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-semibold">Changer le statut</label>
+                                        <select name="statut" class="form-select" id="selectStatut_@demande.Id"
+                                                onchange="toggleUniteSelect(@demande.Id)">
+                                            <option value="@((int)StatutDemande.EnAttente)"
+                                                    selected="@(demande.StatutDemande == StatutDemande.EnAttente ? "selected" : null)">
+                                                En attente
+                                            </option>
+                                            <option value="@((int)StatutDemande.Acceptee)"
+                                                    selected="@(demande.StatutDemande == StatutDemande.Acceptee ? "selected" : null)">
+                                                Acceptée
+                                            </option>
+                                            <option value="@((int)StatutDemande.Refusee)"
+                                                    selected="@(demande.StatutDemande == StatutDemande.Refusee ? "selected" : null)">
+                                                Refusée
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    @* Unité *@
+                                    <div class="col-md-6 mb-3 @(demande.StatutDemande == StatutDemande.Acceptee ? "" : "d-none")" id="divUnite_@demande.Id">
+                                        <label class="form-label fw-semibold">Assigner une unité</label>
+                                        <select name="uniteId" class="form-select">
+                                            <option value="">-- Choisir une unité --</option>
+                                            @foreach (var unite in Model.Unites)
+                                            {
+                                                @* Calculer places occupées pour ce semestre *@
+                                                var demandesDejaAcceptees = Model.Demandes
+                                                .Where(d => d.UniteId == unite.Id
+                                                && d.SemestreId == semestreId
+                                                && d.StatutDemande == StatutDemande.Acceptee
+                                                && d.Id != demande.Id)
+                                                .ToList();
+
+                                                int occupees = demandesDejaAcceptees.Count;
+
+                                                // Éviter de compter en double les colocataires déjà acceptés
+                                                var emailsDejaAcceptes = demandesDejaAcceptees
+                                                .Select(d => d.Etudiant?.CourrielInstitutionnel)
+                                                .Where(e => e != null)
+                                                .ToList();
+
+                                                int placesRequises = 1;
+                                                foreach (var jum in demande.Jumelages ?? Enumerable.Empty<Jumelage>())
+                                                {
+                                                    if (!emailsDejaAcceptes.Contains(jum.Courriel))
+                                                    {
+                                                        placesRequises++;
+                                                    }
+                                                }
+
+                                                int disponibles = unite.Capacite - occupees;
+                                                bool pleine = placesRequises > disponibles;
+
+                                                <option value="@unite.Id"
+                                                        disabled="@(pleine ? "disabled" : null)"
+                                                        selected="@(demande.UniteId == unite.Id ? "selected" : null)">
+                                                    @(unite.Residence?.Nom) - Unité @(unite.Numero)
+                                                    (@disponibles/@unite.Capacite places)
+                                                    @(pleine ? " PAS ASSEZ DE PLACE" : "")
+                                                </option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="text-end">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                    <button type="submit" class="btn btn-primary">Sauvegarder</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @* pagination fonctionnelle *@
+    @if (Model.TotalPages > 1)
+    {
+        <nav aria-label="Pagination des demandes">
+            <ul class="pagination justify-content-center mt-4">
+
+                <!-- Bouton Précédent -->
+                <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-page="@(Model.CurrentPage - 1)"
+                       asp-route-semestreFiltre="@Model.SemestreFiltre">
+                        Précédent
+                    </a>
+                </li>
+
+                <!-- Pages -->
+                @{
+                    int start = Math.Max(1, Model.CurrentPage - 2);
+                    int end = Math.Min(Model.TotalPages, Model.CurrentPage + 2);
+                }
+
+                @for (int i = start; i <= end; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a class="page-link"
+                           asp-action="Index"
+                           asp-route-page="@i"
+                           asp-route-semestreFiltre="@Model.SemestreFiltre">
+                            @i
+                        </a>
+                    </li>
+                }
+
+                <!-- Bouton Suivant -->
+                <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-page="@(Model.CurrentPage + 1)"
+                       asp-route-semestreFiltre="@Model.SemestreFiltre">
+                        Suivant
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+
+        <!-- Info page -->
+        <p class="text-center text-muted">
+            Page @Model.CurrentPage sur @Model.TotalPages
+        </p>
+    }
+}
+
+@section Scripts {
+    <script>
+        function toggleUniteSelect(demandeId) {
+            var select = document.getElementById('selectStatut_' + demandeId);
+            var divUnite = document.getElementById('divUnite_' + demandeId);
+
+            // StatutDemande.Acceptee = 1
+            if (select.value === '@((int)StatutDemande.Acceptee)') {
+                divUnite.classList.remove('d-none');
+            } else {
+                divUnite.classList.add('d-none');
+            }
+        }
+    </script>
+}

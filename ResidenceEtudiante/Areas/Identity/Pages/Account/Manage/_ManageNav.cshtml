@@ -1,0 +1,46 @@
+﻿@inject SignInManager<ApplicationUser> SignInManager
+@using Microsoft.AspNetCore.Identity
+@using ResidenceEtudiante.Areas.Identity.Data
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    var externalSchemes = await SignInManager.GetExternalAuthenticationSchemesAsync();
+    bool hasExternalLogins = externalSchemes.Any(); 
+
+
+    bool afficherEtudiantProfileNav = false;
+
+    if (!SignInManager.IsSignedIn(User))
+    {
+        afficherEtudiantProfileNav = true;
+    }
+    else
+    {
+        ApplicationUser? user = await UserManager.GetUserAsync(User);
+        if (user != null)
+        {
+            System.Collections.Generic.IList<string> roles = await UserManager.GetRolesAsync(user);
+            if (roles.Contains("Utilisateur"))
+            {
+                afficherEtudiantProfileNav = true;
+            }
+        }
+    }
+}
+<ul class="nav nav-pills flex-column">
+    <li class="nav-item"><a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">Profile</a></li>
+    @if (afficherEtudiantProfileNav)
+    {
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="Etudiant" asp-action="Profil">Profil étudiant</a>
+        </li>
+    }
+    <li class="nav-item"><a class="nav-link @ManageNavPages.EmailNavClass(ViewContext)" id="email" asp-page="./Email">Courriel</a></li>
+    <li class="nav-item"><a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">Mot de passe</a></li>
+    @if (hasExternalLogins)
+    {
+        <li id="external-logins" class="nav-item"><a id="external-login" class="nav-link @ManageNavPages.ExternalLoginsNavClass(ViewContext)" asp-page="./ExternalLogins">External logins</a></li>
+    }
+    <li class="nav-item"><a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor" asp-page="./TwoFactorAuthentication">Authentification à deux facteurs</a></li>
+    <li class="nav-item"><a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">Données personnelles</a></li>
+</ul>

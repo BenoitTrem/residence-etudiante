@@ -1,0 +1,40 @@
+﻿@model ErreurViewModel
+@*
+    Vue : Error.cshtml
+    Description : Affiche une page d'erreur personnalisée avec code HTTP,
+                  message et identifiant de requête.
+    @Author : John Zuleta
+*@
+@{
+    ViewData["Title"] = "Erreur";
+}
+
+<div class="container d-flex align-items-center justify-content-center mt-5">
+    <div class="text-center erreur-container">
+
+        <div class="mb-3">
+            <i class="bi bi-x-circle-fill text-danger fs-1"></i>
+
+            <h2 class="text-danger fw-bold mt-3">
+                @(Model.StatusCode ?? 500)
+            </h2>
+
+            <h5 class="text-danger mt-2">
+                @(Model.Message ?? "Une erreur inattendue est survenue.")
+            </h5>
+        </div>
+
+        <div class="hr"></div>
+
+        <div class="d-grid mt-3">
+            <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-outline-primary mt-3 w-100 btn-lg">
+                <i class="bi bi-box-arrow-in-right me-1"></i> Aller à la connexion
+            </a>
+
+            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary mt-3 w-100 btn-lg">
+                <i class="bi bi-house-door me-1"></i> Retour à l'accueil
+            </a>
+        </div>
+
+    </div>
+</div>

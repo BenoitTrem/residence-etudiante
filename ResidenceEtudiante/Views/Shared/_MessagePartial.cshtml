@@ -1,0 +1,22 @@
+﻿@*
+    Vue partielle : _MessagePartial.cshtml
+    Description : Affiche les messages temporaires (succès et erreur) via TempData.
+    @Author : John Zuleta
+*@
+@if (TempData["Erreur"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        @TempData["Erreur"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+    </div>
+}
+
+@if (TempData["Succes"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        @TempData["Succes"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+    </div>
+}
