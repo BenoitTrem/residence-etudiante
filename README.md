@@ -1,9 +1,9 @@
 # Résidences Étudiantes
-
+ 
 Application web de gestion des résidences étudiantes développée en ASP.NET Core MVC.
-
+ 
 ## Fonctionnalités
-
+ 
 - Création de compte et authentification avec trois niveaux d'accès : étudiant, gestionnaire et administrateur
 - Gestion du dossier étudiant (programme, campus, genre, préférences)
 - Soumission et suivi de demandes de résidence
@@ -11,9 +11,8 @@ Application web de gestion des résidences étudiantes développée en ASP.NET C
 - Traitement des demandes par les gestionnaires avec attribution d'unités
 - Jumelage d'étudiants pour le partage d'unités
 - Interface d'administration complète pour la gestion des utilisateurs et des référentiels
-
 ## Rôles et permissions
-
+ 
 | Opération | Étudiant | Gestionnaire | Administrateur |
 |---|:---:|:---:|:---:|
 | Soumettre une demande | ✅ | ❌ | ❌ |
@@ -23,37 +22,54 @@ Application web de gestion des résidences étudiantes développée en ASP.NET C
 | Attribuer une unité | ❌ | ✅ | ✅ |
 | Gérer les utilisateurs | ❌ | ❌ | ✅ |
 | Supprimer des données | ❌ | ❌ | ✅ |
-
+ 
 ## Stack technique
-
+ 
 - **ASP.NET Core MVC** — architecture serveur et routage
 - **Entity Framework Core** — accès aux données et migrations
 - **SQL Server** — base de données relationnelle
 - **Razor Views** — rendu côté serveur
 - **ASP.NET Core Identity** — authentification et gestion des rôles
-
 ## Démarrage
-
+ 
 **1. Configurer la base de données**
-
+ 
 Dans `appsettings.json`, ajouter votre chaîne de connexion :
-
+ 
 ```json
 "ConnectionStrings": {
   "ApplicationConnectionBD": "Server=VOTRE_SERVEUR;Database=VOTRE_BASE_DE_DONNEES;Trusted_Connection=True;MultipleActiveResultSets=true"
 }
 ```
-
+ 
 **2. Appliquer les migrations**
-
+ 
 Dans la console du gestionnaire de package (Tools → NuGet Package Manager → Package Manager Console) :
-
+ 
 ```powershell
 Update-Database
 ```
-
+ 
 **3. Lancer l'application**
-
+ 
+```powershell
+dotnet run
+```
+ 
+## Comptes de test
+ 
+Des comptes sont créés automatiquement lors de l'initialisation de la base de données.
+ 
+| Rôle | Courriel | Mot de passe |
+|---|---|---|
+| Administrateur | admin@gmail.com | Password-123 |
+| Gestionnaire | gestionnaire@gmail.com | Password-123 |
+| Étudiant | alex.tremblay@college.ca | Password-123 |
+| Étudiant | marie.gagnon@college.ca | Password-123 |
+| Étudiant | david.nguyen@college.ca | Password-123 |
+| Étudiant | sophie.bouchard@college.ca | Password-123 |
+| Étudiant | julien.lefevre@college.ca | Password-123 |
+ 
 ## License
 
 Copyright 2026 Benoit Tremblay - Felix Lachapelle - John Sebastian Zuleta Franco. Tous droits réservés.
